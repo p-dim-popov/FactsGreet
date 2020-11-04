@@ -26,6 +26,28 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        /////////////////////////////////////////////////////////////
+        public DbSet<Article> Articles { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Conversation> Conversations { get; set; }
+
+        public DbSet<ConversationParticipance> ConversationParticipances { get; set; }
+
+        public DbSet<Edit> Edits { get; set; }
+
+        public DbSet<Follow> Follows { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
+        public DbSet<Modification> Modifications { get; set; }
+
+        public DbSet<Report> Reports { get; set; }
+
+        public DbSet<Star> Stars { get; set; }
+        ////////////////////////////////////////////////////////////
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

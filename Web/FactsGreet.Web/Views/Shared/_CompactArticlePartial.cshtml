@@ -1,0 +1,40 @@
+﻿@model FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel
+@{
+    const int categoriesDisplayCount = 3;
+}
+
+<div class="card">
+    <a style="text-decoration: none; color: inherit"
+       href="/Articles/@Model.Title.Replace(" ", "_")">
+        <div class="row no-gutters">
+            <div class="col-auto">
+                <img class="card-img-top" src="@Model.ThumbnailLink" style="width: 200px; height: 200px">
+            </div>
+            <div class="col">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text">@Model.ShortContent</p>
+                </div>
+            </div>
+        </div>
+    </a>
+    <div class="card-footer w-100 text-muted">
+        <div class="row">
+            <div class="col-auto">
+                @Model.StarsCount @(Model.StarsCount switch {
+                                      1 => "person",
+                                      _ => "people"
+                                      }) starred this.
+            </div>
+            <div class="col"></div>
+            <div class="col-auto">
+                <small class="text-muted">Categories: </small>
+                @foreach (var category in Model.Categories.Take(categoriesDisplayCount))
+                {
+                    <a class="btn btn-primary">@category</a>
+                }
+                @(Model.Categories.Length > categoriesDisplayCount ? "..." : "")
+            </div>
+        </div>
+    </div>
+</div>

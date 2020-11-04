@@ -33,5 +33,42 @@ namespace FactsGreet.Data.Models
         public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
+
+        /*
+        /////////////////////////////////////
+        Additions to template ApplicationUser
+        /////////////////////////////////////
+        */
+
+        public virtual ICollection<Notification> Notifications { get; set; }
+            = new HashSet<Notification>();
+
+        public virtual ICollection<Notification> Actions { get; set; }
+            = new HashSet<Notification>();
+
+        public virtual ICollection<Edit> Edits { get; set; }
+            = new HashSet<Edit>();
+
+        public virtual ICollection<Article> Articles { get; set; }
+            = new HashSet<Article>();
+
+        public virtual ICollection<ConversationParticipance> ConversationParticipances { get; set; }
+            = new HashSet<ConversationParticipance>();
+
+        public virtual ICollection<Follow> Followers { get; set; }
+            = new HashSet<Follow>();
+
+        public virtual ICollection<Follow> Followings { get; set; }
+            = new HashSet<Follow>();
+
+        public virtual ICollection<Message> SentMessages { get; set; }
+            = new HashSet<Message>();
+
+        public virtual ICollection<Report> SentReports { get; set; }
+            = new HashSet<Report>();
+
+        public virtual ICollection<Report> ReceivedReports { get; set; }
+
+        public virtual ICollection<Star> FavoriteArticles { get; set; }
     }
 }

@@ -1,0 +1,13 @@
+﻿@model ICollection<FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel>
+@{
+    this.ViewData["Title"] = "Search";
+}
+
+<h2>Search results for: @this.ViewBag.Slug</h2>
+
+@foreach (var article in Model)
+{
+    <div class="mb-5">
+        <partial name="_CompactArticlePartial" model="article"/>
+    </div>
+}

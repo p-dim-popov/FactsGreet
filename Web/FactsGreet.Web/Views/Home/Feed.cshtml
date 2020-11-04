@@ -1,0 +1,14 @@
+﻿@model ICollection<FactsGreet.Web.ViewModels.Articles.CompactArticleViewModelExtended>
+@{
+    this.ViewData["Title"] = "Feed";
+}
+
+@foreach (var article in Model)
+{
+    <div class="rounded border-top mb-5">
+        <small>@article.Author @(article.IsCreated ? "created" : "edited") an article</small>
+        <partial name="_CompactArticlePartial" model="article"/>
+    </div>
+}
+
+

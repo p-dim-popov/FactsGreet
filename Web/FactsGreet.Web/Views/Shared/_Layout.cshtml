@@ -8,26 +8,86 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
 </head>
-<body>
+<body class="bg-light">
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@GlobalConstants.SystemName</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <div class="dropdown show">
+                    <a class="btn btn-light dropdown-toggle navbar-brand" 
+                       href="#" 
+                       role="button" 
+                       id="logo-dropdown" 
+                       data-toggle="dropdown"
+                       aria-haspopup="true" 
+                       aria-expanded="false">
+                        @GlobalConstants.SystemName
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="logo-dropdown">
+                        <a class="dropdown-item"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Home
+                        </a>
+                        <a class="dropdown-item"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="Feed">
+                            Feed
+                        </a>
+                        <a class="dropdown-item"
+                           asp-area=""
+                           asp-controller="Articles"
+                           asp-action="All">
+                            Latest articles
+                        </a>
+                    </div>
+                </div>
+                <button class="navbar-toggler" 
+                        type="button" 
+                        data-toggle="collapse" 
+                        data-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false" 
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
+                    <partial name="_LoginPartial"/>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark"
+                               asp-area=""
+                               asp-controller="Settings"
+                               asp-action="Index">
+                                Settings
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
+                            <a class="nav-link text-dark"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Privacy">
+                                Privacy
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li>
+                            <form class="form-inline my-2 my-lg-0" 
+                                  asp-area=""
+                                  asp-controller="Articles"
+                                  asp-action="Search"
+                                  method="get">
+                                <div class="input-group">
+                                    <input class="form-control" 
+                                           type="search"
+                                           placeholder="Search" 
+                                           aria-label="Search"
+                                           name="slug">
+                                    <div class="input-group-append">
+                                        <button class="btn-outline-primary input-group-text" type="submit">Search</button>
+                                    </div>
+                                </div>
+                            </form>
                         </li>
                     </ul>
                 </div>

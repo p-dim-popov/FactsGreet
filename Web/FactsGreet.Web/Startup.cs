@@ -12,7 +12,7 @@
     using FactsGreet.Services.Mapping;
     using FactsGreet.Services.Messaging;
     using FactsGreet.Web.ViewModels;
-
+    using Markdig;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -21,6 +21,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Westwind.AspNetCore.Markdown;
 
     public class Startup
     {
@@ -64,6 +65,19 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+
+            services.AddMarkdown(config =>
+            {
+                // Create custom MarkdigPipeline 
+                // using MarkDig; for extension methods
+                config.ConfigureMarkdigPipeline = builder =>
+                {
+                    builder
+                        .UseEmphasisExtras()
+                        .UsePipeTables()
+                        .DisableHtml();
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +107,7 @@
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseMarkdown();
 
             app.UseRouting();
 
@@ -102,6 +117,10 @@
             app.UseEndpoints(
                 endpoints =>
                     {
+                        endpoints.MapControllerRoute(
+                            "news",
+                            "Articles/{slug:required}",
+                            new { controller = "Articles", action = "GetBySlug" });
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();

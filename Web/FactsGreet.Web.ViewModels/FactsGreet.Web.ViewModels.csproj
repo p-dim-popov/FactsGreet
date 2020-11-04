@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Services\FactsGreet.Services.Mapping\FactsGreet.Services.Mapping.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Home\" />
+  </ItemGroup>
+
 </Project>
