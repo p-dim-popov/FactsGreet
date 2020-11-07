@@ -1,7 +1,9 @@
-﻿namespace FactsGreet.Web.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace FactsGreet.Web.Controllers
 {
     using System;
-    using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
@@ -15,7 +17,8 @@
 
         private readonly ArticlesService articlesService;
 
-        public ArticlesController(ArticlesService articlesService)
+        public ArticlesController(
+            ArticlesService articlesService)
         {
             this.articlesService = articlesService;
         }
@@ -90,6 +93,17 @@
                     ActionName = nameof(this.All),
                 },
             });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ToggleStar(Guid id)
+        {
+            await this.articlesService
+                .ToggleStarAsync(
+                    this.User
+                        .FindFirstValue(ClaimTypes.NameIdentifier), id);
+            return this.Redirect("/Articles/" + (await this.articlesService.GetTitleByIdAsync(id))
+                .Replace(' ', '_'));
         }
     }
 }

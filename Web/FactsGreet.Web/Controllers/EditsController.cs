@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using FactsGreet.Web.ViewModels.Edits;
-
-namespace FactsGreet.Web.Controllers
+﻿namespace FactsGreet.Web.Controllers
 {
     using System;
 
@@ -10,13 +7,7 @@ namespace FactsGreet.Web.Controllers
 
     public class EditsController : BaseController
     {
-        private const int ArticlesPerPage = 1;
-
-        private readonly EditsService editsService;
-
         public EditsController(EditsService editsService)
-        {
-            this.editsService = editsService;
-        }
+        { }
     }
 }

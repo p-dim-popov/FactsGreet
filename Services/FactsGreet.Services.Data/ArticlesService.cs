@@ -1,4 +1,6 @@
-﻿namespace FactsGreet.Services.Data
+﻿using System;
+
+namespace FactsGreet.Services.Data
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -13,13 +15,24 @@
     {
         private readonly IDeletableEntityRepository<Article> articleRepository;
         private readonly IRepository<Category> categoryRepository;
+        private readonly IRepository<Star> starRepository;
 
         public ArticlesService(
             IDeletableEntityRepository<Article> articleRepository,
-            IRepository<Category> categoryRepository)
+            IRepository<Category> categoryRepository,
+            IRepository<Star> starRepository)
         {
             this.articleRepository = articleRepository;
             this.categoryRepository = categoryRepository;
+            this.starRepository = starRepository;
+        }
+
+        public Task<string> GetTitleByIdAsync(Guid id)
+        {
+            return this.articleRepository.All()
+                .Where(x => x.Id == id)
+                .Select(x => x.Title)
+                .FirstOrDefaultAsync();
         }
 
         public async Task CreateAsync(
@@ -40,10 +53,30 @@
             await this.articleRepository.SaveChangesAsync();
         }
 
+        public async Task<bool> ToggleStarAsync(string userId, Guid articleId)
+        {
+            var isStarred = await this.starRepository.All()
+                .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
+
+            if (isStarred)
+            {
+                this.starRepository.Delete(new Star {ArticleId = articleId, UserId = userId});
+                isStarred = false;
+            }
+            else
+            {
+                await this.starRepository.AddAsync(new Star {ArticleId = articleId, UserId = userId});
+                isStarred = true;
+            }
+
+            await this.articleRepository.SaveChangesAsync();
+            return isStarred;
+        }
+
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
         {
-            return await Regex.Matches(keywords, @"[^\s"".?!]+")
-                .Select(x => x.Value.ToLower())
+            return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
+                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
                 .Aggregate(
                     this.articleRepository.All(),
                     (current, keyword)
@@ -56,7 +89,7 @@
 
         public async Task<int> GetCountByTitleKeywordsAsync(string keywords)
         {
-            return await Regex.Matches(keywords, @"[^\s"".?!]+")
+            return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
                 .Select(x => x.Value.ToLower())
                 .Aggregate(this.articleRepository.All(), (current, keyword)
                     => current.Where(x => x.Title.ToLower().Contains(keyword)))

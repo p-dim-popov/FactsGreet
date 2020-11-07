@@ -1,0 +1,9 @@
+﻿@model ICollection<FactsGreet.Web.ViewModels.Home.FeedViewModel>
+
+@foreach (var feedModel in Model)
+{
+    <div class="rounded border-top mb-5">
+        <small>@feedModel.EditorUserName @(feedModel.IsCreation ? "created" : "edited") an article</small>
+        <partial name="_CompactArticlePartial" model="feedModel.Article"/>
+    </div>
+}

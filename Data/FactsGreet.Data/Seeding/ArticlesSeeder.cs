@@ -84,7 +84,7 @@ Internet Protocol version 4 (IPv4) defines an IP address as a 32-bit number.[2] 
                 }.Select(x => new Article
                 {
                     AuthorId = adminId,
-                    Categories = x.Categories.Select(x => new ArticleCategory {Category = x}).ToList(),
+                    Categories = x.Categories.Select(y => new ArticleCategory {Category = y}).ToList(),
                     Content = x.Content,
                     Description = x.Description,
                     Title = x.Title,
@@ -103,6 +103,7 @@ Internet Protocol version 4 (IPv4) defines an IP address as a 32-bit number.[2] 
                                     Down = string.Empty,
                                 },
                             },
+                            IsCreation = true,
                         },
                     },
                 });

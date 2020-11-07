@@ -1,4 +1,7 @@
-﻿namespace FactsGreet.Web.Controllers
+﻿using System.Collections.Generic;
+using FactsGreet.Web.ViewModels.Home;
+
+namespace FactsGreet.Web.Controllers
 {
     using System.Diagnostics;
     using System.Net.Mime;
@@ -7,7 +10,6 @@
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.ViewModels;
-    using FactsGreet.Web.ViewModels.Edits;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Utf8Json;
@@ -18,10 +20,12 @@
         private const int EditsPerPage = 2;
 
         private readonly EditsService editsService;
+        private readonly ArticlesService articlesService;
 
-        public HomeController(EditsService editsService)
+        public HomeController(EditsService editsService, ArticlesService articlesService)
         {
             this.editsService = editsService;
+            this.articlesService = articlesService;
 
             JsonSerializer.SetDefaultResolver(StandardResolver.CamelCase); // TODO: move somewhere else
         }
@@ -44,26 +48,28 @@
         }
 
         [Authorize]
-        public IActionResult Feed()
+        public async Task<IActionResult> Feed()
         {
-            return this.View();
+            return this.View(await this.GetFeedActivitiesPaginated(1));
         }
 
         [Authorize]
         public async Task<IActionResult> GetFeedActivities(int page)
         {
+            var activities = await this.GetFeedActivitiesPaginated(page);
+
+            return this.PartialView("Partials/_FeedPartial", activities);
+        }
+
+        private async Task<ICollection<FeedViewModel>> GetFeedActivitiesPaginated(int page)
+        {
             var pagination = Paginator.GetPagination(page, EditsPerPage);
-            var skip = (page - 1) * EditsPerPage;
 
             var activities =
                 await this.editsService
-                    .GetPaginatedOrderedByDateDescendingAsync<EditViewModel>(
+                    .GetPaginatedOrderedByDateDescendingAsync<FeedViewModel>(
                         pagination.Skip, pagination.Take);
-
-            return this.Content(
-                JsonSerializer.ToJsonString(activities),
-                MediaTypeNames.Application.Json,
-                Encoding.UTF8);
+            return activities;
         }
     }
 }
