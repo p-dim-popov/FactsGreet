@@ -1,5 +1,7 @@
 ﻿namespace FactsGreet.Data.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class Follow
     {
         public string FollowerId { get; set; }

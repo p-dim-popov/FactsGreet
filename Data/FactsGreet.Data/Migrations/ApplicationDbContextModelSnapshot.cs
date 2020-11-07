@@ -145,10 +145,12 @@ namespace FactsGreet.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -157,6 +159,10 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -164,16 +170,22 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ThumbnailLink")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("Articles");
                 });
@@ -200,10 +212,21 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -230,7 +253,9 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -272,7 +297,11 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EditorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsCreation")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -313,7 +342,9 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
 
                     b.Property<Guid>("ConversationId")
                         .HasColumnType("uniqueidentifier");
@@ -331,6 +362,7 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SenderId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -357,6 +389,7 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Down")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("EditId")
@@ -372,6 +405,7 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Up")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -406,9 +440,11 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ReceiverId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SenderId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Type")
@@ -438,10 +474,13 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DenouncerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -450,6 +489,7 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RecipentId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -616,9 +656,11 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.Article", b =>
                 {
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
+                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Author")
                         .WithMany("Articles")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.ArticleCategory", b =>
@@ -668,7 +710,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Editor")
                         .WithMany("Edits")
-                        .HasForeignKey("EditorId");
+                        .HasForeignKey("EditorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>
@@ -696,7 +740,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
                         .WithMany("SentMessages")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Modification", b =>
@@ -710,28 +756,36 @@ namespace FactsGreet.Data.Migrations
                 {
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Receiver")
                         .WithMany("Notifications")
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
                         .WithMany("Actions")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Report", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Denouncer")
                         .WithMany("SentReports")
-                        .HasForeignKey("DenouncerId");
+                        .HasForeignKey("DenouncerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Recipent")
                         .WithMany("ReceivedReports")
-                        .HasForeignKey("RecipentId");
+                        .HasForeignKey("RecipentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Star", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
-                        .WithMany("Fans")
+                        .WithMany("Stars")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

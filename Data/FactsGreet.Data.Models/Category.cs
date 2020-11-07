@@ -1,11 +1,14 @@
 ﻿namespace FactsGreet.Data.Models
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
-    public class Category
+    using FactsGreet.Data.Common.Models;
+
+    public class Category : BaseModel<int>, IAuditInfo
     {
-        public int Id { get; set; }
-
+        [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         public virtual ICollection<ArticleCategory> Articles { get; set; }

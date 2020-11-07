@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FactsGreet.Data.Migrations
 {
-    public partial class CreateMainModels : Migration
+    public partial class CreateModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,17 +16,18 @@ namespace FactsGreet.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    ThumbnailLink = table.Column<string>(nullable: true),
-                    ApplicationUserId = table.Column<string>(nullable: true)
+                    Title = table.Column<string>(maxLength: 50, nullable: false),
+                    Content = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(maxLength: 300, nullable: true),
+                    ThumbnailLink = table.Column<string>(maxLength: 100, nullable: true),
+                    AuthorId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Articles_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Articles_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -38,7 +39,9 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,7 +57,7 @@ namespace FactsGreet.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 50, nullable: false),
                     CreatorId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -103,8 +106,8 @@ namespace FactsGreet.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Type = table.Column<int>(nullable: false),
-                    SenderId = table.Column<string>(nullable: true),
-                    ReceiverId = table.Column<string>(nullable: true),
+                    SenderId = table.Column<string>(nullable: false),
+                    ReceiverId = table.Column<string>(nullable: false),
                     IsSeen = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -133,9 +136,9 @@ namespace FactsGreet.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    DenouncerId = table.Column<string>(nullable: true),
-                    RecipentId = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
+                    DenouncerId = table.Column<string>(nullable: false),
+                    RecipentId = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(maxLength: 450, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,8 +166,9 @@ namespace FactsGreet.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    EditorId = table.Column<string>(nullable: true),
-                    ArticleId = table.Column<Guid>(nullable: false)
+                    EditorId = table.Column<string>(nullable: false),
+                    ArticleId = table.Column<Guid>(nullable: false),
+                    IsCreation = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,9 +268,9 @@ namespace FactsGreet.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    SenderId = table.Column<string>(nullable: true),
+                    SenderId = table.Column<string>(nullable: false),
                     ConversationId = table.Column<Guid>(nullable: false),
-                    Content = table.Column<string>(nullable: true)
+                    Content = table.Column<string>(maxLength: 450, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,8 +299,8 @@ namespace FactsGreet.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Line = table.Column<long>(nullable: false),
-                    Up = table.Column<string>(nullable: true),
-                    Down = table.Column<string>(nullable: true),
+                    Up = table.Column<string>(nullable: false),
+                    Down = table.Column<string>(nullable: false),
                     EditId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -316,14 +320,26 @@ namespace FactsGreet.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Articles_ApplicationUserId",
+                name: "IX_Articles_AuthorId",
                 table: "Articles",
-                column: "ApplicationUserId");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_IsDeleted",
                 table: "Articles",
                 column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_Title",
+                table: "Articles",
+                column: "Title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConversationParticipances_UserId",

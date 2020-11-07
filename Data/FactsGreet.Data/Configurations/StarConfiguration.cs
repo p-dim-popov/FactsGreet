@@ -17,7 +17,7 @@
 
             builder
                 .HasOne(x => x.Article)
-                .WithMany(x => x.Fans)
+                .WithMany(x => x.Stars)
                 .HasForeignKey(x => x.ArticleId);
         }
     }

@@ -23,6 +23,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Utf8Json" Version="1.3.7" />
     <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.4.5" />
   </ItemGroup>
 
@@ -36,5 +37,24 @@
     <ProjectReference Include="..\..\Services\FactsGreet.Services\FactsGreet.Services.csproj" />
     <ProjectReference Include="..\FactsGreet.Web.Infrastructure\FactsGreet.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\FactsGreet.Web.ViewModels\FactsGreet.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Shared\_PaginationPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\js\home\feed.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\templates\home\feedArticleCard.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\views\home\feed.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

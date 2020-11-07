@@ -1,23 +1,34 @@
-﻿@model FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel
+﻿@using Markdig
+@using Markdig.Extensions.MediaLinks
+@model FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel
 @{
     const int categoriesDisplayCount = 3;
+
 }
 
 <div class="card">
-    <a style="text-decoration: none; color: inherit"
-       href="/Articles/@Model.Title.Replace(" ", "_")">
-        <div class="row no-gutters">
-            <div class="col-auto">
-                <img class="card-img-top" src="@Model.ThumbnailLink" style="width: 200px; height: 200px">
-            </div>
-            <div class="col">
-                <div class="card-body">
-                    <h5 class="card-title">@Model.Title</h5>
-                    <p class="card-text">@Model.ShortContent</p>
-                </div>
+    <div class="row no-gutters" style="transform: rotate(0)">
+        <div class="col-auto">
+            <img class="card-img-top" src="@Model.ThumbnailLink" style="width: 200px; height: 200px" alt="">
+        </div>
+        <div class="col">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Title</h5>
+                <p class="card-text">
+                     @if (string.IsNullOrWhiteSpace(Model.Description))
+                     {
+                         @Html.Raw(Markdown.ToHtml(Model.ShortContent, new MarkdownPipelineBuilder().DisableHeadings().DisableHtml().Build()))
+                     }
+                     else
+                     {
+                        @Model.Description
+                    }
+                </p>
             </div>
         </div>
-    </a>
+        <a href="/Articles/@Model.Title.Replace(" ", "_")" class="stretched-link"></a>
+    </div>
+
     <div class="card-footer w-100 text-muted">
         <div class="row">
             <div class="col-auto">
@@ -33,7 +44,7 @@
                 {
                     <a class="btn btn-primary">@category</a>
                 }
-                @(Model.Categories.Length > categoriesDisplayCount ? "..." : "")
+                @(Model.Categories.Count > categoriesDisplayCount ? "..." : "")
             </div>
         </div>
     </div>

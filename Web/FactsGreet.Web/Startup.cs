@@ -11,6 +11,7 @@
     using FactsGreet.Services.Data;
     using FactsGreet.Services.Mapping;
     using FactsGreet.Services.Messaging;
+    using FactsGreet.Web.Controllers;
     using FactsGreet.Web.ViewModels;
     using Markdig;
     using Microsoft.AspNetCore.Builder;
@@ -61,6 +62,8 @@
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
+            services.AddScoped<ArticlesService>();
+            services.AddScoped<EditsService>();
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
@@ -68,14 +71,17 @@
 
             services.AddMarkdown(config =>
             {
-                // Create custom MarkdigPipeline 
-                // using MarkDig; for extension methods
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder
                         .UseEmphasisExtras()
                         .UsePipeTables()
-                        .DisableHtml();
+                        .DisableHtml()
+                        .UseEmojiAndSmiley()
+                        .UseListExtras()
+                        .UseSoftlineBreakAsHardlineBreak()
+                        .UseGridTables()
+                        .UseAdvancedExtensions();
                 };
             });
         }
@@ -120,7 +126,7 @@
                         endpoints.MapControllerRoute(
                             "news",
                             "Articles/{slug:required}",
-                            new { controller = "Articles", action = "GetBySlug" });
+                            new { controller = "Articles", action = nameof(ArticlesController.GetByTitle) });
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();

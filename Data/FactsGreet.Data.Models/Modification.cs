@@ -1,6 +1,7 @@
 ﻿namespace FactsGreet.Data.Models
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
 
     using FactsGreet.Data.Common.Models;
 
@@ -8,8 +9,10 @@
     {
         public long Line { get; set; }
 
+        [Required]
         public string Up { get; set; }
 
+        [Required]
         public string Down { get; set; }
     }
 }

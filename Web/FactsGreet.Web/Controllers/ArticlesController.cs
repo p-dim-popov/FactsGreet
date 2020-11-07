@@ -2,54 +2,94 @@
 {
     using System;
     using System.Linq;
-
+    using System.Threading.Tasks;
+    using FactsGreet.Common;
+    using FactsGreet.Services.Data;
     using FactsGreet.Web.ViewModels.Articles;
+    using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Mvc;
 
     public class ArticlesController : BaseController
     {
-        public IActionResult GetBySlug(string slug)
+        private const int ArticlesPerPage = 2;
+
+        private readonly ArticlesService articlesService;
+
+        public ArticlesController(ArticlesService articlesService)
+        {
+            this.articlesService = articlesService;
+        }
+
+        public async Task<IActionResult> GetByTitle(string slug)
         {
             if (slug is null)
             {
                 return this.RedirectToAction(nameof(this.All));
             }
 
-            return this.View("Article");
+            slug = slug.Replace('_', ' ');
+
+            var article = await this.articlesService.GetByTitleAsync<ArticleViewModel>(slug);
+            if (article is null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View("Article", article);
         }
 
-        public IActionResult Search(string slug)
+        public async Task<IActionResult> Search(string slug, int page)
         {
             if (slug is null)
             {
                 return this.RedirectToAction(nameof(this.All));
             }
 
-            this.ViewBag.Slug = slug;
-            return this.View(Enumerable.Range(0, 10)
-                .Select(x => new CompactArticleViewModel
+            var pagination = Paginator.GetPagination(page, ArticlesPerPage);
+            var articles = await this.articlesService
+                .GetPaginatedByTitleKeywordsAsync<CompactArticleViewModel>(
+                    pagination.Skip,
+                    pagination.Take,
+                    slug);
+
+            return this.View(new SearchArticlesViewModel
+            {
+                Articles = articles,
+                PaginationViewModel = new PaginationViewModel
                 {
-                    Categories = new[] { "Internet", "Programming", "WOW" },
-                    ShortContent = "Veeeeeeeeeery short content for this article...",
-                    StarsCount = x,
-                    ThumbnailLink = "https://picsum.photos/" + new Random().Next(1024),
-                    Title = "Generic title с български",
-                })
-                .ToArray());
+                    ArticlesCount = ArticlesPerPage,
+                    PagesCount =
+                        (int) Math.Ceiling(1.0 * await this.articlesService
+                                               .GetCountByTitleKeywordsAsync(slug) /
+                                           ArticlesPerPage),
+                    CurrentPage = page,
+                    ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
+                    ActionName = nameof(this.Search),
+                    Slug = slug,
+                },
+                Slug = slug,
+            });
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All(int page = 1)
         {
-            return this.View(Enumerable.Range(0, 10)
-                .Select(x => new CompactArticleViewModel
+            var pagination = Paginator.GetPagination(page, ArticlesPerPage);
+            var articles = await this.articlesService
+                .GetPaginatedOrderedByDateDescendingAsync<CompactArticleViewModel>(
+                    pagination.Skip,
+                    pagination.Take);
+            return this.View(new AllArticlesViewModel
+            {
+                Articles = articles,
+                PaginationViewModel = new PaginationViewModel
                 {
-                    Categories = new[] { "Internet", "Programming", "WOW", "One more" },
-                    ShortContent = "Veeeeeeeeeery short content for this article...",
-                    StarsCount = x,
-                    ThumbnailLink = "https://picsum.photos/" + new Random().Next(1024),
-                    Title = "Generic title с български",
-                })
-                .ToArray());
+                    CurrentPage = page,
+                    ArticlesCount = ArticlesPerPage,
+                    PagesCount = (int) Math.Ceiling(1.0 * this.articlesService.GetCount() / ArticlesPerPage),
+                    ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
+                    ActionName = nameof(this.All),
+                },
+            });
         }
     }
 }

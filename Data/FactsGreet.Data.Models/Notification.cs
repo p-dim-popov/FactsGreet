@@ -1,5 +1,7 @@
 ﻿namespace FactsGreet.Data.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     using FactsGreet.Data.Common.Models;
     using FactsGreet.Data.Models.Enums;
 
@@ -7,10 +9,12 @@
     {
         public NotificationType Type { get; set; }
 
+        [Required]
         public string SenderId { get; set; }
 
         public ApplicationUser Sender { get; set; }
 
+        [Required]
         public string ReceiverId { get; set; }
 
         public ApplicationUser Receiver { get; set; }

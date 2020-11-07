@@ -1,11 +1,15 @@
-﻿@model ICollection<FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel>
+﻿@model FactsGreet.Web.ViewModels.Articles.AllArticlesViewModel
 @{
     this.ViewData["Title"] = "Feed";
 }
 
-@foreach (var article in Model)
+<partial name="_PaginationPartial" model="Model.PaginationViewModel"/>
+
+@foreach (var article in Model.Articles)
 {
     <div class="mb-5">
         <partial name="_CompactArticlePartial" model="article" />
     </div>
 }
+
+<partial name="_PaginationPartial" model="Model.PaginationViewModel"/>

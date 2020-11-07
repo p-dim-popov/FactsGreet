@@ -13,7 +13,7 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <div class="dropdown show">
-                    <a class="btn btn-light dropdown-toggle navbar-brand" 
+                    <a class="btn btn-light dropdown-toggle" 
                        href="#" 
                        role="button" 
                        id="logo-dropdown" 
@@ -59,28 +59,24 @@
                             <a class="nav-link text-dark"
                                asp-area=""
                                asp-controller="Settings"
-                               asp-action="Index">
-                                Settings
-                            </a>
+                               asp-action="Index">Settings</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark"
                                asp-area=""
                                asp-controller="Home"
-                               asp-action="Privacy">
-                                Privacy
-                            </a>
+                               asp-action="Privacy">Privacy</a>
                         </li>
                         <li>
-                            <form class="form-inline my-2 my-lg-0" 
+                            <form class="form-inline my-0"
                                   asp-area=""
                                   asp-controller="Articles"
                                   asp-action="Search"
                                   method="get">
                                 <div class="input-group">
-                                    <input class="form-control" 
+                                    <input class="form-control"
                                            type="search"
-                                           placeholder="Search" 
+                                           placeholder="Search"
                                            aria-label="Search"
                                            name="slug">
                                     <div class="input-group-append">
@@ -107,7 +103,10 @@
             &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-
+    <script type="text/javascript">
+        window.sessionStorage.setItem('lastLocation', window.sessionStorage.getItem('currentLocation'));
+        window.sessionStorage.setItem('currentLocation', window.location.href);
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
