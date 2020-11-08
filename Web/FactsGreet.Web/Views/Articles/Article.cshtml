@@ -6,10 +6,16 @@
 <div class="row">
     <h1 class="col-auto">@Model.Title</h1>
     <div class="col"></div>
-    <h3 class="col-auto"><a asp-controller="Articles" 
-                            asp-action="ToggleStar" 
-                            asp-route-id="@Model.Id">⭐</a>: @Model.StarsCount</h3>
+    <h3 class="col-auto">
+        <a asp-controller="Articles"
+           asp-action="ToggleStar"
+           asp-route-id="@Model.Id">
+            ⭐
+        </a>: @Model.StarsCount
+    </h3>
 </div>
 <div class="row">
-    <markdown normalize-whitespace="true" markdown="@Model.Content"/>
+    <div class="col">
+        <markdown normalize-whitespace="true" markdown="@Model.Content"/>
+    </div>
 </div>

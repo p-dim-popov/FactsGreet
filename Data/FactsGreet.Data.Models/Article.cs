@@ -14,7 +14,7 @@
 
         [MaxLength(300)] public string Description { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(120)]
         public string ThumbnailLink { get; set; }
             = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/200px-No_image_available.svg.png";
 

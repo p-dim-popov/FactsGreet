@@ -1,14 +1,11 @@
 ﻿(async function () {
-    // region Global declarations
     const main = document.getElementById('app');
     console.log(window.sessionStorage.getItem('lastLocation'))
     console.log(window.location.href);
     if (!window.sessionStorage.getItem('lastLocation').includes(window.location.origin + '/Articles/'))
-        window.sessionStorage.setItem('page', '2');
-    let page = +window.sessionStorage.getItem('page') || 2;
+        window.sessionStorage.setItem('page', '1');
+    let page = (+window.sessionStorage.getItem('page') - 1) || 1;
     let requestIsPending = false;
-
-    // endregion
 
     async function loadMoreArticles() {
         if (requestIsPending) return;

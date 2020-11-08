@@ -16,7 +16,7 @@
                 <p class="card-text">
                      @if (string.IsNullOrWhiteSpace(Model.Description))
                      {
-                         @Html.Raw(Markdown.ToHtml(Model.ShortContent, new MarkdownPipelineBuilder().DisableHeadings().DisableHtml().Build()))
+                         @Html.Raw(Markdown.ToPlainText(Model.ShortContent))
                      }
                      else
                      {

@@ -19,7 +19,7 @@ namespace FactsGreet.Data.Migrations
                     Title = table.Column<string>(maxLength: 50, nullable: false),
                     Content = table.Column<string>(nullable: false),
                     Description = table.Column<string>(maxLength: 300, nullable: true),
-                    ThumbnailLink = table.Column<string>(maxLength: 100, nullable: true),
+                    ThumbnailLink = table.Column<string>(maxLength: 120, nullable: true),
                     AuthorId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>

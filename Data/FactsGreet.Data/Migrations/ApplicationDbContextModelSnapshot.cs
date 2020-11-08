@@ -170,8 +170,8 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ThumbnailLink")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(120)")
+                        .HasMaxLength(120);
 
                     b.Property<string>("Title")
                         .IsRequired()

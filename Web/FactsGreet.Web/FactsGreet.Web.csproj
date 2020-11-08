@@ -57,4 +57,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="SeedingResources\articles.json" />
+  </ItemGroup>
 </Project>

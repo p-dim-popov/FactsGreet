@@ -74,13 +74,10 @@
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder
-                        .UseEmphasisExtras()
-                        .UsePipeTables()
                         .DisableHtml()
                         .UseEmojiAndSmiley()
-                        .UseListExtras()
                         .UseSoftlineBreakAsHardlineBreak()
-                        .UseGridTables()
+                        .UseBootstrap()
                         .UseAdvancedExtensions();
                 };
             });
