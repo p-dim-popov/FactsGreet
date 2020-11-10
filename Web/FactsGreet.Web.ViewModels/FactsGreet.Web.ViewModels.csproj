@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\FactsGreet.Data.Models\FactsGreet.Data.Models.csproj" />
     <ProjectReference Include="..\..\Services\FactsGreet.Services.Mapping\FactsGreet.Services.Mapping.csproj" />
+    <ProjectReference Include="..\FactsGreet.Web.Infrastructure\FactsGreet.Web.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

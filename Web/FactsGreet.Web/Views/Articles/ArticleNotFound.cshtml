@@ -1,0 +1,27 @@
+﻿@model string
+@{
+    ViewBag.Title = "Article not found";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <img src="~/images/happy-sloth-face.png"
+                 alt="Happy sloth face"
+                 class="img-fluid my-5">
+        </div>
+        <div class="col text-center my-auto">
+            <h3>@Model does not seeem to exist</h3>
+            <h2>BUT</h2>
+            <h3>you can <a asp-controller="Articles" 
+                          asp-action="Create" 
+                          asp-route-title="@Model"
+                          class="btn btn-success">Create</a> it!</h3>
+        </div>
+    </div>
+</div>
+
+@section StyleLinks
+{
+    <link href="~/css/error.css" rel="stylesheet" asp-append-version="true"/>
+}

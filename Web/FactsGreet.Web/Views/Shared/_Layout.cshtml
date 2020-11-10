@@ -1,16 +1,17 @@
 ﻿@using FactsGreet.Common
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+    @await  this.RenderSectionAsync("StyleLinks", required: false)
 </head>
 <body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <div class="dropdown show">
                     <a class="btn btn-light dropdown-toggle" 
@@ -52,7 +53,7 @@
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse d-md-inline-flex flex-md-row-reverse">
                     <partial name="_LoginPartial"/>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -93,6 +94,7 @@
     
     <div class="container">
         <partial name="_CookieConsentPartial" />
+        <partial name="_ErrorNotificationsPartial"/>
         <main role="main" class="pb-3">
             @this.RenderBody()
         </main>

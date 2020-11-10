@@ -1,11 +1,11 @@
-﻿using System;
-
-namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -76,11 +76,11 @@ namespace FactsGreet.Services.Data
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
         {
             return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
+                .Select(x => x.Value.Replace("\"", string.Empty))
                 .Aggregate(
                     this.articleRepository.All(),
                     (current, keyword)
-                        => current.Where(x => x.Title.ToLower().Contains(keyword)))
+                        => current.Where(x => x.Title.Contains(keyword)))
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
@@ -90,9 +90,9 @@ namespace FactsGreet.Services.Data
         public async Task<int> GetCountByTitleKeywordsAsync(string keywords)
         {
             return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.ToLower())
+                .Select(x => x.Value)
                 .Aggregate(this.articleRepository.All(), (current, keyword)
-                    => current.Where(x => x.Title.ToLower().Contains(keyword)))
+                    => current.Where(x => x.Title.Contains(keyword)))
                 .CountAsync();
         }
 
@@ -108,25 +108,29 @@ namespace FactsGreet.Services.Data
 
         public async Task<ICollection<T>> GetAllByTitleAsync<T>(string title)
         {
-            title = title.ToLower();
             return await this.articleRepository.All()
-                .Where(x => x.Title.ToLower().Contains(title))
+                .Where(x => x.Title.Contains(title))
                 .To<T>()
                 .ToListAsync();
         }
 
         public async Task<T> GetByTitleAsync<T>(string title)
         {
-            title = title.ToLower();
             return await this.articleRepository.All()
-                .Where(x => x.Title.ToLower() == title)
+                .Where(x => x.Title == title)
                 .To<T>()
                 .FirstOrDefaultAsync();
         }
 
-        public int GetCount()
+        public Task<int> GetCountAsync()
         {
-            return this.articleRepository.AllAsNoTracking().Count();
+            return this.articleRepository.AllAsNoTracking().CountAsync();
+        }
+
+        public Task<bool> DoesTitleExistsAsync(string title)
+        {
+            return this.articleRepository.All()
+                .AnyAsync(x => x.Title == title);
         }
 
         private async Task CreateNoSaveAsync(

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FactsGreet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201108144046_CreateModels")]
+    [Migration("20201109072405_CreateModels")]
     partial class CreateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,7 +1,7 @@
 ﻿@model FactsGreet.Web.ViewModels.Articles.ArticleViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @{
-    this.ViewData["Title"] = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 <div class="row">
     <h1 class="col-auto">@Model.Title</h1>

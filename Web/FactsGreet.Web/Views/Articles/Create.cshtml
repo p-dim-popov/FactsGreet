@@ -1,0 +1,71 @@
+﻿@using FactsGreet.Common
+@model FactsGreet.Web.ViewModels.Articles.ArticleCreateInputModel
+
+@{
+    ViewBag.Title = "Create article";
+}
+
+<h2>Create new article</h2>
+<form asp-controller="Articles" asp-action="Create" method="post">
+    <div asp-validation-summary="All"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl col-lg col-md col-sm-12">
+                <div class="form-group">
+                    <label asp-for="Title">Title</label>
+                    <input class="form-control"
+                           id="title-input"
+                           placeholder="Greatest Article"
+                           asp-for="Title">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description">Short description</label>
+                    <textarea 
+                        class="form-control" 
+                        id="description-input" 
+                        rows="3"
+                        asp-for="Description"></textarea>
+                </div>
+            </div>
+            <div class="col-auto">
+                <img id="preview-img"
+                     src="@GlobalConstants.DefaultThumbnailLink"
+                     class="rounded"
+                     style="width: 200px;height: 200px"
+                     alt=""/>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="ThumbnailLink">Thumbnail link</label>
+        <input class="form-control"
+               id="thumbnail-link-input"
+               placeholder="https://picsum.photos/200"
+               asp-for="ThumbnailLink">
+    </div>
+    <div class="form-group">
+        <label asp-for="Content">Content</label>
+        <textarea 
+            class="form-control" 
+            id="content-input" 
+            rows="10"
+            asp-for="Content"></textarea>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-auto">
+                <button class="btn btn-success">Create</button>
+            </div>
+            <div class="col"></div>
+            <div class="col-auto">
+                <button class="btn btn-light">Preview</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script src="~/js/articles/create.js" asp-append-version="true"></script>
+}

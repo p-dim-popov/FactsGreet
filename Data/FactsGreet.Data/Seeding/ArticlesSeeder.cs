@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace FactsGreet.Data.Seeding
 {
@@ -26,7 +27,7 @@ namespace FactsGreet.Data.Seeding
                 .Where(x => x.UserName == "admin@localhost")
                 .Select(x => x.Id)
                 .FirstAsync();
-
+            var editRegex = new Regex(@"\(\/w\/index.php\?.*title=(?<title>.*)&.*action=edit.*\)");
             var articles = JsonConvert
                 .DeserializeObject<Dictionary<string, string>[]>(await System.IO.File
                     .ReadAllTextAsync("SeedingResources/articles.json"))
@@ -36,7 +37,11 @@ namespace FactsGreet.Data.Seeding
                     Categories = Enumerable.Range(rng.Next(), rng.Next(0, categories.Count))
                         .Select(y => new ArticleCategory {Category = categories[y % categories.Count]})
                         .ToList(),
-                    Content = x["content"].Replace("/wiki/", "/Articles/"),
+                    Content = editRegex
+                        .Replace(
+                            x["content"]
+                                .Replace("/wiki/", "/Articles/"),
+                            "(/Edits/Create?title=${title})"),
                     Description = x["description"],
                     Title = x["title"],
                     ThumbnailLink = x["thumbnailLink"],

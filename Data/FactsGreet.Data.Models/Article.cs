@@ -8,17 +8,21 @@
 
     public class Article : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
     {
-        [Required] [MaxLength(50)] public string Title { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Title { get; set; }
 
-        [Required] public string Content { get; set; }
+        [Required]
+        public string Content { get; set; }
 
-        [MaxLength(300)] public string Description { get; set; }
+        [MaxLength(300)]
+        public string Description { get; set; }
 
         [MaxLength(120)]
         public string ThumbnailLink { get; set; }
-            = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/200px-No_image_available.svg.png";
 
-        [Required] public string AuthorId { get; set; }
+        [Required]
+        public string AuthorId { get; set; }
 
         public virtual ApplicationUser Author { get; set; }
 

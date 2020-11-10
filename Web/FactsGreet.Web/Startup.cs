@@ -1,7 +1,6 @@
 ﻿namespace FactsGreet.Web
 {
     using System.Reflection;
-
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
     using FactsGreet.Data.Common.Repositories;
@@ -44,16 +43,14 @@
 
             services.Configure<CookiePolicyOptions>(
                 options =>
-                    {
-                        options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
-                    });
+                {
+                    options.CheckConsentNeeded = context => true;
+                    options.MinimumSameSitePolicy = SameSiteMode.None;
+                });
 
             services.AddControllersWithViews(
-                options =>
-                    {
-                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                    }).AddRazorRuntimeCompilation();
+                    options => { options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); })
+                .AddRazorRuntimeCompilation();
             services.AddRazorPages();
 
             services.AddSingleton(this.configuration);
@@ -93,8 +90,11 @@
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate();
-                new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+                new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter()
+                    .GetResult();
             }
+
+            app.UseStatusCodePagesWithReExecute($"/Errors/{nameof(ErrorsController.StatusCodePage)}/{{0}}");
 
             if (env.IsDevelopment())
             {
@@ -103,7 +103,7 @@
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
@@ -119,15 +119,11 @@
 
             app.UseEndpoints(
                 endpoints =>
-                    {
-                        endpoints.MapControllerRoute(
-                            "news",
-                            "Articles/{slug:required}",
-                            new { controller = "Articles", action = nameof(ArticlesController.GetByTitle) });
-                        endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                        endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                        endpoints.MapRazorPages();
-                    });
+                {
+                    endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                    endpoints.MapRazorPages();
+                });
         }
     }
 }

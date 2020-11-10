@@ -9,5 +9,11 @@
     {
         public EditsController(EditsService editsService)
         { }
+
+        [HttpGet("[controller]/Create/{title}")]
+        public IActionResult Create(string title)
+        {
+            return this.View();
+        }
     }
 }

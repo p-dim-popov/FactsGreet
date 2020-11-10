@@ -1,19 +1,13 @@
-﻿using System.Collections.Generic;
-using FactsGreet.Web.ViewModels.Home;
-
-namespace FactsGreet.Web.Controllers
+﻿namespace FactsGreet.Web.Controllers
 {
-    using System.Diagnostics;
-    using System.Net.Mime;
-    using System.Text;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
-    using FactsGreet.Web.ViewModels;
+    using FactsGreet.Web.ViewModels.Home;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Utf8Json;
-    using Utf8Json.Resolvers;
 
     public class HomeController : BaseController
     {
@@ -26,8 +20,6 @@ namespace FactsGreet.Web.Controllers
         {
             this.editsService = editsService;
             this.articlesService = articlesService;
-
-            JsonSerializer.SetDefaultResolver(StandardResolver.CamelCase); // TODO: move somewhere else
         }
 
         public IActionResult Index()
@@ -40,17 +32,15 @@ namespace FactsGreet.Web.Controllers
             return this.View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult TermsAndConditions()
         {
-            return this.View(
-                new ErrorViewModel {RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier});
+            return this.View();
         }
 
         [Authorize]
-        public async Task<IActionResult> Feed()
+        public IActionResult Feed()
         {
-            return this.View(await this.GetFeedActivitiesPaginated(1));
+            return this.View();
         }
 
         [Authorize]
