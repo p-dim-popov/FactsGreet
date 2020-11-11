@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.RegularExpressions;
+using FactsGreet.Data.Models;
 
 namespace FactsGreet.Web.Controllers
 {
@@ -24,7 +27,7 @@ namespace FactsGreet.Web.Controllers
             this.articlesService = articlesService;
         }
 
-        [HttpGet("[controller]/{slug:required}")]
+        [HttpGet("/Article/{slug:required}")]
         public async Task<IActionResult> GetByTitle(string slug)
         {
             if (slug is null)
@@ -106,6 +109,7 @@ namespace FactsGreet.Web.Controllers
                 .ToggleStarAsync(
                     this.User
                         .FindFirstValue(ClaimTypes.NameIdentifier), id);
+
             return this.Redirect("/Articles/" + (await this.articlesService.GetTitleByIdAsync(id))
                 .Replace(' ', '_'));
         }
@@ -122,15 +126,16 @@ namespace FactsGreet.Web.Controllers
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(model);
+                return this.View();
             }
 
-            if (await this.articlesService.DoesTitleExistsAsync(model.Title))
+            if (await this.articlesService.DoesTitleExistAsync(model.Title))
             {
                 this.ViewBag.ErrorMessage = "Title already exists";
-                return this.View(model);
+                return this.View();
             }
 
+            // TODO: categories
             await this.articlesService.CreateAsync(
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 model.Title,
@@ -139,7 +144,19 @@ namespace FactsGreet.Web.Controllers
                 model.ThumbnailLink,
                 model.Description);
 
-            return this.Redirect($"/Articles/{model.Title}");
+            return this.Redirect($"/Article/{model.Title}");
+        }
+
+        [Authorize]
+        public IActionResult Delete(Guid id, string authorId)
+        {
+            if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) != authorId)
+            {
+                return this.Unauthorized();
+            }
+
+            this.articlesService.CreateDeletionRequestAsync(id, authorId);
+            return this.RedirectToAction(nameof(this.All));
         }
     }
 }

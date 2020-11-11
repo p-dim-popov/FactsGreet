@@ -12,7 +12,7 @@
 
             builder
                 .HasOne(x => x.User)
-                .WithMany(x => x.FavoriteArticles)
+                .WithMany(x => x.StarredArticles)
                 .HasForeignKey(x => x.UserId);
 
             builder

@@ -6,26 +6,22 @@
 }
 
 <h2>Create new article</h2>
-<form asp-controller="Articles" asp-action="Create" method="post">
-    <div asp-validation-summary="All"></div>
-
+<form asp-controller="Articles" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="container">
         <div class="row">
             <div class="col-xl col-lg col-md col-sm-12">
                 <div class="form-group">
-                    <label asp-for="Title">Title</label>
-                    <input class="form-control"
-                           id="title-input"
-                           placeholder="Greatest Article"
-                           asp-for="Title">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title"
+                           class="form-control"
+                           placeholder="Greatest Article">
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Description">Short description</label>
-                    <textarea 
-                        class="form-control" 
-                        id="description-input" 
-                        rows="3"
-                        asp-for="Description"></textarea>
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-auto">
@@ -38,20 +34,30 @@
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="ThumbnailLink">Thumbnail link</label>
+        <label asp-for="ThumbnailLink"></label>
         <input class="form-control"
                id="thumbnail-link-input"
                placeholder="https://picsum.photos/200"
                asp-for="ThumbnailLink">
+        <span asp-validation-for="ThumbnailLink" class="text-danger"></span>
+        <p><small>or upload image (up to 500kb)</small></p>
+        <label asp-for="ThumbnailImage"></label>
+        <input asp-for="ThumbnailImage" 
+               class="form-control"
+               id="thumbnail-image-input">
+        <span asp-validation-for="ThumbnailImage" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Content">Content</label>
-        <textarea 
-            class="form-control" 
-            id="content-input" 
-            rows="10"
-            asp-for="Content"></textarea>
+        <label asp-for="Content"></label>
+        <textarea asp-for="Content" class="form-control" rows="10"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Categories"></label>
+        <input asp-for="Categories" class="form-control"/>
+        <span asp-validation-for="Categories" class="text-danger"></span>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-auto">

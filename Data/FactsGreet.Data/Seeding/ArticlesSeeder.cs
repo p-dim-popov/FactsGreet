@@ -1,12 +1,11 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-
-namespace FactsGreet.Data.Seeding
+﻿namespace FactsGreet.Data.Seeding
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
@@ -35,12 +34,12 @@ namespace FactsGreet.Data.Seeding
                 {
                     AuthorId = adminId,
                     Categories = Enumerable.Range(rng.Next(), rng.Next(0, categories.Count))
-                        .Select(y => new ArticleCategory {Category = categories[y % categories.Count]})
+                        .Select(y => categories[y % categories.Count])
                         .ToList(),
                     Content = editRegex
                         .Replace(
                             x["content"]
-                                .Replace("/wiki/", "/Articles/"),
+                                .Replace("/wiki/", "/Article/"),
                             "(/Edits/Create?title=${title})"),
                     Description = x["description"],
                     Title = x["title"],

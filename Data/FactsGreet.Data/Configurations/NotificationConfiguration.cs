@@ -9,14 +9,12 @@
         public void Configure(EntityTypeBuilder<Notification> builder)
         {
             builder
-                .HasOne(x => x.Sender)
-                .WithMany(x => x.Actions)
-                .HasForeignKey(x => x.SenderId);
+                .HasMany(x => x.Seens)
+                .WithMany(x => x.SeenNotifications);
 
             builder
-                .HasOne(x => x.Receiver)
-                .WithMany(x => x.Notifications)
-                .HasForeignKey(x => x.ReceiverId);
+                .HasOne(x => x.Sender)
+                .WithMany(x => x.Notifications);
         }
     }
 }

@@ -1,11 +1,23 @@
-﻿@model FactsGreet.Web.ViewModels.Articles.ArticleViewModel
+﻿@using System.Security.Claims
+@model FactsGreet.Web.ViewModels.Articles.ArticleViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @{
     ViewBag.Title = Model.Title;
 }
 <div class="row">
     <h1 class="col-auto">@Model.Title</h1>
-    <div class="col"></div>
+    <div class="col">
+        @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.AuthorId)
+        {
+            <a asp-controller="Articles"
+               asp-action="Delete"
+               asp-route-id="@Model.Id"
+               asp-route-authorId="@Model.AuthorId"
+               class="btn btn-danger">
+                Request Delete
+            </a>
+        }
+    </div>
     <h3 class="col-auto">
         <a asp-controller="Articles"
            asp-action="ToggleStar"

@@ -19,7 +19,7 @@
         public virtual ICollection<Message> Messages { get; set; }
             = new HashSet<Message>();
 
-        public virtual ICollection<ConversationParticipance> Participants { get; set; }
-            = new HashSet<ConversationParticipance>();
+        public virtual ICollection<ApplicationUser> Users { get; set; }
+            = new HashSet<ApplicationUser>();
     }
 }

@@ -15,5 +15,7 @@
         public string Content { get; set; }
 
         public int StarsCount { get; set; }
+
+        public string AuthorId { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿namespace FactsGreet.Web.ViewModels.Articles
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using AutoMapper;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -27,17 +29,20 @@
                     m => m.Categories,
                     opt => opt
                         .MapFrom(x => x.Categories
-                            .Select(y => y.Category.Name)))
+                            .Select(y => y.Name)))
                 .ForMember(
                     m => m.ShortContent,
                     opt =>
                     {
                         opt.PreCondition(src => src.Description == null);
                         opt.MapFrom(x => x.Content
-                                .Substring(0, 300)
-                                .Substring(0, x.Content
-                                    .Substring(0, 300).LastIndexOf(' ')) +
-                            "...");
+                                             .Substring(0, 300)
+                                             .Substring(
+                                                 0,
+                                                 Math.Max(
+                                                     x.Content
+                                                         .Substring(0, 300).LastIndexOf(' '), 100)) +
+                                         "...");
                     });
         }
     }

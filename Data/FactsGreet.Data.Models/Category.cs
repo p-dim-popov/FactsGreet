@@ -11,7 +11,7 @@
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public virtual ICollection<ArticleCategory> Articles { get; set; }
-            = new HashSet<ArticleCategory>();
+        public virtual ICollection<Article> Articles { get; set; }
+            = new HashSet<Article>();
     }
 }

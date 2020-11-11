@@ -26,8 +26,8 @@
 
         public virtual ApplicationUser Author { get; set; }
 
-        public virtual ICollection<ArticleCategory> Categories { get; set; }
-            = new HashSet<ArticleCategory>();
+        public virtual ICollection<Category> Categories { get; set; }
+            = new HashSet<Category>();
 
         public virtual ICollection<Edit> Edits { get; set; }
             = new HashSet<Edit>();

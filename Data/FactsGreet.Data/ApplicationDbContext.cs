@@ -33,8 +33,6 @@
 
         public DbSet<Conversation> Conversations { get; set; }
 
-        public DbSet<ConversationParticipance> ConversationParticipances { get; set; }
-
         public DbSet<Edit> Edits { get; set; }
 
         public DbSet<Follow> Follows { get; set; }
@@ -43,9 +41,16 @@
 
         public DbSet<Modification> Modifications { get; set; }
 
-        public DbSet<Report> Reports { get; set; }
+        public DbSet<ArticleDeletionRequest> Requests { get; set; }
 
         public DbSet<Star> Stars { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<MessageNotification> MessageNotifications { get; set; }
+
+        public DbSet<EditNotification> EditNotifications { get; set; }
+
         ////////////////////////////////////////////////////////////
 
         public override int SaveChanges() => this.SaveChanges(true);

@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using CommandLine;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
     using FactsGreet.Data.Common.Repositories;
@@ -13,9 +14,6 @@
     using FactsGreet.Data.Seeding;
     using FactsGreet.Services.Data;
     using FactsGreet.Services.Messaging;
-
-    using CommandLine;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

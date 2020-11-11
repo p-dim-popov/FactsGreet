@@ -1,11 +1,13 @@
 ﻿namespace FactsGreet.Data.Models
 {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using FactsGreet.Data.Common.Models;
     using FactsGreet.Data.Models.Enums;
 
-    public class Notification : BaseDeletableModel<int>, IDeletableEntity, IAuditInfo
+    public class Notification : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
     {
         public NotificationType Type { get; set; }
 
@@ -14,11 +16,16 @@
 
         public ApplicationUser Sender { get; set; }
 
-        [Required]
-        public string ReceiverId { get; set; }
+        public virtual ICollection<ApplicationUser> Seens { get; set; }
+            = new HashSet<ApplicationUser>();
 
-        public ApplicationUser Receiver { get; set; }
+        public virtual ICollection<MessageNotification> MessageNotifications { get; set; }
+            = new HashSet<MessageNotification>();
 
-        public bool IsSeen { get; set; }
+        public virtual ICollection<EditNotification> EditNotifications { get; set; }
+            = new HashSet<EditNotification>();
+
+        public virtual ICollection<ArticleDeletionRequest> ArticleDeletionRequestNotifications { get; set; }
+            = new HashSet<ArticleDeletionRequest>();
     }
 }

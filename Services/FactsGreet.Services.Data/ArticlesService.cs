@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -16,15 +15,18 @@
         private readonly IDeletableEntityRepository<Article> articleRepository;
         private readonly IRepository<Category> categoryRepository;
         private readonly IRepository<Star> starRepository;
+        private readonly IRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
 
         public ArticlesService(
             IDeletableEntityRepository<Article> articleRepository,
             IRepository<Category> categoryRepository,
-            IRepository<Star> starRepository)
+            IRepository<Star> starRepository,
+            IRepository<ArticleDeletionRequest> articleDeletionRequestRepository)
         {
             this.articleRepository = articleRepository;
             this.categoryRepository = categoryRepository;
             this.starRepository = starRepository;
+            this.articleDeletionRequestRepository = articleDeletionRequestRepository;
         }
 
         public Task<string> GetTitleByIdAsync(Guid id)
@@ -127,10 +129,21 @@
             return this.articleRepository.AllAsNoTracking().CountAsync();
         }
 
-        public Task<bool> DoesTitleExistsAsync(string title)
+        public Task<bool> DoesTitleExistAsync(string title)
         {
             return this.articleRepository.All()
                 .AnyAsync(x => x.Title == title);
+        }
+
+        public async Task CreateDeletionRequestAsync(Guid id, string authorId)
+        {
+            await this.articleDeletionRequestRepository.AddAsync(new ArticleDeletionRequest
+            {
+                ArticleId = id,
+                Notification = {SenderId = authorId},
+            });
+
+            await this.articleDeletionRequestRepository.SaveChangesAsync();
         }
 
         private async Task CreateNoSaveAsync(
@@ -162,8 +175,8 @@
                 Content = content,
                 ThumbnailLink = thumbnailLink,
                 Description = description,
-                Categories = existingCategories.Concat(newCategories)
-                    .Select(x => new ArticleCategory {Category = x})
+                Categories = existingCategories
+                    .Concat(newCategories)
                     .ToList(),
                 Edits = new List<Edit>
                 {

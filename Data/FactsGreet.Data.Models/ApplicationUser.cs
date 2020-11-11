@@ -1,11 +1,10 @@
 ﻿// ReSharper disable VirtualMemberCallInConstructor
+
 namespace FactsGreet.Data.Models
 {
     using System;
     using System.Collections.Generic;
-
     using FactsGreet.Data.Common.Models;
-
     using Microsoft.AspNetCore.Identity;
 
     public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
@@ -40,20 +39,17 @@ namespace FactsGreet.Data.Models
         /////////////////////////////////////
         */
 
-        public virtual ICollection<Notification> Notifications { get; set; }
-            = new HashSet<Notification>();
-
-        public virtual ICollection<Notification> Actions { get; set; }
-            = new HashSet<Notification>();
-
         public virtual ICollection<Edit> Edits { get; set; }
             = new HashSet<Edit>();
 
         public virtual ICollection<Article> Articles { get; set; }
             = new HashSet<Article>();
 
-        public virtual ICollection<ConversationParticipance> ConversationParticipances { get; set; }
-            = new HashSet<ConversationParticipance>();
+        public virtual ICollection<Conversation> Conversations { get; set; }
+            = new HashSet<Conversation>();
+
+        public virtual ICollection<Conversation> CreatedConversations { get; set; }
+            = new HashSet<Conversation>();
 
         public virtual ICollection<Follow> Followers { get; set; }
             = new HashSet<Follow>();
@@ -64,11 +60,18 @@ namespace FactsGreet.Data.Models
         public virtual ICollection<Message> SentMessages { get; set; }
             = new HashSet<Message>();
 
-        public virtual ICollection<Report> SentReports { get; set; }
-            = new HashSet<Report>();
+        public virtual ICollection<Star> StarredArticles { get; set; }
+            = new HashSet<Star>();
 
-        public virtual ICollection<Report> ReceivedReports { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
+            = new HashSet<Notification>();
 
-        public virtual ICollection<Star> FavoriteArticles { get; set; }
+        public virtual ICollection<Notification> SeenNotifications { get; set; }
+            = new HashSet<Notification>();
+
+        public virtual ICollection<MessageNotification> MessageNotifications { get; set; }
+            = new HashSet<MessageNotification>();
+
+        public virtual ICollection<EditNotification> EditNotifications { get; set; }
     }
 }
