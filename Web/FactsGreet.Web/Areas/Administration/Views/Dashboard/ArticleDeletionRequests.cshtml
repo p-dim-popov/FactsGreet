@@ -1,0 +1,44 @@
+﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestsViewModel
+@{
+    ViewBag.Title = "Article Deletion Requests";
+}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>@ViewBag.Title</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="list-group col">
+            @foreach (var request in Model.Requests)
+            {
+                <a asp-controller="Dashboard"
+                   asp-action="ArticleDeletionRequest"
+                   asp-route-id="@request.Id"
+                   class="list-group-item list-group-item-action">
+                    <span class="text-primary">[@request.CreatedOn]</span>
+                    @request.ArticleAuthorUserName requested the deletion of @request.ArticleTitle
+                </a>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto">
+            <a asp-controller="Dashboard"
+               asp-action="ArticleDeletionRequests"
+               asp-route-page="@(Model.Page - 1)"
+               class="btn btn-secondary">
+                Prevous
+            </a>
+        </div>
+        <div class="col"></div>
+        <div class="col-auto">
+            <a asp-controller="Dashboard"
+               asp-action="ArticleDeletionRequests"
+               asp-route-page="@(Model.Page + 1)"
+               class="btn btn-secondary">
+                Next
+            </a>
+        </div>
+    </div>
+</div>

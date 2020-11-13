@@ -1,7 +1,6 @@
 ﻿namespace FactsGreet.Data.Models
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using FactsGreet.Data.Common.Models;

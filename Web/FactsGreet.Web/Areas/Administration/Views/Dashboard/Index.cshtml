@@ -1,7 +1,69 @@
-﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.IndexViewModel
+﻿@using FactsGreet.Common
+@model FactsGreet.Web.ViewModels.Administration.Dashboard.IndexViewModel
 @{
-    this.ViewData["Title"] = "Admin dashboard";
+    ViewBag.Title = "Admin dashboard";
 }
 
-<h1>@this.ViewData["Title"]</h1>
-Settings: @this.Model.SettingsCount
+<h1>@ViewBag.Title</h1>
+<h3 class="my-3">Notifications: @Model.NotificationsCount</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    You have @Model.ArticleDeletionRequestNotificationsCount deletion 
+                    @(Model.ArticleDeletionRequestNotificationsCount == 1 ? "request" : "requests")
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Article Deletion Requests</h5>
+                    <p class="card-text">Review articles that need removal.</p>
+                    <a asp-controller="Dashboard" 
+                       asp-action="ArticleDeletionRequests" 
+                       class="btn btn-primary">Review now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    @* @Model.MostActiveUsersCount*@ user/s deserve a special badge
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Active Users</h5>
+                    <p class="card-text">Keep active users motivated by giving them a badge to distinct them from regular users.</p>
+                    <a href="#" class="btn btn-primary">Give some badges</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    @**@ user/s want to become admins 
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Admin Requests</h5>
+                    <p class="card-text">
+                        Users with badges at some want to become part of this community at a higher level.
+                        Honnor them by giving the most honorable title [@GlobalConstants.AdministratorRoleName]
+                    </p>
+                    <a href="#" class="btn btn-primary">Make new admins</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

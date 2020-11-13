@@ -1,7 +1,9 @@
 ﻿namespace FactsGreet.Data.Seeding
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
+    using FactsGreet.Common;
     using FactsGreet.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -19,23 +21,51 @@
             var userManager = serviceProvider
                 .GetService<UserManager<ApplicationUser>>();
 
-            var admin = new ApplicationUser
+            Console.WriteLine("Enter profiles password: ");
+            var password = Console.ReadLine();
+
+            var users = new (ApplicationUser User, string Role, string[] Badges)[]
             {
-                UserName = "admin@localhost",
-                Email = "admin@localhost",
+                (new ApplicationUser
+                {
+                    UserName = "admin@localhost",
+                    Email = "admin@localhost",
+                }, GlobalConstants.AdministratorRoleName, null),
+                (new ApplicationUser
+                    {
+                        UserName = "notadmin@localhost",
+                        Email = "notadmin@localhost",
+                    }, GlobalConstants.RegularRoleName,
+                    new[] {GlobalConstants.Badges.BeingCorrect, GlobalConstants.Badges.Creator}),
             };
 
-            Console.WriteLine("Enter admin's password: ");
+            foreach (var (user, role, badges) in users)
+            {
+                await SeedUserAsync(dbContext, userManager, user, password, role, badges);
+            }
+        }
+
+        private static async Task SeedUserAsync(
+            ApplicationDbContext dbContext,
+            UserManager<ApplicationUser> userManager,
+            ApplicationUser user,
+            string password,
+            string role,
+            string[] badges)
+        {
+            user.Badges = badges
+                ?.Select(x => new Badge {Name = x})
+                .ToList();
+
             var result = await userManager
-                .CreateAsync(admin, Console.ReadLine());
+                .CreateAsync(user, password);
 
             if (!result.Succeeded)
             {
                 Console.WriteLine(result);
             }
 
-            await userManager
-                .AddToRoleAsync(admin, "Administrator");
+            await userManager.AddToRoleAsync(user, role);
         }
     }
 }

@@ -1,23 +1,60 @@
 ﻿namespace FactsGreet.Web.Areas.Administration.Controllers
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using FactsGreet.Common;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.ViewModels.Administration.Dashboard;
-
     using Microsoft.AspNetCore.Mvc;
 
     public class DashboardController : AdministrationController
     {
-        private readonly ISettingsService settingsService;
+        private const int DeletionRequestsPerPage = 3;
 
-        public DashboardController(ISettingsService settingsService)
+        private readonly NotificationsService notificationsService;
+        private readonly ArticleDeletionRequestsService articleDeletionRequestsService;
+
+        public DashboardController(
+            NotificationsService notificationsService,
+            ArticleDeletionRequestsService articleDeletionRequestsService)
         {
-            this.settingsService = settingsService;
+            this.notificationsService = notificationsService;
+            this.articleDeletionRequestsService = articleDeletionRequestsService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var viewModel = new IndexViewModel { SettingsCount = this.settingsService.GetCount(), };
+            var viewModel = new IndexViewModel
+            {
+                NotificationsCount = await this.notificationsService.GetCountAsync(),
+                ArticleDeletionRequestNotificationsCount = await this.articleDeletionRequestsService.GetCountAsync(),
+            };
             return this.View(viewModel);
+        }
+
+        public async Task<IActionResult> ArticleDeletionRequests(int page = 1)
+        {
+            var pagination = Paginator.GetPagination(page, DeletionRequestsPerPage);
+            return this.View(new ArticleDeletionRequestsViewModel
+            {
+                Page = page,
+                Requests = await this.articleDeletionRequestsService
+                    .GetPaginatedOrderedByCreationDateAsync<CompactArticleDeletionRequestViewModel>(
+                        pagination.Skip,
+                        pagination.Take),
+            });
+        }
+
+        public async Task<IActionResult> ArticleDeletionRequest(Guid id)
+        {
+            return this.View(await this.articleDeletionRequestsService
+                .GetById<ArticleDeletionRequestViewModel>(id));
+        }
+
+        public IActionResult MostActiveUsers(int page)
+        {
+            return this.View();
         }
     }
 }

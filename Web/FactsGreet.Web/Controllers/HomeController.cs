@@ -11,17 +11,6 @@
 
     public class HomeController : BaseController
     {
-        private const int EditsPerPage = 2;
-
-        private readonly EditsService editsService;
-        private readonly ArticlesService articlesService;
-
-        public HomeController(EditsService editsService, ArticlesService articlesService)
-        {
-            this.editsService = editsService;
-            this.articlesService = articlesService;
-        }
-
         public IActionResult Index()
         {
             return this.View();
@@ -41,25 +30,6 @@
         public IActionResult Feed()
         {
             return this.View();
-        }
-
-        [Authorize]
-        public async Task<IActionResult> GetFeedActivities(int page)
-        {
-            var activities = await this.GetFeedActivitiesPaginated(page);
-
-            return this.PartialView("Partials/_FeedPartial", activities);
-        }
-
-        private async Task<ICollection<FeedViewModel>> GetFeedActivitiesPaginated(int page)
-        {
-            var pagination = Paginator.GetPagination(page, EditsPerPage);
-
-            var activities =
-                await this.editsService
-                    .GetPaginatedOrderedByDateDescendingAsync<FeedViewModel>(
-                        pagination.Skip, pagination.Take);
-            return activities;
         }
     }
 }

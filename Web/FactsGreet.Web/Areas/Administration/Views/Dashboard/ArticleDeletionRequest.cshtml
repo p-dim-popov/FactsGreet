@@ -1,0 +1,40 @@
+﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestViewModel
+@{
+    ViewBag.Title = $"Delete {Model.Article.Title}";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <input asp-for="ArticleId" disabled hidden/>
+            <div class="form-group">
+                <label asp-for="ArticleAuthorUserName"></label>
+                <input asp-for="ArticleAuthorUserName" class="form-control" disabled>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reason"></label>
+                <textarea class="form-control" asp-for="Reason" rows="5" disabled></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <partial name="_CompactArticlePartial" model="Model.Article"/>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col"></div>
+        <div class="col-auto">
+            <form class="form-inline" method="post">
+                <button class="btn btn-danger"
+                        asp-area=""
+                        asp-controller="Articles"
+                        asp-action="Delete"
+                        asp-route-id="@Model.ArticleId">
+                    Delete
+                </button>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>

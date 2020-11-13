@@ -1,0 +1,68 @@
+﻿@using System.Security.Claims
+@model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
+@{
+    ViewBag.Title = $"{Model.UserName}'s profile";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-auto">
+            <h2 class="my-2">@Model.UserName's profile</h2>
+        </div>
+        <div class="col-auto"></div>
+        @foreach (var badge in Model.Badges)
+        {
+            <div class="col-auto">
+                <h4>
+                    <span class="badge badge-warning">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-auto p-1 m-0">@badge.Name</div>
+                                <div class="col-auto p-1 m-0">
+                                    @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.Id)
+                                    {
+                                        <form method="post" class="form-inline">
+                                            <button asp-area=""
+                                                    asp-controller="Profiles"
+                                                    asp-action="RemoveBadge"
+                                                    asp-route-name="@badge.Name"
+                                                    class="badge badge-danger">
+                                                X
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        }
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="app">
+            </div>
+
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <button id="load-more-btn" class="btn btn-dark">Load more...</button>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.globalConstants = {
+        queryParameters: 'userId=@Model.Id'
+    }
+</script>
+
+@section Scripts
+{
+    <script src="~/js/edits/edits-infinite-scroll.js" asp-append-version="true"></script>
+}

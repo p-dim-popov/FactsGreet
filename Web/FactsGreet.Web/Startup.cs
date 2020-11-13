@@ -45,7 +45,7 @@
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-            
+
             services.Configure<CookiePolicyOptions>(
                 options =>
                 {
@@ -66,6 +66,9 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
             services.AddScoped<ArticlesService>();
             services.AddScoped<EditsService>();
+            services.AddScoped<NotificationsService>();
+            services.AddScoped<ArticleDeletionRequestsService>();
+            services.AddScoped<ApplicationUsersService>();
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();

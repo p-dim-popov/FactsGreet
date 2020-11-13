@@ -2,118 +2,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
-    @await  this.RenderSectionAsync("StyleLinks", required: false)
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true"/>
+    <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true"/>
+    @await this.RenderSectionAsync("StyleLinks", required: false)
 </head>
 <body class="bg-light">
-    <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <div class="dropdown show">
-                    <a class="btn btn-light dropdown-toggle" 
-                       href="#" 
-                       role="button" 
-                       id="logo-dropdown" 
-                       data-toggle="dropdown"
-                       aria-haspopup="true" 
-                       aria-expanded="false">
-                        @GlobalConstants.SystemName
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="logo-dropdown">
-                        <a class="dropdown-item"
-                           asp-area=""
-                           asp-controller="Home"
-                           asp-action="Index">
-                            Home
+<header>
+    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <a class="btn btn-light navbar-brand"
+               asp-area=""
+               asp-controller="Home"
+               asp-action="Index">
+                @GlobalConstants.SystemName
+            </a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-md-inline-flex flex-md-row-reverse">
+                <partial name="_LoginPartial"/>
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="articles-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Articles
                         </a>
-                        <a class="dropdown-item"
-                           asp-area=""
-                           asp-controller="Home"
-                           asp-action="Feed">
-                            Feed
-                        </a>
-                        <a class="dropdown-item"
-                           asp-area=""
-                           asp-controller="Articles"
-                           asp-action="All">
-                            Latest articles
-                        </a>
-                    </div>
-                </div>
-                <button class="navbar-toggler" 
-                        type="button" 
-                        data-toggle="collapse" 
-                        data-target=".navbar-collapse" 
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false" 
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-md-inline-flex flex-md-row-reverse">
-                    <partial name="_LoginPartial"/>
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-area=""
-                               asp-controller="Settings"
-                               asp-action="Index">Settings</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
+                        <div class="dropdown-menu" aria-labelledby="articles-dropdown">
+                            <a class="dropdown-item"
                                asp-area=""
                                asp-controller="Home"
-                               asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li>
-                            <form class="form-inline my-0"
-                                  asp-area=""
-                                  asp-controller="Articles"
-                                  asp-action="Search"
-                                  method="get">
-                                <div class="input-group">
-                                    <input class="form-control"
-                                           type="search"
-                                           placeholder="Search"
-                                           aria-label="Search"
-                                           name="slug">
-                                    <div class="input-group-append">
-                                        <button class="btn-outline-primary input-group-text" type="submit">Search</button>
-                                    </div>
+                               asp-action="Feed">
+                                Feed
+                            </a>
+                            <a class="dropdown-item"
+                               asp-area=""
+                               asp-controller="Articles"
+                               asp-action="All">
+                                Latest articles
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <form class="form-inline my-0"
+                              asp-area=""
+                              asp-controller="Articles"
+                              asp-action="Search"
+                              method="get">
+                            <div class="input-group">
+                                <input class="form-control"
+                                       type="search"
+                                       placeholder="Search"
+                                       aria-label="Search"
+                                       name="slug">
+                                <div class="input-group-append">
+                                    <button class="btn-outline-primary input-group-text" type="submit">
+                                        Search
+                                    </button>
                                 </div>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
-    
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <partial name="_ErrorNotificationsPartial"/>
-        <main role="main" class="pb-3">
-            @this.RenderBody()
-        </main>
-    </div>
-    
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
-    <script type="text/javascript">
+    </nav>
+</header>
+
+<div class="container">
+    <partial name="_CookieConsentPartial"/>
+    <partial name="_ErrorNotificationsPartial"/>
+    <main role="main" class="pb-3">
+        @this.RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; @DateTime.Now.Year - @GlobalConstants.SystemName -
+        <a asp-area=""
+           asp-controller="Home"
+           asp-action="Privacy">
+            Privacy
+        </a>
+        <a asp-area=""
+           asp-controller="Home"
+           asp-action="TermsAndConditions">
+            Terms &amp; Conditions
+        </a>
+    </div>
+</footer>
+<script type="text/javascript">
         window.sessionStorage.setItem('lastLocation', window.sessionStorage.getItem('currentLocation'));
         window.sessionStorage.setItem('currentLocation', window.location.href);
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
-    <script src="~/js/site.min.js" asp-append-version="true"></script>
-    @await this.RenderSectionAsync("Scripts", required: false)
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+<script src="~/js/site.min.js" asp-append-version="true"></script>
+@await this.RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

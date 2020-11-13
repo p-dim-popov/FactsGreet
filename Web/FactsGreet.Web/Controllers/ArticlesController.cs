@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.RegularExpressions;
-using FactsGreet.Data.Models;
 
 namespace FactsGreet.Web.Controllers
 {
@@ -110,7 +107,8 @@ namespace FactsGreet.Web.Controllers
                     this.User
                         .FindFirstValue(ClaimTypes.NameIdentifier), id);
 
-            return this.Redirect("/Articles/" + (await this.articlesService.GetTitleByIdAsync(id))
+            return this.Redirect("/Article/" + Uri
+                .EscapeDataString(await this.articlesService.GetTitleAsync(id))
                 .Replace(' ', '_'));
         }
 
@@ -144,18 +142,46 @@ namespace FactsGreet.Web.Controllers
                 model.ThumbnailLink,
                 model.Description);
 
-            return this.Redirect($"/Article/{model.Title}");
+            return this.Redirect(@$"/Article/{Uri
+                .EscapeDataString(model.Title)
+                .Replace(' ', '_')}");
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await this.articlesService.DeleteAsync(id);
+            return this.RedirectToAction(nameof(this.All));
         }
 
         [Authorize]
-        public IActionResult Delete(Guid id, string authorId)
+        public async Task<IActionResult> CreateDeletionRequest(Guid id)
         {
+            if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) !=
+                await this.articlesService.GetAuthorIdAsync(id))
+            {
+                return this.Unauthorized();
+            }
+
+            return this.View(new ArticleDeletionRequestCreateInputModel
+            {
+                Id = id,
+                Article = await this.articlesService.GetByIdAsync<CompactArticleViewModel>(id),
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateDeletionRequest(ArticleDeletionRequestCreateInputModel model)
+        {
+            var authorId = await this.articlesService.GetAuthorIdAsync(model.Id);
             if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) != authorId)
             {
                 return this.Unauthorized();
             }
 
-            this.articlesService.CreateDeletionRequestAsync(id, authorId);
+            await this.articlesService.CreateDeletionRequestAsync(model.Id, authorId, model.Reason);
             return this.RedirectToAction(nameof(this.All));
         }
     }

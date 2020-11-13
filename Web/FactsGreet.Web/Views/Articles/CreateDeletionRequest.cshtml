@@ -1,0 +1,21 @@
+﻿@model FactsGreet.Web.ViewModels.Articles.ArticleDeletionRequestCreateInputModel
+@{
+    ViewBag.Title = $"Request deletion of {Model.Article.Title}";
+}
+<h2 class="text-danger my-3">Request deletion of: @Model.Article.Title</h2>
+
+<partial name="_CompactArticlePartial" model="Model.Article"/>
+
+<form asp-controller="Articles"
+      asp-action="CreateDeletionRequest"
+      method="post" 
+      class="my-3">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input asp-for="Id" disabled hidden>
+    <div class="form-group">
+        <label asp-for="Reason" class="h4"></label>
+        <textarea asp-for="Reason" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+    <button class="btn btn-danger">Request Deletion</button>
+</form>

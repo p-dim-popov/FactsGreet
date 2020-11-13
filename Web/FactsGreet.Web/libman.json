@@ -35,6 +35,10 @@
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
       ]
+    },
+    {
+      "library": "simplemde@1.11.2",
+      "destination": "wwwroot/lib/simplemde"
     }
   ]
 }

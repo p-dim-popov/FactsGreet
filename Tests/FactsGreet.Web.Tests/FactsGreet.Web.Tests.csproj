@@ -31,4 +31,8 @@
     <ProjectReference Include="..\..\Web\FactsGreet.Web\FactsGreet.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Profiles\Index.cshtml" />
+  </ItemGroup>
+
 </Project>

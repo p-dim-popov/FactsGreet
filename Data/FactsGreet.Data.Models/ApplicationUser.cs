@@ -39,6 +39,8 @@ namespace FactsGreet.Data.Models
         /////////////////////////////////////
         */
 
+        public virtual ICollection<Badge> Badges { get; set; }
+
         public virtual ICollection<Edit> Edits { get; set; }
             = new HashSet<Edit>();
 
@@ -73,5 +75,6 @@ namespace FactsGreet.Data.Models
             = new HashSet<MessageNotification>();
 
         public virtual ICollection<EditNotification> EditNotifications { get; set; }
+            = new HashSet<EditNotification>();
     }
 }

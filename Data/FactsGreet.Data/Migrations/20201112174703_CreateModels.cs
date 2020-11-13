@@ -34,6 +34,20 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Badges",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Badges", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -173,6 +187,30 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ApplicationUserBadge",
+                columns: table => new
+                {
+                    BadgesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsersWithBadgesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserBadge", x => new { x.BadgesId, x.UsersWithBadgesId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserBadge_AspNetUsers_UsersWithBadgesId",
+                        column: x => x.UsersWithBadgesId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserBadge_Badges_BadgesId",
+                        column: x => x.BadgesId,
+                        principalTable: "Badges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ArticleCategory",
                 columns: table => new
                 {
@@ -275,7 +313,7 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Requests",
+                name: "ArticleDeletionRequests",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -289,15 +327,15 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Requests", x => x.Id);
+                    table.PrimaryKey("PK_ArticleDeletionRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Requests_Articles_ArticleId",
+                        name: "FK_ArticleDeletionRequests_Articles_ArticleId",
                         column: x => x.ArticleId,
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Requests_Notifications_NotificationId",
+                        name: "FK_ArticleDeletionRequests_Notifications_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notifications",
                         principalColumn: "Id",
@@ -419,6 +457,11 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserBadge_UsersWithBadgesId",
+                table: "ApplicationUserBadge",
+                column: "UsersWithBadgesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ApplicationUserConversation_UsersId",
                 table: "ApplicationUserConversation",
                 column: "UsersId");
@@ -437,6 +480,21 @@ namespace FactsGreet.Data.Migrations
                 name: "IX_ArticleCategory_CategoriesId",
                 table: "ArticleCategory",
                 column: "CategoriesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArticleDeletionRequests_ArticleId",
+                table: "ArticleDeletionRequests",
+                column: "ArticleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArticleDeletionRequests_IsDeleted",
+                table: "ArticleDeletionRequests",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArticleDeletionRequests_NotificationId",
+                table: "ArticleDeletionRequests",
+                column: "NotificationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_AuthorId",
@@ -561,21 +619,6 @@ namespace FactsGreet.Data.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Requests_ArticleId",
-                table: "Requests",
-                column: "ArticleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Requests_IsDeleted",
-                table: "Requests",
-                column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Requests_NotificationId",
-                table: "Requests",
-                column: "NotificationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Stars_ArticleId",
                 table: "Stars",
                 column: "ArticleId");
@@ -583,6 +626,9 @@ namespace FactsGreet.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserBadge");
+
             migrationBuilder.DropTable(
                 name: "ApplicationUserConversation");
 
@@ -596,6 +642,9 @@ namespace FactsGreet.Data.Migrations
                 name: "ArticleCategory");
 
             migrationBuilder.DropTable(
+                name: "ArticleDeletionRequests");
+
+            migrationBuilder.DropTable(
                 name: "EditNotifications");
 
             migrationBuilder.DropTable(
@@ -605,10 +654,10 @@ namespace FactsGreet.Data.Migrations
                 name: "Modifications");
 
             migrationBuilder.DropTable(
-                name: "Requests");
+                name: "Stars");
 
             migrationBuilder.DropTable(
-                name: "Stars");
+                name: "Badges");
 
             migrationBuilder.DropTable(
                 name: "MessageNotifications");

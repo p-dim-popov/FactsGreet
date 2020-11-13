@@ -1,11 +1,11 @@
-﻿namespace FactsGreet.Web.ViewModels.Home
+﻿namespace FactsGreet.Web.ViewModels.Edits
 {
     using AutoMapper;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
     using FactsGreet.Web.ViewModels.Articles;
 
-    public class FeedViewModel : IMapFrom<Edit>, IHaveCustomMappings
+    public class CompactEditViewModel : IMapFrom<Edit>, IHaveCustomMappings
     {
         public CompactArticleViewModel Article { get; set; }
 
@@ -15,7 +15,7 @@
 
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<Edit, FeedViewModel>()
+            configuration.CreateMap<Edit, CompactEditViewModel>()
                 .ForMember(
                     x => x.EditorUserName,
                     opt => opt

@@ -2,6 +2,8 @@
 {
     public class IndexViewModel
     {
-        public int SettingsCount { get; set; }
+        public int NotificationsCount { get; set; }
+
+        public int ArticleDeletionRequestNotificationsCount { get; set; }
     }
 }

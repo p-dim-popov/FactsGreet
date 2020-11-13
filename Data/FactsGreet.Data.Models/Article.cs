@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
     using FactsGreet.Data.Common.Models;
 
     public class Article : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
@@ -34,5 +33,8 @@
 
         public virtual ICollection<Star> Stars { get; set; }
             = new HashSet<Star>();
+
+        public virtual ICollection<ArticleDeletionRequest> DeletionRequests { get; set; }
+            = new HashSet<ArticleDeletionRequest>();
     }
 }

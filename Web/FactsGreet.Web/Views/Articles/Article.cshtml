@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using FactsGreet.Common
 @model FactsGreet.Web.ViewModels.Articles.ArticleViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @{
@@ -6,18 +7,33 @@
 }
 <div class="row">
     <h1 class="col-auto">@Model.Title</h1>
-    <div class="col">
-        @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.AuthorId)
+    <div class="col-auto">
+        <a asp-controller="Edits" asp-action="Create" asp-route-title="@Model.Title"></a>
+    </div>
+    <div class="col-auto">
+        @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
         {
-            <a asp-controller="Articles"
-               asp-action="Delete"
+            <form class="form-inline" method="post">
+                <button class="btn btn-danger"
+                        asp-controller="Articles"
+                        asp-action="Delete"
+                        asp-route-id="@Model.Id">
+                    Delete
+                </button>
+            </form>
+        }
+        else if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.AuthorId)
+        {
+            <a class="btn btn-danger"
+               asp-controller="Articles"
+               asp-action="CreateDeletionRequest"
                asp-route-id="@Model.Id"
-               asp-route-authorId="@Model.AuthorId"
-               class="btn btn-danger">
+               asp-route-authorId="@Model.AuthorId">
                 Request Delete
             </a>
         }
     </div>
+    <div class="col"></div>
     <h3 class="col-auto">
         <a asp-controller="Articles"
            asp-action="ToggleStar"

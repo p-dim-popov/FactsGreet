@@ -19,6 +19,21 @@ namespace FactsGreet.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
+            modelBuilder.Entity("ApplicationUserBadge", b =>
+                {
+                    b.Property<Guid>("BadgesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UsersWithBadgesId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("BadgesId", "UsersWithBadgesId");
+
+                    b.HasIndex("UsersWithBadgesId");
+
+                    b.ToTable("ApplicationUserBadge");
+                });
+
             modelBuilder.Entity("ApplicationUserConversation", b =>
                 {
                     b.Property<Guid>("ConversationsId")
@@ -287,7 +302,27 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("Requests");
+                    b.ToTable("ArticleDeletionRequests");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Badge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Badges");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Category", b =>
@@ -745,6 +780,21 @@ namespace FactsGreet.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ApplicationUserBadge", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.Badge", null)
+                        .WithMany()
+                        .HasForeignKey("BadgesId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersWithBadgesId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApplicationUserConversation", b =>
