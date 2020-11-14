@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FactsGreet.Web.Controllers
+﻿namespace FactsGreet.Web.Controllers
 {
     using System;
     using System.Security.Claims;
@@ -24,21 +22,26 @@ namespace FactsGreet.Web.Controllers
             this.articlesService = articlesService;
         }
 
-        [HttpGet("/Article/{slug:required}")]
-        public async Task<IActionResult> GetByTitle(string slug)
+        [Route("/Article/{title}", Name = "article")]
+        public async Task<IActionResult> GetByTitle(string title)
         {
-            if (slug is null)
+            if (title is null)
             {
                 return this.RedirectToAction(nameof(this.All));
             }
 
-            slug = slug.Replace('_', ' ');
+            title = title.Replace('_', ' ');
 
-            var article = await this.articlesService.GetByTitleAsync<ArticleViewModel>(slug);
+            var article = await this.articlesService.GetByTitleAsync<ArticleViewModel>(title);
             if (article is null)
             {
-                return this.View("ArticleNotFound", slug);
+                return this.View("ArticleNotFound", title);
             }
+
+            article.IsStarredByUser =
+                await this.articlesService.IsStarredByUserAsync(
+                    article.Id,
+                    this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             return this.View("Article", article);
         }
@@ -64,9 +67,9 @@ namespace FactsGreet.Web.Controllers
                 {
                     ArticlesCount = ArticlesPerPage,
                     PagesCount =
-                        (int) Math.Ceiling(1.0 * await this.articlesService
-                                               .GetCountByTitleKeywordsAsync(slug) /
-                                           ArticlesPerPage),
+                        (int)Math.Ceiling(1.0 * await this.articlesService
+                                              .GetCountByTitleKeywordsAsync(slug) /
+                                          ArticlesPerPage),
                     CurrentPage = page,
                     ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
                     ActionName = nameof(this.Search),
@@ -92,7 +95,7 @@ namespace FactsGreet.Web.Controllers
                 {
                     CurrentPage = page,
                     ArticlesCount = ArticlesPerPage,
-                    PagesCount = (int) Math.Ceiling(1.0 * await this.articlesService.GetCountAsync() / ArticlesPerPage),
+                    PagesCount = (int)Math.Ceiling(1.0 * await this.articlesService.GetCountAsync() / ArticlesPerPage),
                     ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
                     ActionName = nameof(this.All),
                 },
@@ -100,22 +103,9 @@ namespace FactsGreet.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ToggleStar(Guid id)
-        {
-            await this.articlesService
-                .ToggleStarAsync(
-                    this.User
-                        .FindFirstValue(ClaimTypes.NameIdentifier), id);
-
-            return this.Redirect("/Article/" + Uri
-                .EscapeDataString(await this.articlesService.GetTitleAsync(id))
-                .Replace(' ', '_'));
-        }
-
-        [Authorize]
         public IActionResult Create(string title)
         {
-            return this.View(new ArticleCreateInputModel {Title = title});
+            return this.View(new ArticleCreateInputModel { Title = title });
         }
 
         [HttpPost]
@@ -142,9 +132,11 @@ namespace FactsGreet.Web.Controllers
                 model.ThumbnailLink,
                 model.Description);
 
-            return this.Redirect(@$"/Article/{Uri
-                .EscapeDataString(model.Title)
-                .Replace(' ', '_')}");
+            return this.RedirectToRoute("article", new
+            {
+                title = model.Title
+                    .Replace(' ', '_'),
+            });
         }
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
@@ -183,6 +175,32 @@ namespace FactsGreet.Web.Controllers
 
             await this.articlesService.CreateDeletionRequestAsync(model.Id, authorId, model.Reason);
             return this.RedirectToAction(nameof(this.All));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> RemoveFromStarred(Guid id)
+        {
+            await this.articlesService.RemoveStarAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+            return this.RedirectToRoute(
+                "article",
+                new
+                {
+                    title = (await this.articlesService.GetTitleAsync(id))
+                        .Replace(' ', '_'),
+                });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> AddToStarred(Guid id)
+        {
+            await this.articlesService.AddStarAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+            return this.RedirectToRoute(
+                "article",
+                new
+                {
+                    title = (await this.articlesService.GetTitleAsync(id))
+                        .Replace(' ', '_'),
+                });
         }
     }
 }

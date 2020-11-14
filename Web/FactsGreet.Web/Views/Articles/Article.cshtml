@@ -35,11 +35,27 @@
     </div>
     <div class="col"></div>
     <h3 class="col-auto">
-        <a asp-controller="Articles"
-           asp-action="ToggleStar"
-           asp-route-id="@Model.Id">
-            ⭐
-        </a>: @Model.StarsCount
+        @if (!Model.IsStarredByUser)
+        {
+            <span>
+                <a asp-controller="Articles"
+                   asp-action="AddToStarred"
+                   asp-route-id="@Model.Id">
+                    Star ⭐
+                </a>: @Model.StarsCount
+            </span>
+        }
+        else
+        {
+            <span>
+                <a asp-controller="Articles"
+                   asp-action="RemoveFromStarred"
+                   asp-route-id="@Model.Id">
+                    Unstar ⭐
+                </a>: @Model.StarsCount
+            </span>
+        }
+
     </h3>
 </div>
 <div class="row">

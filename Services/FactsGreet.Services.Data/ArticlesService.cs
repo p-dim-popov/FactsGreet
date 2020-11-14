@@ -51,6 +51,10 @@
             string thumbnailLink,
             string description)
         {
+            categories = categories
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
+
             var inputCategories = categories
                 .Select(x => x.ToLowerInvariant())
                 .ToList();
@@ -98,7 +102,19 @@
             await this.articleRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> ToggleStarAsync(string userId, Guid articleId)
+        public async Task AddStarAsync(string userId, Guid articleId)
+        {
+            var isStarred = await this.starRepository.All()
+                .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
+
+            if (!isStarred)
+            {
+                await this.starRepository.AddAsync(new Star {ArticleId = articleId, UserId = userId});
+                await this.articleRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveStarAsync(string userId, Guid articleId)
         {
             var isStarred = await this.starRepository.All()
                 .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
@@ -106,16 +122,9 @@
             if (isStarred)
             {
                 this.starRepository.Delete(new Star {ArticleId = articleId, UserId = userId});
-                isStarred = false;
-            }
-            else
-            {
-                await this.starRepository.AddAsync(new Star {ArticleId = articleId, UserId = userId});
-                isStarred = true;
-            }
+                await this.articleRepository.SaveChangesAsync();
 
-            await this.articleRepository.SaveChangesAsync();
-            return isStarred;
+            }
         }
 
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
@@ -228,5 +237,11 @@
                 .To<T>()
                 .FirstOrDefaultAsync();
         }
+
+        public Task<bool> IsStarredByUserAsync(Guid articleId, string userId)
+            => this.articleRepository.AllAsNoTracking()
+                .Where(x => x.Id == articleId)
+                .AnyAsync(x => x.Stars
+                    .Any(y => y.UserId == userId));
     }
 }

@@ -6,7 +6,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <input asp-for="ArticleId" disabled hidden/>
+            <h3>Article Deletion Request: @Model.Id</h3>
             <div class="form-group">
                 <label asp-for="ArticleAuthorUserName"></label>
                 <input asp-for="ArticleAuthorUserName" class="form-control" disabled>
@@ -19,6 +19,7 @@
     </div>
     <div class="row">
         <div class="col">
+            <h4>Article:</h4>
             <partial name="_CompactArticlePartial" model="Model.Article"/>
         </div>
     </div>

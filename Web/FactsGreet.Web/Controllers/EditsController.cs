@@ -20,8 +20,14 @@
             this.editsService = editsService;
         }
 
-        [HttpGet("[controller]/Create/{title}")]
+        [Route("[controller]/[action]/{title}", Name = "edits_create")]
         public IActionResult Create(string title)
+        {
+            return this.View();
+        }
+
+        [Route("[controller]/[action]/{title}", Name = "edits_history")]
+        public IActionResult History(string title)
         {
             return this.View();
         }
@@ -29,9 +35,9 @@
         [Authorize]
         public async Task<IActionResult> GetEdits(int page = 1, string userId = null)
         {
-            var activities = await this.GetEditsPaginated(page, userId);
+            var edits = await this.GetEditsPaginated(page, userId);
 
-            return this.PartialView("_ListCompactEditsPartial", activities);
+            return this.PartialView("_ListCompactEditsPartial", edits);
         }
 
         private async Task<ICollection<CompactEditViewModel>> GetEditsPaginated(int page, string userId = null)

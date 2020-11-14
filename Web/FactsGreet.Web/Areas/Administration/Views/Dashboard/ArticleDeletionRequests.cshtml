@@ -16,7 +16,11 @@
                    asp-action="ArticleDeletionRequest"
                    asp-route-id="@request.Id"
                    class="list-group-item list-group-item-action">
-                    <span class="text-primary">[@request.CreatedOn]</span>
+                    <span class="text-primary">
+                        [
+                        <span class="utc-to-local">@request.CreatedOn.ToString("R")</span>
+                        ]
+                    </span>
                     @request.ArticleAuthorUserName requested the deletion of @request.ArticleTitle
                 </a>
             }
@@ -28,7 +32,7 @@
                asp-action="ArticleDeletionRequests"
                asp-route-page="@(Model.Page - 1)"
                class="btn btn-secondary">
-                Prevous
+                Previous
             </a>
         </div>
         <div class="col"></div>

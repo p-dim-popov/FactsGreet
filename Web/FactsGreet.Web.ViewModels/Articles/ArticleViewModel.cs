@@ -17,5 +17,8 @@
         public int StarsCount { get; set; }
 
         public string AuthorId { get; set; }
+
+        [IgnoreMap]
+        public bool IsStarredByUser { get; set; }
     }
 }

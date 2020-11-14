@@ -1,4 +1,4 @@
-﻿//view dependent string constants must be specified in corresponding view
+﻿//view dependent string constants must be specified in window.globalConstants in corresponding view
 (async function () {
     const main = document.getElementById('app');
     console.log(window.sessionStorage.getItem('lastLocation'))
@@ -14,7 +14,7 @@
         const articlesResponse =
             await fetch(
                 `/Edits/GetEdits?${window?.globalConstants?.queryParameters ?? ''}&page=${page}`,
-                {redirect: "follow"});
+                {redirect: 'follow'});
         requestIsPending = false;
 
         if (articlesResponse.status !== 200) return;

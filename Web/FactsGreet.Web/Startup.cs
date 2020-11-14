@@ -100,8 +100,7 @@
                 dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder()
                     .SeedAsync(dbContext, serviceScope.ServiceProvider)
-                    .GetAwaiter()
-                    .GetResult();
+                    .Wait();
             }
 
             app.UseStatusCodePagesWithReExecute($"/Errors/{nameof(ErrorsController.StatusCodePage)}/{{0}}");
