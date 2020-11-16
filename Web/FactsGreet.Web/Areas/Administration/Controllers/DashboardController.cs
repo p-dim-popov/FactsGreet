@@ -56,5 +56,10 @@
         {
             return this.View();
         }
+
+        public IActionResult View(Guid id)
+        {
+            return this.View();
+        }
     }
 }

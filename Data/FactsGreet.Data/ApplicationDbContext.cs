@@ -39,17 +39,13 @@
 
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<Modification> Modifications { get; set; }
+        public DbSet<Diff> Diffs { get; set; }
 
         public DbSet<ArticleDeletionRequest> ArticleDeletionRequests { get; set; }
 
         public DbSet<Star> Stars { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
-
-        public DbSet<MessageNotification> MessageNotifications { get; set; }
-
-        public DbSet<EditNotification> EditNotifications { get; set; }
 
         public DbSet<Badge> Badges { get; set; }
 

@@ -5,6 +5,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using FactsGreet.Data.Common.Models;
+    using FactsGreet.Data.Models.Enums;
 
     public class Edit : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
     {
@@ -19,7 +20,16 @@
 
         public bool IsCreation { get; set; }
 
-        public virtual ICollection<Modification> Modifications { get; set; }
-            = new HashSet<Modification>();
+        [Required]
+        [MaxLength(450)]
+        public string Comment { get; set; }
+
+        public Guid NotificationId { get; set; }
+
+        public virtual Notification Notification { get; set; }
+            = new Notification { Type = NotificationType.Edit };
+
+        public virtual ICollection<Diff> Diffs { get; set; }
+            = new HashSet<Diff>();
     }
 }

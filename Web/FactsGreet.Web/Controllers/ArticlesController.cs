@@ -1,6 +1,7 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using FactsGreet.Common;
@@ -29,8 +30,6 @@
             {
                 return this.RedirectToAction(nameof(this.All));
             }
-
-            title = title.Replace('_', ' ');
 
             var article = await this.articlesService.GetByTitleAsync<ArticleViewModel>(title);
             if (article is null)
@@ -65,15 +64,14 @@
                 Articles = articles,
                 PaginationViewModel = new PaginationViewModel
                 {
-                    ArticlesCount = ArticlesPerPage,
+                    ItemsCount = ArticlesPerPage,
                     PagesCount =
                         (int)Math.Ceiling(1.0 * await this.articlesService
                                               .GetCountByTitleKeywordsAsync(slug) /
                                           ArticlesPerPage),
                     CurrentPage = page,
-                    ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
-                    ActionName = nameof(this.Search),
-                    Slug = slug,
+                    Path = $"/{nameof(ArticlesController).Replace("Controller", string.Empty)}/{nameof(this.Search)}",
+                    Query = { ("slug", slug) },
                 },
                 Slug = slug,
             });
@@ -94,10 +92,9 @@
                 PaginationViewModel = new PaginationViewModel
                 {
                     CurrentPage = page,
-                    ArticlesCount = ArticlesPerPage,
+                    ItemsCount = ArticlesPerPage,
                     PagesCount = (int)Math.Ceiling(1.0 * await this.articlesService.GetCountAsync() / ArticlesPerPage),
-                    ControllerName = nameof(ArticlesController).Replace("Controller", string.Empty),
-                    ActionName = nameof(this.All),
+                    Path = $"/{nameof(ArticlesController).Replace("Controller", string.Empty)}/{nameof(this.All)}",
                 },
             });
         }
@@ -114,28 +111,29 @@
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View();
+                return this.View(model);
             }
 
             if (await this.articlesService.DoesTitleExistAsync(model.Title))
             {
                 this.ViewBag.ErrorMessage = "Title already exists";
-                return this.View();
+                return this.View(model);
             }
 
-            // TODO: categories
+            // TODO: upload and get link
+            var thumbnailLink = string.Empty;
+
             await this.articlesService.CreateAsync(
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 model.Title,
                 model.Content,
-                model.Categories,
-                model.ThumbnailLink,
+                model.Categories.Select(x => x.Name).ToArray(),
+                thumbnailLink,
                 model.Description);
 
             return this.RedirectToRoute("article", new
             {
-                title = model.Title
-                    .Replace(' ', '_'),
+                title = model.Title,
             });
         }
 
@@ -185,8 +183,7 @@
                 "article",
                 new
                 {
-                    title = (await this.articlesService.GetTitleAsync(id))
-                        .Replace(' ', '_'),
+                    title = await this.articlesService.GetTitleAsync(id),
                 });
         }
 
@@ -198,8 +195,7 @@
                 "article",
                 new
                 {
-                    title = (await this.articlesService.GetTitleAsync(id))
-                        .Replace(' ', '_'),
+                    title = await this.articlesService.GetTitleAsync(id),
                 });
         }
     }

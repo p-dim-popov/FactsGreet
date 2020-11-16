@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Web
 {
+    using System;
     using System.Reflection;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -102,6 +103,21 @@
                     .SeedAsync(dbContext, serviceScope.ServiceProvider)
                     .Wait();
             }
+
+            app.Use(async (context, next) =>
+            {
+                var destination = context.Request.Path.Value ?? string.Empty;
+                if (destination.Contains(' '))
+                {
+                    context.Response
+                        .Redirect(destination
+                            .Replace(' ', '_'));
+                }
+
+                context.Request.Path = destination.Replace('_', ' ');
+
+                await next.Invoke();
+            });
 
             app.UseStatusCodePagesWithReExecute($"/Errors/{nameof(ErrorsController.StatusCodePage)}/{{0}}");
 

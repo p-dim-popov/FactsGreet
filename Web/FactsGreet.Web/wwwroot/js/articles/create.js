@@ -19,14 +19,17 @@
 
     new SimpleMDE({element: document.getElementById('content-textarea')})
 
+    const categoryInput = document.getElementById('category-input');
     function addCategoryRow(){
-        if (addCategoryRow.rows === undefined) addCategoryRow.rows = 0;
+        if (window.categoryRows === undefined) window.categoryRows = 0;
         document.getElementById('category-rows').innerHTML += `
                 <div class="input-group my-2">
                     <input class="form-control"
-
-                           name="Categories[${addCategoryRow.rows++}]"
-                    />
+                            id="${window.categoriesRoute}[${window.categoryRows}].Name" 
+                            name="${window.categoriesRoute}[${window.categoryRows}].Name" 
+                            value="${categoryInput.value}"
+                            type="text"
+                            readonly>
                     <div class="input-group-append">
                         <a class="btn btn-danger input-group-text"
                                 onclick="this.parentElement.parentElement.remove()">
@@ -35,9 +38,10 @@
                     </div>
                 </div>
                 `;
+        categoryInput.value = '';
+        window.categoryRows++;
     }
     
     document.getElementById('add-category-btn')
         .addEventListener('click', addCategoryRow);
-    addCategoryRow();
 })()

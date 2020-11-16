@@ -49,21 +49,6 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("ApplicationUserConversation");
                 });
 
-            modelBuilder.Entity("ApplicationUserMessageNotification", b =>
-                {
-                    b.Property<Guid>("MessageNotificationsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("MessageNotificationsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("ApplicationUserMessageNotification");
-                });
-
             modelBuilder.Entity("ApplicationUserNotification", b =>
                 {
                     b.Property<Guid>("SeenNotificationsId")
@@ -335,6 +320,12 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
@@ -344,6 +335,8 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -386,6 +379,46 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("Conversations");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("EditId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("Index")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Diffs");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -394,6 +427,11 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<Guid>("ArticleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -414,6 +452,9 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("NotificationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
@@ -422,47 +463,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Edits");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.EditNotification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EditId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("NotificationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("EditId");
-
-                    b.HasIndex("IsDeleted");
-
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("EditNotifications");
+                    b.ToTable("Edits");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>
@@ -506,6 +509,9 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("NotificationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -516,85 +522,11 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
+                    b.HasIndex("NotificationId");
+
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.MessageNotification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("MessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("NotificationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("NotificationId");
-
-                    b.ToTable("MessageNotifications");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.Modification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Down")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("EditId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("Line")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Up")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EditId");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Modifications");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
@@ -812,21 +744,6 @@ namespace FactsGreet.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ApplicationUserMessageNotification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.MessageNotification", null)
-                        .WithMany()
-                        .HasForeignKey("MessageNotificationsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ApplicationUserNotification", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Notification", null)
@@ -871,7 +788,7 @@ namespace FactsGreet.Data.Migrations
             modelBuilder.Entity("FactsGreet.Data.Models.ArticleDeletionRequest", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
-                        .WithMany()
+                        .WithMany("DeletionRequests")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -896,6 +813,13 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.Edit", null)
+                        .WithMany("Diffs")
+                        .HasForeignKey("EditId");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
@@ -910,30 +834,15 @@ namespace FactsGreet.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Article");
-
-                    b.Navigation("Editor");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.EditNotification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
-                        .WithMany("EditNotifications")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("FactsGreet.Data.Models.Edit", "Edit")
-                        .WithMany()
-                        .HasForeignKey("EditId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("FactsGreet.Data.Models.Notification", "Notification")
                         .WithMany("EditNotifications")
                         .HasForeignKey("NotificationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Edit");
+                    b.Navigation("Article");
+
+                    b.Navigation("Editor");
 
                     b.Navigation("Notification");
                 });
@@ -965,6 +874,10 @@ namespace FactsGreet.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("FactsGreet.Data.Models.Notification", null)
+                        .WithMany("MessageNotifications")
+                        .HasForeignKey("NotificationId");
+
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
@@ -974,32 +887,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Conversation");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.MessageNotification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.Message", "Message")
-                        .WithMany()
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FactsGreet.Data.Models.Notification", "Notification")
-                        .WithMany("MessageNotifications")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Message");
-
-                    b.Navigation("Notification");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.Modification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.Edit", null)
-                        .WithMany("Modifications")
-                        .HasForeignKey("EditId");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
@@ -1091,8 +978,6 @@ namespace FactsGreet.Data.Migrations
 
                     b.Navigation("CreatedConversations");
 
-                    b.Navigation("EditNotifications");
-
                     b.Navigation("Edits");
 
                     b.Navigation("Followers");
@@ -1112,6 +997,8 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.Article", b =>
                 {
+                    b.Navigation("DeletionRequests");
+
                     b.Navigation("Edits");
 
                     b.Navigation("Stars");
@@ -1124,7 +1011,7 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
-                    b.Navigation("Modifications");
+                    b.Navigation("Diffs");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>

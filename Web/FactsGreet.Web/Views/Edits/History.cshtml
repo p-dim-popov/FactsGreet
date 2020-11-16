@@ -1,4 +1,33 @@
-﻿@{
-    ViewBag.Title = "title";
+﻿@model FactsGreet.Web.ViewModels.Edits.HistoryViewModel
+@{
+    ViewBag.Title = $"History of: {Model.Article.Title}";
 }
 
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>History for: @Model.Article.Title</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="list-group col">
+            @foreach (var edit in Model.Article.Edits)
+            {
+                <a asp-controller="Edits"
+                   asp-action="View"
+                   asp-route-id="@edit.Id"
+                   class="list-group-item list-group-item-action">
+                    <span class="text-primary">
+                        [
+                        <span class="utc-to-local">@edit.CreatedOn.ToString("R")</span>
+                        ]
+                    </span>
+                    @edit.EditorUserName - (@edit.ModificationsCount lines changed) @edit.Comment
+                </a>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <partial name="_CompactPaginationPartial" model="Model.PaginationViewModel"/>
+    </div>
+</div>

@@ -70,11 +70,5 @@ namespace FactsGreet.Data.Models
 
         public virtual ICollection<Notification> SeenNotifications { get; set; }
             = new HashSet<Notification>();
-
-        public virtual ICollection<MessageNotification> MessageNotifications { get; set; }
-            = new HashSet<MessageNotification>();
-
-        public virtual ICollection<EditNotification> EditNotifications { get; set; }
-            = new HashSet<EditNotification>();
     }
 }

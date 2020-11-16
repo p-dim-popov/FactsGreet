@@ -5,7 +5,7 @@
 
     using FactsGreet.Data.Common.Models;
 
-    public class Category : BaseModel<int>, IAuditInfo
+    public class Category : BaseDeletableModel<int>, IDeletableEntity, IAuditInfo
     {
         [Required]
         [MaxLength(50)]

@@ -30,6 +30,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.4.5" />
+    <PackageReference Include="Shaman.DiffMatchPatch" Version="1.0.0.5" />
   </ItemGroup>
 
   <ItemGroup>

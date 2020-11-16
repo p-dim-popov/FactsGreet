@@ -55,7 +55,9 @@ namespace FactsGreet.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,36 +129,6 @@ namespace FactsGreet.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Notifications_AspNetUsers_SenderId",
                         column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Edits",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EditorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ArticleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsCreation = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Edits", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Edits_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Edits_AspNetUsers_EditorId",
-                        column: x => x.EditorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -259,36 +231,6 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ConversationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Messages_Conversations_ConversationId",
-                        column: x => x.ConversationId,
-                        principalTable: "Conversations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ApplicationUserNotification",
                 columns: table => new
                 {
@@ -343,13 +285,15 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EditNotifications",
+                name: "Edits",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EditId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EditorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ArticleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsCreation = table.Column<bool>(type: "bit", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -357,21 +301,21 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EditNotifications", x => x.Id);
+                    table.PrimaryKey("PK_Edits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EditNotifications_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Edits_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Edits_AspNetUsers_EditorId",
+                        column: x => x.EditorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_EditNotifications_Edits_EditId",
-                        column: x => x.EditId,
-                        principalTable: "Edits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_EditNotifications_Notifications_NotificationId",
+                        name: "FK_Edits_Notifications_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notifications",
                         principalColumn: "Id",
@@ -379,13 +323,50 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Modifications",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Line = table.Column<long>(type: "bigint", nullable: false),
-                    Up = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Down = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ConversationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_Conversations_ConversationId",
+                        column: x => x.ConversationId,
+                        principalTable: "Conversations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Diffs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Index = table.Column<long>(type: "bigint", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Operation = table.Column<int>(type: "int", nullable: false),
                     EditId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -394,64 +375,11 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Modifications", x => x.Id);
+                    table.PrimaryKey("PK_Diffs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Modifications_Edits_EditId",
+                        name: "FK_Diffs_Edits_EditId",
                         column: x => x.EditId,
                         principalTable: "Edits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MessageNotifications",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MessageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MessageNotifications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MessageNotifications_Messages_MessageId",
-                        column: x => x.MessageId,
-                        principalTable: "Messages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MessageNotifications_Notifications_NotificationId",
-                        column: x => x.NotificationId,
-                        principalTable: "Notifications",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApplicationUserMessageNotification",
-                columns: table => new
-                {
-                    MessageNotificationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserMessageNotification", x => new { x.MessageNotificationsId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserMessageNotification_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserMessageNotification_MessageNotifications_MessageNotificationsId",
-                        column: x => x.MessageNotificationsId,
-                        principalTable: "MessageNotifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -464,11 +392,6 @@ namespace FactsGreet.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationUserConversation_UsersId",
                 table: "ApplicationUserConversation",
-                column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserMessageNotification_UsersId",
-                table: "ApplicationUserMessageNotification",
                 column: "UsersId");
 
             migrationBuilder.CreateIndex(
@@ -513,6 +436,11 @@ namespace FactsGreet.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_IsDeleted",
+                table: "Categories",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_Name",
                 table: "Categories",
                 column: "Name",
@@ -529,24 +457,14 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EditNotifications_ApplicationUserId",
-                table: "EditNotifications",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EditNotifications_EditId",
-                table: "EditNotifications",
+                name: "IX_Diffs_EditId",
+                table: "Diffs",
                 column: "EditId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EditNotifications_IsDeleted",
-                table: "EditNotifications",
+                name: "IX_Diffs_IsDeleted",
+                table: "Diffs",
                 column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EditNotifications_NotificationId",
-                table: "EditNotifications",
-                column: "NotificationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Edits_ArticleId",
@@ -564,24 +482,14 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Edits_NotificationId",
+                table: "Edits",
+                column: "NotificationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Follows_FollowedId",
                 table: "Follows",
                 column: "FollowedId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MessageNotifications_IsDeleted",
-                table: "MessageNotifications",
-                column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MessageNotifications_MessageId",
-                table: "MessageNotifications",
-                column: "MessageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MessageNotifications_NotificationId",
-                table: "MessageNotifications",
-                column: "NotificationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ConversationId",
@@ -594,19 +502,14 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_NotificationId",
+                table: "Messages",
+                column: "NotificationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_SenderId",
                 table: "Messages",
                 column: "SenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Modifications_EditId",
-                table: "Modifications",
-                column: "EditId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Modifications_IsDeleted",
-                table: "Modifications",
-                column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_IsDeleted",
@@ -633,9 +536,6 @@ namespace FactsGreet.Data.Migrations
                 name: "ApplicationUserConversation");
 
             migrationBuilder.DropTable(
-                name: "ApplicationUserMessageNotification");
-
-            migrationBuilder.DropTable(
                 name: "ApplicationUserNotification");
 
             migrationBuilder.DropTable(
@@ -645,13 +545,13 @@ namespace FactsGreet.Data.Migrations
                 name: "ArticleDeletionRequests");
 
             migrationBuilder.DropTable(
-                name: "EditNotifications");
+                name: "Diffs");
 
             migrationBuilder.DropTable(
                 name: "Follows");
 
             migrationBuilder.DropTable(
-                name: "Modifications");
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Stars");
@@ -660,25 +560,19 @@ namespace FactsGreet.Data.Migrations
                 name: "Badges");
 
             migrationBuilder.DropTable(
-                name: "MessageNotifications");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Edits");
 
             migrationBuilder.DropTable(
-                name: "Messages");
-
-            migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "Conversations");
 
             migrationBuilder.DropTable(
                 name: "Articles");
 
             migrationBuilder.DropTable(
-                name: "Conversations");
+                name: "Notifications");
         }
     }
 }

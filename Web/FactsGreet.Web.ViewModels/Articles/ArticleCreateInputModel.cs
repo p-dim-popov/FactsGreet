@@ -1,14 +1,20 @@
-﻿using System.Linq;
-
-namespace FactsGreet.Web.ViewModels.Articles
+﻿namespace FactsGreet.Web.ViewModels.Articles
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
+    using AutoMapper;
+    using FactsGreet.Data.Models;
+    using FactsGreet.Services.Mapping;
     using FactsGreet.Web.Infrastructure.ValidationAttributes;
+    using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Http;
 
-    public class ArticleCreateInputModel : IValidatableObject
+    using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
+
+    public class ArticleCreateInputModel : IValidatableObject, IMapFrom<Article>
     {
         [Required]
         [MaxLength(50)]
@@ -29,13 +35,14 @@ namespace FactsGreet.Web.ViewModels.Articles
             ErrorMessage = "The Thumbnail link field must start with \"https://\"")]
         public string ThumbnailLink { get; set; }
 
-        [MaxFileSize(5_000_000_000)]
+        [MaxFileSize(500_000)]
         [GeneralImage]
         [Display(Name = "Thumbnail image")]
+        [NotMapped]
         public IFormFile ThumbnailImage { get; set; }
 
         [Required]
-        public string[] Categories { get; set; }
+        public ICollection<CategoryViewModel> Categories { get; set; }
 
         [MaxLength(300)]
         [MinLength(30)]
@@ -49,7 +56,7 @@ namespace FactsGreet.Web.ViewModels.Articles
                     "Cannot supply link and upload file at the same time. Please choose only one");
             }
 
-            if (this.Categories.All(string.IsNullOrWhiteSpace))
+            if (this.Categories.All(x => string.IsNullOrWhiteSpace(x.Name)))
             {
                 yield return new ValidationResult("Must enter at least one category");
             }

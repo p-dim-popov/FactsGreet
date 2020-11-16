@@ -6,11 +6,11 @@
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-
     using AngleSharp;
     using AngleSharp.Dom;
     using AngleSharp.Html.Parser;
     using FactsGreet.Data.Models;
+    using FactsGreet.Data.Models.Enums;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
 
@@ -120,7 +120,7 @@
                         .Replace(
                             x.Content
                                 .Replace("/wiki/", "/Article/"),
-                            "(/Edits/Create?title=${title})"),
+                            "(/Edits/Create/${title})"),
                     Title = x.Title,
                     ThumbnailLink = $"https://picsum.photos/{rng.Next(200, 400)}",
                 })
@@ -129,16 +129,18 @@
                     x.Edits.Add(new Edit
                     {
                         EditorId = x.AuthorId,
-                        Modifications = new List<Modification>
+                        Diffs = new List<Diff>
                         {
-                            new Modification
+                            new Diff
                             {
-                                Line = 0,
-                                Up = x.Content,
-                                Down = string.Empty,
+                                Index = 0,
+                                Text = x.Content,
+                                Operation = DiffOperation.Insert,
                             },
                         },
                         IsCreation = true,
+                        Notification = { SenderId = x.AuthorId },
+                        Comment = "Initial create",
                     });
                     return x;
                 })

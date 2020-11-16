@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
+    <title>@ViewBag.Title - @GlobalConstants.SystemName</title>
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true"/>
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true"/>
     @await this.RenderSectionAsync("StyleLinks", required: false)
@@ -32,7 +32,13 @@
                 <partial name="_LoginPartial"/>
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="articles-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" 
+                           href="#" 
+                           id="articles-dropdown" 
+                           role="button" 
+                           data-toggle="dropdown" 
+                           aria-haspopup="true" 
+                           aria-expanded="false">
                             Articles
                         </a>
                         <div class="dropdown-menu" aria-labelledby="articles-dropdown">
@@ -46,7 +52,7 @@
                                asp-area=""
                                asp-controller="Articles"
                                asp-action="All">
-                                Latest articles
+                                All
                             </a>
                             <a class="dropdown-item"
                                asp-area=""
@@ -108,7 +114,7 @@
 <script type="text/javascript">
         window.sessionStorage.setItem('lastLocation', window.sessionStorage.getItem('currentLocation'));
         window.sessionStorage.setItem('currentLocation', window.location.href);
-    </script>
+</script>
 <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>

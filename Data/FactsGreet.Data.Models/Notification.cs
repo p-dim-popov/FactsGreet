@@ -19,11 +19,11 @@
         public virtual ICollection<ApplicationUser> Seens { get; set; }
             = new HashSet<ApplicationUser>();
 
-        public virtual ICollection<MessageNotification> MessageNotifications { get; set; }
-            = new HashSet<MessageNotification>();
+        public virtual ICollection<Message> MessageNotifications { get; set; }
+            = new HashSet<Message>();
 
-        public virtual ICollection<EditNotification> EditNotifications { get; set; }
-            = new HashSet<EditNotification>();
+        public virtual ICollection<Edit> EditNotifications { get; set; }
+            = new HashSet<Edit>();
 
         public virtual ICollection<ArticleDeletionRequest> ArticleDeletionRequestNotifications { get; set; }
             = new HashSet<ArticleDeletionRequest>();

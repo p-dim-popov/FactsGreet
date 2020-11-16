@@ -8,7 +8,18 @@
 <div class="row">
     <h1 class="col-auto">@Model.Title</h1>
     <div class="col-auto">
-        <a asp-controller="Edits" asp-action="Create" asp-route-title="@Model.Title"></a>
+        <a asp-controller="Edits"
+           asp-action="Create"
+           asp-route-title="@Model.Title">
+            [Edit]
+        </a>
+    </div>
+    <div class="col-auto">
+        <a asp-controller="Edits"
+           asp-action="History"
+           asp-route-title="@Model.Title">
+            [History]
+        </a>
     </div>
     <div class="col-auto">
         @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))

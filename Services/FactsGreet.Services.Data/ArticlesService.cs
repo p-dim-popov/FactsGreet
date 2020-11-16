@@ -5,8 +5,10 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
+    using FactsGreet.Data.Models.Enums;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +18,7 @@
         private readonly IRepository<Category> categoryRepository;
         private readonly IRepository<Star> starRepository;
         private readonly IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
-        private readonly IDeletableEntityRepository<Modification> modificationRepository;
+        private readonly IDeletableEntityRepository<Diff> modificationRepository;
         private readonly IDeletableEntityRepository<Edit> editRepository;
 
         public ArticlesService(
@@ -24,7 +26,7 @@
             IRepository<Category> categoryRepository,
             IRepository<Star> starRepository,
             IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
-            IDeletableEntityRepository<Modification> modificationRepository,
+            IDeletableEntityRepository<Diff> modificationRepository,
             IDeletableEntityRepository<Edit> editRepository)
         {
             this.articleRepository = articleRepository;
@@ -51,22 +53,19 @@
             string thumbnailLink,
             string description)
         {
-            categories = categories
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .ToArray();
-
             var inputCategories = categories
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(x => x.ToLowerInvariant())
                 .ToList();
 
             var existingCategories = await this.categoryRepository
-                .All()
+                .AllAsNoTracking()
                 .Where(x => inputCategories.Contains(x.Name))
                 .ToListAsync();
 
-            var newCategories = categories
+            var newCategories = inputCategories
                 .Except(existingCategories.Select(x => x.Name))
-                .Select(x => new Category {Name = x})
+                .Select(x => new Category { Name = x })
                 .ToList();
 
             var article = new Article
@@ -85,13 +84,13 @@
                     {
                         EditorId = authorId,
                         IsCreation = true,
-                        Modifications = new List<Modification>
+                        Diffs = new List<Diff>
                         {
-                            new Modification
+                            new Diff
                             {
-                                Line = 0,
-                                Down = string.Empty,
-                                Up = content,
+                                Index = 0,
+                                Text = content,
+                                Operation = DiffOperation.Insert,
                             },
                         },
                     },
@@ -109,7 +108,7 @@
 
             if (!isStarred)
             {
-                await this.starRepository.AddAsync(new Star {ArticleId = articleId, UserId = userId});
+                await this.starRepository.AddAsync(new Star { ArticleId = articleId, UserId = userId });
                 await this.articleRepository.SaveChangesAsync();
             }
         }
@@ -121,9 +120,8 @@
 
             if (isStarred)
             {
-                this.starRepository.Delete(new Star {ArticleId = articleId, UserId = userId});
+                this.starRepository.Delete(new Star { ArticleId = articleId, UserId = userId });
                 await this.articleRepository.SaveChangesAsync();
-
             }
         }
 
@@ -184,7 +182,7 @@
             await this.articleDeletionRequestRepository.AddAsync(new ArticleDeletionRequest
             {
                 ArticleId = id,
-                Notification = {SenderId = authorId},
+                Notification = { SenderId = authorId },
                 Reason = reason,
             });
 
@@ -197,7 +195,7 @@
                 .Include(x => x.DeletionRequests)
                 .Include(x => x.Stars)
                 .Include(x => x.Edits)
-                .ThenInclude(x => x.Modifications)
+                .ThenInclude(x => x.Diffs)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             foreach (var request in article.DeletionRequests)
@@ -212,7 +210,7 @@
 
             foreach (var edit in article.Edits)
             {
-                foreach (var modification in edit.Modifications)
+                foreach (var modification in edit.Diffs)
                 {
                     this.modificationRepository.Delete(modification);
                 }
@@ -243,5 +241,11 @@
                 .Where(x => x.Id == articleId)
                 .AnyAsync(x => x.Stars
                     .Any(y => y.UserId == userId));
+
+        public Task<string> GetContentAsync(Guid id)
+            => this.articleRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => x.Content)
+                .FirstOrDefaultAsync();
     }
 }

@@ -27,22 +27,6 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-auto">
-            <a asp-controller="Dashboard"
-               asp-action="ArticleDeletionRequests"
-               asp-route-page="@(Model.Page - 1)"
-               class="btn btn-secondary">
-                Previous
-            </a>
-        </div>
-        <div class="col"></div>
-        <div class="col-auto">
-            <a asp-controller="Dashboard"
-               asp-action="ArticleDeletionRequests"
-               asp-route-page="@(Model.Page + 1)"
-               class="btn btn-secondary">
-                Next
-            </a>
-        </div>
+        <partial name="_CompactArticlePartial" model="Model.Page"/>
     </div>
 </div>
