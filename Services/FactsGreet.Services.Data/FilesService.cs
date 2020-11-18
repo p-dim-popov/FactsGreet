@@ -19,11 +19,11 @@
     {
         private const long MaxStorage = 100 * 1024 * 1024;
         private readonly DropboxClient dropboxClient;
-        private readonly IDeletableEntityRepository<File> fileRepository;
+        private readonly IRepository<File> fileRepository;
 
         public FilesService(
             DropboxClient dropboxClient,
-            IDeletableEntityRepository<File> fileRepository)
+            IRepository<File> fileRepository)
         {
             this.dropboxClient = dropboxClient;
             this.fileRepository = fileRepository;

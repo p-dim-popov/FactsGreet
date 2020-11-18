@@ -7,6 +7,7 @@
     using FactsGreet.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     public class UsersSeeder : ISeeder
@@ -21,8 +22,8 @@
             var userManager = serviceProvider
                 .GetService<UserManager<ApplicationUser>>();
 
-            Console.WriteLine("Enter profiles password: ");
-            var password = Console.ReadLine();
+            var configuration = serviceProvider.GetService<IConfiguration>();
+            var password = configuration?.GetSection("BuiltInProfilesPassword").Value;
 
             var users = new (ApplicationUser User, string Role, string[] Badges)[]
             {

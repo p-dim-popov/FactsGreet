@@ -97,9 +97,7 @@ namespace FactsGreet.Data.Migrations
                     Filename = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -490,11 +488,6 @@ namespace FactsGreet.Data.Migrations
                 table: "File",
                 columns: new[] { "Filename", "UserId" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_File_IsDeleted",
-                table: "File",
-                column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_File_UserId",

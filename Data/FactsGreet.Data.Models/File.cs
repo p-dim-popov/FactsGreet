@@ -5,7 +5,7 @@
 
     using FactsGreet.Data.Common.Models;
 
-    public class File : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
+    public class File : BaseModel<Guid>, IAuditInfo
     {
         [Required]
         public string UserId { get; set; }
