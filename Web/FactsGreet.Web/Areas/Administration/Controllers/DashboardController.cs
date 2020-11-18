@@ -5,6 +5,7 @@
 
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
+    using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Administration.Dashboard;
     using Microsoft.AspNetCore.Mvc;
 

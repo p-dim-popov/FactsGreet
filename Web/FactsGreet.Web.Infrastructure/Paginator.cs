@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Common
+﻿namespace FactsGreet.Web.Infrastructure
 {
     using System;
 

@@ -6,16 +6,18 @@
 
     public class FollowConfiguration : IEntityTypeConfiguration<Follow>
     {
-        public void Configure(EntityTypeBuilder<Follow> builder)
+        public void Configure(EntityTypeBuilder<Follow> follow)
         {
-            builder.HasKey(x => new { x.FollowerId, x.FollowedId });
+            follow
+                .HasIndex(x => new { x.FollowerId, x.FollowedId })
+                .IsUnique();
 
-            builder
+            follow
                 .HasOne(x => x.Follower)
                 .WithMany(x => x.Followings)
                 .HasForeignKey(x => x.FollowerId);
 
-            builder
+            follow
                 .HasOne(x => x.Followed)
                 .WithMany(x => x.Followers)
                 .HasForeignKey(x => x.FollowedId);

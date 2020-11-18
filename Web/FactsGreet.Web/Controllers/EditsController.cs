@@ -1,17 +1,11 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Security.Claims;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using DiffMatchPatch;
-    using FactsGreet.Common;
-    using FactsGreet.Data.Models;
-    using FactsGreet.Data.Models.Enums;
+    using FactsGreet.Services;
     using FactsGreet.Services.Data;
+    using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Edits;
     using FactsGreet.Web.ViewModels.Shared;
@@ -24,11 +18,19 @@
 
         private readonly EditsService editsService;
         private readonly ArticlesService articlesService;
+        private readonly FilesService filesService;
+        private readonly DiffMatchPatchService diffMatchPatchService;
 
-        public EditsController(EditsService editsService, ArticlesService articlesService)
+        public EditsController(
+            EditsService editsService,
+            ArticlesService articlesService,
+            FilesService filesService,
+            DiffMatchPatchService diffMatchPatchService)
         {
             this.editsService = editsService;
             this.articlesService = articlesService;
+            this.filesService = filesService;
+            this.diffMatchPatchService = diffMatchPatchService;
         }
 
         [Authorize]
@@ -55,31 +57,44 @@
                 return this.View(model);
             }
 
-            var dmp = new diff_match_patch();
-            var index = 0;
-            var diffs = dmp.diff_main(
-                    await this.articlesService.GetContentAsync(model.Article.Id),
-                    model.Article.Content)
-                .Select(x =>
-                (
-                    Index: index++,
-                    Operation: (DiffOperation)x.operation,
-                    Text: x.text.ToString()))
-                .ToArray();
+            if (model.Article.Title != await this.articlesService.GetTitleAsync(model.Article.Id))
+            {
+                if (await this.articlesService.DoesTitleExistAsync(model.Article.Title))
+                {
+                    this.ViewBag.ErrorMessage = "Title already exists";
+                    return this.View(model);
+                }
+            }
 
-            // TODO: upload and get link
-            var thumbnailLink = string.Empty;
+            string thumbnailLink;
+            try
+            {
+                thumbnailLink = model.Article.ThumbnailLink ?? await this.filesService.UploadAsync(
+                    model.Article.ThumbnailImage.OpenReadStream(),
+                    model.Article.ThumbnailImage.Length,
+                    model.Article.ThumbnailImage.FileName,
+                    this.UserId);
+            }
+            catch (InvalidOperationException)
+            {
+                this.ViewBag.ErrorMessage = "No more available storage. Please delete some files to upload new ones";
+                return this.View(model);
+            }
+
+            var patch = this.diffMatchPatchService.CreatePatch(
+                await this.articlesService.GetContentAsync(model.Article.Id),
+                model.Article.Content);
 
             await this.editsService.CreateAsync(
                 model.Article.Id,
-                this.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                this.UserId,
                 model.Article.Title,
                 model.Article.Content,
                 model.Article.Description,
                 model.Article.Categories.Select(x => x.Name).ToArray(),
                 thumbnailLink,
                 model.Comment,
-                diffs);
+                patch);
 
             return this.RedirectToRoute("article", new { title = model.Article.Title });
         }

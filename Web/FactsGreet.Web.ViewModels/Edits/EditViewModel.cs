@@ -10,7 +10,7 @@
         public string EditorUserName { get; set; }
 
         public string ArticleTitle { get; set; }
-        
-        public ICollection<Diff> Modifications { get; set; }
+
+        public string Patch { get; set; }
     }
 }

@@ -1,0 +1,25 @@
+﻿@model FactsGreet.Web.ViewModels.Files.FileInputModel
+@{
+    ViewBag.Title = "Upload a file";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form asp-area=""
+      asp-controller="Files"
+      asp-action="Upload"
+      method="post"
+      enctype="multipart/form-data">
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+        <label asp-for="Filename"></label>
+        <input asp-for="Filename" class="form-control">
+        <span asp-validation-for="Filename"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="File"></label>
+        <input asp-for="File" class="form-control">
+        <span asp-validation-for="File"></span>
+    </div>
+    <button class="btn btn-success">Upload</button>
+</form>

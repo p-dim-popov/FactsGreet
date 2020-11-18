@@ -1,9 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using FactsGreet.Data.Common.Models;
-
-namespace FactsGreet.Data.Models
+﻿namespace FactsGreet.Data.Models
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
+    using FactsGreet.Data.Common.Models;
+
     public class File : BaseDeletableModel<Guid>, IDeletableEntity, IAuditInfo
     {
         [Required]
@@ -12,11 +13,13 @@ namespace FactsGreet.Data.Models
         public ApplicationUser User { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(120)]
         public string Link { get; set; }
 
         [Required]
         [MaxLength(50)]
         public string Filename { get; set; }
+
+        public long Size { get; set; }
     }
 }

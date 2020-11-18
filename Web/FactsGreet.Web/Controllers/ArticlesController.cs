@@ -2,10 +2,11 @@
 {
     using System;
     using System.Linq;
-    using System.Security.Claims;
     using System.Threading.Tasks;
+
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
+    using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,13 @@
         private const int ArticlesPerPage = 2;
 
         private readonly ArticlesService articlesService;
+        private readonly FilesService filesService;
 
         public ArticlesController(
-            ArticlesService articlesService)
+            ArticlesService articlesService, FilesService filesService)
         {
             this.articlesService = articlesService;
+            this.filesService = filesService;
         }
 
         [Route("/Article/{title}", Name = "article")]
@@ -40,7 +43,7 @@
             article.IsStarredByUser =
                 await this.articlesService.IsStarredByUserAsync(
                     article.Id,
-                    this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    this.UserId);
 
             return this.View("Article", article);
         }
@@ -120,11 +123,23 @@
                 return this.View(model);
             }
 
-            // TODO: upload and get link
-            var thumbnailLink = string.Empty;
+            string thumbnailLink;
+            try
+            {
+                thumbnailLink = model.ThumbnailLink ?? await this.filesService.UploadAsync(
+                    model.ThumbnailImage.OpenReadStream(),
+                    model.ThumbnailImage.Length,
+                    model.ThumbnailImage.FileName,
+                    this.UserId);
+            }
+            catch (InvalidOperationException)
+            {
+                this.ViewBag.ErrorMessage = "No more available storage. Please delete some files to upload new ones";
+                return this.View(model);
+            }
 
             await this.articlesService.CreateAsync(
-                this.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                this.UserId,
                 model.Title,
                 model.Content,
                 model.Categories.Select(x => x.Name).ToArray(),
@@ -148,8 +163,7 @@
         [Authorize]
         public async Task<IActionResult> CreateDeletionRequest(Guid id)
         {
-            if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) !=
-                await this.articlesService.GetAuthorIdAsync(id))
+            if (this.UserId != await this.articlesService.GetAuthorIdAsync(id))
             {
                 return this.Unauthorized();
             }
@@ -166,7 +180,7 @@
         public async Task<IActionResult> CreateDeletionRequest(ArticleDeletionRequestCreateInputModel model)
         {
             var authorId = await this.articlesService.GetAuthorIdAsync(model.Id);
-            if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) != authorId)
+            if (this.UserId != authorId)
             {
                 return this.Unauthorized();
             }
@@ -178,7 +192,7 @@
         [Authorize]
         public async Task<IActionResult> RemoveFromStarred(Guid id)
         {
-            await this.articlesService.RemoveStarAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+            await this.articlesService.RemoveStarAsync(this.UserId, id);
             return this.RedirectToRoute(
                 "article",
                 new
@@ -190,7 +204,7 @@
         [Authorize]
         public async Task<IActionResult> AddToStarred(Guid id)
         {
-            await this.articlesService.AddStarAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+            await this.articlesService.AddStarAsync(this.UserId, id);
             return this.RedirectToRoute(
                 "article",
                 new

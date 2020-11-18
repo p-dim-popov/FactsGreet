@@ -62,21 +62,21 @@
             string[] articleCategories,
             string articleThumbnailLink,
             string editComment,
-            (int Index, DiffOperation Operation, string Text)[] diffs)
+            string patch)
         {
             // TODO: pls have time to optimize this...
-            var inputCategories = articleCategories
+            articleCategories = articleCategories
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(x => x.ToLowerInvariant())
-                .ToList();
+                .ToArray();
 
-            var existingCategories = await this.categoryRepository
-                .AllAsNoTracking()
-                .Where(x => inputCategories.Contains(x.Name))
+            var newCategoriesFromDb = await this.categoryRepository
+                .All()
+                .Where(x => articleCategories.Contains(x.Name))
                 .ToListAsync();
 
-            var newCategories = inputCategories
-                .Except(existingCategories.Select(x => x.Name))
+            var newCategoriesNotFromDb = articleCategories
+                .Except(newCategoriesFromDb.Select(x => x.Name))
                 .Select(x => new Category { Name = x })
                 .ToList();
 
@@ -85,10 +85,17 @@
                 .Where(x => x.Id == articleId)
                 .FirstOrDefaultAsync();
 
-            existingCategories.Concat(newCategories)
-                .Where(x => article.Categories.All(y => y.Name != x.Name))
-                .ToList()
-                .ForEach(x => article.Categories.Add(x));
+            article.Categories = article.Categories
+
+                // filter out the removed categories
+                .Where(x => articleCategories.Contains(x.Name))
+
+                // add existing in db categories
+                .Concat(newCategoriesFromDb)
+
+                // add new db categories
+                .Concat(newCategoriesNotFromDb)
+                .ToList();
 
             article.Title = articleTitle;
             article.Content = articleContent;
@@ -98,14 +105,7 @@
             {
                 Comment = editComment,
                 EditorId = editorId,
-                Diffs = diffs
-                    .Select(x => new Diff
-                    {
-                        Index = x.Index,
-                        Operation = x.Operation,
-                        Text = x.Text,
-                    })
-                    .ToList(),
+                Patch = patch,
                 Notification =
                 {
                     SenderId = editorId,

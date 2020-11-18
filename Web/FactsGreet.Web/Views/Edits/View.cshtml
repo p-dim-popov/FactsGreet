@@ -5,9 +5,4 @@
 
 @Model.EditorUserName
 
-@foreach (var modification in Model.Modifications)
-{
-    <div>index: @modification.Index</div>
-    <div>text: @modification.Text</div>
-    <div>operation: @modification.Operation</div>
-}
+@Model.Patch

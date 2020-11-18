@@ -19,14 +19,27 @@
 
     new SimpleMDE({element: document.getElementById('content-textarea')})
 
+    const categoryRows = document.getElementById('category-rows');
+
+    function repairNamesAndIdsOnCategoryRows() {
+        let i = 0;
+        [...categoryRows.children]
+            .forEach(x =>
+                (x.firstElementChild.id = `${window.categoriesRoute}[${i}].Name`) &&
+                (x.firstElementChild.name = `${window.categoriesRoute}[${i}].Name`) &&
+                ++i &&
+                (x.lastElementChild.firstElementChild.addEventListener('click', repairNamesAndIdsOnCategoryRows)))
+    }
+
     const categoryInput = document.getElementById('category-input');
-    function addCategoryRow(){
-        if (window.categoryRows === undefined) window.categoryRows = 0;
-        document.getElementById('category-rows').innerHTML += `
+
+    function addCategoryRow() {
+        const dummyNumber = Math.random();
+        categoryRows.innerHTML += `
                 <div class="input-group my-2">
                     <input class="form-control"
-                            id="${window.categoriesRoute}[${window.categoryRows}].Name" 
-                            name="${window.categoriesRoute}[${window.categoryRows}].Name" 
+                            id="${dummyNumber}" 
+                            name="${dummyNumber}" 
                             value="${categoryInput.value}"
                             type="text"
                             readonly>
@@ -39,9 +52,9 @@
                 </div>
                 `;
         categoryInput.value = '';
-        window.categoryRows++;
+        repairNamesAndIdsOnCategoryRows();
     }
-    
+
     document.getElementById('add-category-btn')
         .addEventListener('click', addCategoryRow);
 })()

@@ -88,15 +88,44 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Follows",
+                name: "File",
                 columns: table => new
                 {
-                    FollowerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FollowedId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    Filename = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Follows", x => new { x.FollowerId, x.FollowedId });
+                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_File_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FollowerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Follows_AspNetUsers_FollowedId",
                         column: x => x.FollowedId,
@@ -138,12 +167,16 @@ namespace FactsGreet.Data.Migrations
                 name: "Stars",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ArticleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stars", x => new { x.UserId, x.ArticleId });
+                    table.PrimaryKey("PK_Stars", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Stars_Articles_ArticleId",
                         column: x => x.ArticleId,
@@ -294,6 +327,7 @@ namespace FactsGreet.Data.Migrations
                     IsCreation = table.Column<bool>(type: "bit", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Patch = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -355,31 +389,6 @@ namespace FactsGreet.Data.Migrations
                         name: "FK_Messages_Notifications_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notifications",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Diffs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Index = table.Column<long>(type: "bigint", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Operation = table.Column<int>(type: "int", nullable: false),
-                    EditId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Diffs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Diffs_Edits_EditId",
-                        column: x => x.EditId,
-                        principalTable: "Edits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -457,16 +466,6 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Diffs_EditId",
-                table: "Diffs",
-                column: "EditId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Diffs_IsDeleted",
-                table: "Diffs",
-                column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Edits_ArticleId",
                 table: "Edits",
                 column: "ArticleId");
@@ -487,9 +486,31 @@ namespace FactsGreet.Data.Migrations
                 column: "NotificationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_File_Filename_UserId",
+                table: "File",
+                columns: new[] { "Filename", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_IsDeleted",
+                table: "File",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_UserId",
+                table: "File",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Follows_FollowedId",
                 table: "Follows",
                 column: "FollowedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowerId_FollowedId",
+                table: "Follows",
+                columns: new[] { "FollowerId", "FollowedId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ConversationId",
@@ -525,6 +546,12 @@ namespace FactsGreet.Data.Migrations
                 name: "IX_Stars_ArticleId",
                 table: "Stars",
                 column: "ArticleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Stars_UserId_ArticleId",
+                table: "Stars",
+                columns: new[] { "UserId", "ArticleId" },
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -545,7 +572,10 @@ namespace FactsGreet.Data.Migrations
                 name: "ArticleDeletionRequests");
 
             migrationBuilder.DropTable(
-                name: "Diffs");
+                name: "Edits");
+
+            migrationBuilder.DropTable(
+                name: "File");
 
             migrationBuilder.DropTable(
                 name: "Follows");
@@ -563,16 +593,13 @@ namespace FactsGreet.Data.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Edits");
-
-            migrationBuilder.DropTable(
                 name: "Conversations");
 
             migrationBuilder.DropTable(
-                name: "Articles");
+                name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "Articles");
         }
     }
 }

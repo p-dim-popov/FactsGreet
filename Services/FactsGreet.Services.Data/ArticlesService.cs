@@ -18,23 +18,23 @@
         private readonly IRepository<Category> categoryRepository;
         private readonly IRepository<Star> starRepository;
         private readonly IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
-        private readonly IDeletableEntityRepository<Diff> modificationRepository;
         private readonly IDeletableEntityRepository<Edit> editRepository;
+        private readonly DiffMatchPatchService diffMatchPatchService;
 
         public ArticlesService(
             IDeletableEntityRepository<Article> articleRepository,
             IRepository<Category> categoryRepository,
             IRepository<Star> starRepository,
             IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
-            IDeletableEntityRepository<Diff> modificationRepository,
-            IDeletableEntityRepository<Edit> editRepository)
+            IDeletableEntityRepository<Edit> editRepository,
+            DiffMatchPatchService diffMatchPatchService)
         {
             this.articleRepository = articleRepository;
             this.categoryRepository = categoryRepository;
             this.starRepository = starRepository;
             this.articleDeletionRequestRepository = articleDeletionRequestRepository;
-            this.modificationRepository = modificationRepository;
             this.editRepository = editRepository;
+            this.diffMatchPatchService = diffMatchPatchService;
         }
 
         public Task<string> GetTitleAsync(Guid id)
@@ -84,15 +84,7 @@
                     {
                         EditorId = authorId,
                         IsCreation = true,
-                        Diffs = new List<Diff>
-                        {
-                            new Diff
-                            {
-                                Index = 0,
-                                Text = content,
-                                Operation = DiffOperation.Insert,
-                            },
-                        },
+                        Patch = this.diffMatchPatchService.CreatePatch(string.Empty, content),
                     },
                 },
             };
@@ -103,7 +95,7 @@
 
         public async Task AddStarAsync(string userId, Guid articleId)
         {
-            var isStarred = await this.starRepository.All()
+            var isStarred = await this.starRepository.AllAsNoTracking()
                 .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
 
             if (!isStarred)
@@ -115,7 +107,7 @@
 
         public async Task RemoveStarAsync(string userId, Guid articleId)
         {
-            var isStarred = await this.starRepository.All()
+            var isStarred = await this.starRepository.AllAsNoTracking()
                 .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
 
             if (isStarred)
@@ -195,7 +187,6 @@
                 .Include(x => x.DeletionRequests)
                 .Include(x => x.Stars)
                 .Include(x => x.Edits)
-                .ThenInclude(x => x.Diffs)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             foreach (var request in article.DeletionRequests)
@@ -210,11 +201,6 @@
 
             foreach (var edit in article.Edits)
             {
-                foreach (var modification in edit.Diffs)
-                {
-                    this.modificationRepository.Delete(modification);
-                }
-
                 this.editRepository.Delete(edit);
             }
 
@@ -237,10 +223,8 @@
         }
 
         public Task<bool> IsStarredByUserAsync(Guid articleId, string userId)
-            => this.articleRepository.AllAsNoTracking()
-                .Where(x => x.Id == articleId)
-                .AnyAsync(x => x.Stars
-                    .Any(y => y.UserId == userId));
+            => this.starRepository.AllAsNoTracking()
+                .AnyAsync(x => x.ArticleId == articleId && x.UserId == userId);
 
         public Task<string> GetContentAsync(Guid id)
             => this.articleRepository.AllAsNoTracking()

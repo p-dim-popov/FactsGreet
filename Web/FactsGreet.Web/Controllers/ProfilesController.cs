@@ -30,7 +30,7 @@
         public async Task<IActionResult> RemoveBadge(string name)
         {
             await this.applicationUsersService
-                .RemoveBadgeAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier), name);
+                .RemoveBadgeAsync(this.UserId, name);
 
             return this.RedirectToRoute($"View/{this.User.FindFirstValue(ClaimTypes.Email)}");
         }

@@ -27,7 +27,7 @@
             </div>
             <div class="col-auto">
                 <img id="preview-img"
-                     src="@GlobalConstants.DefaultThumbnailLink"
+                     src="@Model.Article.ThumbnailLink"
                      class="rounded"
                      style="width: 200px;height: 200px"
                      alt=""/>
@@ -104,9 +104,6 @@
                                 </div>
                                 i++;
                             }
-                            <script>
-                                   window.categoryRows = @Model.Article.Categories.Count
-                            </script>
                         }
                     </div>
                 </div>

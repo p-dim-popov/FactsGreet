@@ -379,46 +379,6 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("Conversations");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("EditId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("Index")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Operation")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EditId");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Diffs");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -455,6 +415,10 @@ namespace FactsGreet.Data.Migrations
                     b.Property<Guid>("NotificationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Patch")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
@@ -468,17 +432,80 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("Edits");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("Filename", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("File");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>
                 {
-                    b.Property<string>("FollowerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FollowedId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("FollowerId", "FollowedId");
+                    b.Property<string>("FollowerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("FollowedId");
+
+                    b.HasIndex("FollowerId", "FollowedId")
+                        .IsUnique();
 
                     b.ToTable("Follows");
                 });
@@ -597,15 +624,30 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.Star", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<Guid>("ArticleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId", "ArticleId");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
+
+                    b.HasIndex("UserId", "ArticleId")
+                        .IsUnique();
 
                     b.ToTable("Stars");
                 });
@@ -813,13 +855,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.Edit", null)
-                        .WithMany("Diffs")
-                        .HasForeignKey("EditId");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
@@ -845,6 +880,17 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Editor");
 
                     b.Navigation("Notification");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.File", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>
@@ -1007,11 +1053,6 @@ namespace FactsGreet.Data.Migrations
             modelBuilder.Entity("FactsGreet.Data.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
-                {
-                    b.Navigation("Diffs");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>

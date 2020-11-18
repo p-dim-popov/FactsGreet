@@ -39,6 +39,10 @@
     {
       "library": "simplemde@1.11.2",
       "destination": "wwwroot/lib/simplemde"
+    },
+    {
+      "library": "magic-grid@3.2.4",
+      "destination": "wwwroot/lib/magic-grid"
     }
   ]
 }

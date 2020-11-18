@@ -1,13 +1,15 @@
 ﻿namespace FactsGreet.Web
 {
-    using System;
     using System.Reflection;
+
+    using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Data.Repositories;
     using FactsGreet.Data.Seeding;
+    using FactsGreet.Services;
     using FactsGreet.Services.Data;
     using FactsGreet.Services.Mapping;
     using FactsGreet.Services.Messaging;
@@ -22,6 +24,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using TrueCommerce.Shared.DiffMatchPatch;
     using Westwind.AspNetCore.Markdown;
 
     public class Startup
@@ -65,15 +68,19 @@
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-            services.AddScoped<ArticlesService>();
-            services.AddScoped<EditsService>();
-            services.AddScoped<NotificationsService>();
-            services.AddScoped<ArticleDeletionRequestsService>();
-            services.AddScoped<ApplicationUsersService>();
+            services.AddScoped(_ => new DropboxClient(this.configuration.GetSection("DropboxAccessToken").Value));
 
             // Application services
+            services.AddTransient<DiffMatchPatch>();
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ArticlesService>();
+            services.AddTransient<EditsService>();
+            services.AddTransient<NotificationsService>();
+            services.AddTransient<ArticleDeletionRequestsService>();
+            services.AddTransient<ApplicationUsersService>();
+            services.AddTransient<FilesService>();
+            services.AddTransient<DiffMatchPatchService>();
 
             services.AddMarkdown(config =>
             {

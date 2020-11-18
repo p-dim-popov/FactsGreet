@@ -1,0 +1,80 @@
+﻿@model FactsGreet.Web.ViewModels.Files.AllFilesViewModel
+
+@{
+    ViewBag.Title = "Files";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-auto">
+            <h2>Files</h2>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-success" asp-area="" asp-controller="Files" asp-action="Upload">
+                Upload
+            </a>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <h4 class="col-auto">
+            @string.Format($"{1.0 * Model.UsedSize / (1024 * 1024):f2}") MB of 100 MB used
+        </h4>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div id="files">
+                @foreach (var file in Model.Files)
+                {
+                    <div class="card" style="width: 200px;">
+                        <img class="card-img-top" src="@file.Link" alt="@file.Filename">
+                        <div class="card-body">
+                            <h5 class="card-title">@file.Filename</h5>
+                            <p class="card-text">
+                                <span class="font-weight-bold">Size: </span>
+                                @(file.Size / 1024) kb
+                            </p>
+                            <p class="card-text">
+                                <span class="font-weight-bold">Link: </span>
+                                @file.Link
+                            </p>
+                            <div asp-validation-summary="All"></div>
+                            <form method="post" class="form-inline">
+                                <input asp-for="@file.Id" hidden>
+                                <input asp-for="@file.Filename" hidden disabled>
+                                <a class="rename-btn btn btn-primary">
+                                    Rename
+                                </a>
+                                <button
+                                    asp-area=""
+                                    asp-controller="Files"
+                                    asp-action="Rename"
+                                    class="apply-rename-btn btn btn-success"
+                                    hidden>
+                                    ✓
+                                </button>
+                                <button asp-area=""
+                                        asp-controller="Files"
+                                        asp-action="Delete"
+                                        class="btn btn-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section StyleLinks
+{
+    <link rel="stylesheet" href="~/css/files/all.css" asp-append-version="true">
+}
+
+@section Scripts{
+    <script src="~/lib/magic-grid/dist/magic-grid.min.js" asp-append-version="true"></script>
+
+    <script src="~/js/files/all.js" asp-append-version="true"></script>
+}

@@ -6,19 +6,21 @@
 
     public class StarConfiguration : IEntityTypeConfiguration<Star>
     {
-        public void Configure(EntityTypeBuilder<Star> builder)
+        public void Configure(EntityTypeBuilder<Star> star)
         {
-            builder.HasKey(x => new { x.UserId, x.ArticleId });
+            star
+                .HasIndex(x => new { x.UserId, x.ArticleId })
+                .IsUnique();
 
-            builder
-                .HasOne(x => x.User)
-                .WithMany(x => x.StarredArticles)
-                .HasForeignKey(x => x.UserId);
-
-            builder
+            star
                 .HasOne(x => x.Article)
                 .WithMany(x => x.Stars)
                 .HasForeignKey(x => x.ArticleId);
+
+            star
+                .HasOne(x => x.User)
+                .WithMany(x => x.StarredArticles)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

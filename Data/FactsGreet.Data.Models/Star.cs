@@ -3,7 +3,9 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class Star
+    using FactsGreet.Data.Common.Models;
+
+    public class Star : BaseModel<int>
     {
         public Guid ArticleId { get; set; }
 

@@ -29,7 +29,7 @@
         public virtual Notification Notification { get; set; }
             = new Notification { Type = NotificationType.Edit };
 
-        public virtual ICollection<Diff> Diffs { get; set; }
-            = new HashSet<Diff>();
+        [Required]
+        public string Patch { get; set; }
     }
 }

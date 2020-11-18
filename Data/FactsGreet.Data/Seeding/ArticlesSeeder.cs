@@ -11,8 +11,11 @@
     using AngleSharp.Html.Parser;
     using FactsGreet.Data.Models;
     using FactsGreet.Data.Models.Enums;
+    using FactsGreet.Services;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
+    using TrueCommerce.Shared.DiffMatchPatch;
 
     public class ArticlesSeeder : ISeeder
     {
@@ -23,6 +26,7 @@
                 return;
             }
 
+            var dmpService = serviceProvider.GetService<DiffMatchPatchService>();
             var rng = new Random(DateTime.Now.Millisecond);
             var categories = await dbContext.Categories.ToListAsync();
 
@@ -129,18 +133,10 @@
                     x.Edits.Add(new Edit
                     {
                         EditorId = x.AuthorId,
-                        Diffs = new List<Diff>
-                        {
-                            new Diff
-                            {
-                                Index = 0,
-                                Text = x.Content,
-                                Operation = DiffOperation.Insert,
-                            },
-                        },
                         IsCreation = true,
                         Notification = { SenderId = x.AuthorId },
                         Comment = "Initial create",
+                        Patch = dmpService?.CreatePatch(string.Empty, x.Content),
                     });
                     return x;
                 })
