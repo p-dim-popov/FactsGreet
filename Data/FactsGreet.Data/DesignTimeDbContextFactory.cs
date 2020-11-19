@@ -16,9 +16,9 @@
                 .Build();
 
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            builder.UseSqlServer(connectionString);
-
+            builder
+                // .UseSqlServer(configuration.GetConnectionString("SqlServer"));
+                .UseNpgsql(configuration.GetConnectionString("Postgre"));
             return new ApplicationDbContext(builder.Options);
         }
     }

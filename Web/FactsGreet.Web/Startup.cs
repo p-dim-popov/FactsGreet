@@ -25,6 +25,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Westwind.AspNetCore.Markdown;
+
     using DiffMatchPatch = TrueCommerce.Shared.DiffMatchPatch.DiffMatchPatch;
 
     public class Startup
@@ -40,7 +41,9 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
+                options =>
+                    // options.UseSqlServer(this.configuration.GetConnectionString("SqlServer")));
+                    options.UseNpgsql(this.configuration.GetConnectionString("Postgre")));
 
             services
                 // .AddIdentity<ApplicationUser, ApplicationRole>(IdentityOptionsProvider.GetIdentityOptions)

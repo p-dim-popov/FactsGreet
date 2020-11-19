@@ -3,7 +3,7 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-FactsGreet-BBB373B5-EF3F-4DBB-B8AA-7152CEC275BF</UserSecretsId>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,8 +31,9 @@
     </PackageReference>
     <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.4.5" />
     <PackageReference Include="Dropbox.Api" Version="5.5.0" />
-    <PackageReference Include="TrueCommerce.Shared.DiffMatchPatch" Version="4.0.0" />
+    <PackageReference Include="TrueCommerce.Shared.DiffMatchPatch" Version="5.0.0" />
     <PackageReference Include="DiffMatchPatchSharp" Version="1.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
