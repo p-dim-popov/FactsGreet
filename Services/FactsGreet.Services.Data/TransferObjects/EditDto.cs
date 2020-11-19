@@ -11,5 +11,9 @@
         public string ArticleTitle { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public Guid TargetArticleId { get; set; }
+
+        public Guid? AgainstArticleId { get; set; }
     }
 }

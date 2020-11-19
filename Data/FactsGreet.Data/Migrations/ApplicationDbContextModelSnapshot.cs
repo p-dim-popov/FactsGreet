@@ -402,7 +402,7 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("PatchId");
 
-                    b.ToTable("Diff");
+                    b.ToTable("Diffs");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
@@ -416,8 +416,8 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<string>("Comment")
                         .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
@@ -635,7 +635,7 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("EditId");
 
-                    b.ToTable("Patch");
+                    b.ToTable("Patches");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Setting", b =>

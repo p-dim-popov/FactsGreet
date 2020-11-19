@@ -1,12 +1,12 @@
 ﻿@model FactsGreet.Web.ViewModels.Edits.HistoryViewModel
 @{
-    ViewBag.Title = $"History of: {Model.Article.Title}";
+    ViewBag.Title = $"History of: {Model.ArticleTitle}";
 }
 
 <div class="container">
     <div class="row">
         <div class="col">
-            <h2>History for: @Model.Article.Title</h2>
+            <h2>History for: @Model.ArticleTitle</h2>
         </div>
     </div>
     <div class="row">
@@ -17,7 +17,7 @@
                 </span>
                 EditorUserName - Comment
             </a>
-            @foreach (var edit in Model.Article.Edits)
+            @foreach (var edit in Model.Edits)
             {
                 <a asp-controller="Edits"
                    asp-action="View"

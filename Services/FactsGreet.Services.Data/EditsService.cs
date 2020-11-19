@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
@@ -37,13 +38,19 @@
         public async Task<ICollection<T>> GetPaginatedOrderedByDateDescendingAsync<T>(
             int skip,
             int take,
-            string userId = null)
+            string userId = null,
+            Expression<Func<Edit, bool>> filter = null)
         {
             var edits = this.editRepository.All();
 
             if (userId is { })
             {
                 edits = edits.Where(x => x.EditorId == userId);
+            }
+
+            if (filter is { })
+            {
+                edits = edits.Where(filter);
             }
 
             return await edits
@@ -121,6 +128,8 @@
 
             return new EditDto
             {
+                TargetArticleId = targetId,
+                AgainstArticleId = againstId,
                 TargetArticleContent = targetArticle,
                 AgainstArticleContent = againstArticle,
                 ArticleTitle = presentArticle.Title,

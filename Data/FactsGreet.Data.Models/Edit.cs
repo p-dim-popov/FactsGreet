@@ -21,7 +21,7 @@
         public bool IsCreation { get; set; }
 
         [Required]
-        [MaxLength(450)]
+        [MaxLength(120)]
         public string Comment { get; set; }
 
         public Guid NotificationId { get; set; }

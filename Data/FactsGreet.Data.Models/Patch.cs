@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     using FactsGreet.Data.Common.Models;
 
+    [Table("Patches")]
     public class Patch : BaseModel<Guid>
     {
         public int Start1 { get; set; }

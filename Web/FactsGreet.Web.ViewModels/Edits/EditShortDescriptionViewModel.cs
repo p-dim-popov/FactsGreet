@@ -13,8 +13,6 @@
 
         public DateTime CreatedOn { get; set; }
 
-        public int ModificationsCount { get; set; }
-
         public string Comment { get; set; }
     }
 }

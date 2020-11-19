@@ -495,7 +495,7 @@ namespace FactsGreet.Data.Migrations
                     EditorId = table.Column<string>(type: "text", nullable: false),
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsCreation = table.Column<bool>(type: "boolean", nullable: false),
-                    Comment = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    Comment = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -563,7 +563,7 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Patch",
+                name: "Patches",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -577,9 +577,9 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patch", x => x.Id);
+                    table.PrimaryKey("PK_Patches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Patch_Edits_EditId",
+                        name: "FK_Patches_Edits_EditId",
                         column: x => x.EditId,
                         principalTable: "Edits",
                         principalColumn: "Id",
@@ -587,7 +587,7 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Diff",
+                name: "Diffs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -599,11 +599,11 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Diff", x => x.Id);
+                    table.PrimaryKey("PK_Diffs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Diff_Patch_PatchId",
+                        name: "FK_Diffs_Patches_PatchId",
                         column: x => x.PatchId,
-                        principalTable: "Patch",
+                        principalTable: "Patches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -728,8 +728,8 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Diff_PatchId",
-                table: "Diff",
+                name: "IX_Diffs_PatchId",
+                table: "Diffs",
                 column: "PatchId");
 
             migrationBuilder.CreateIndex(
@@ -805,8 +805,8 @@ namespace FactsGreet.Data.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patch_EditId",
-                table: "Patch",
+                name: "IX_Patches_EditId",
+                table: "Patches",
                 column: "EditId");
 
             migrationBuilder.CreateIndex(
@@ -859,7 +859,7 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Diff");
+                name: "Diffs");
 
             migrationBuilder.DropTable(
                 name: "File");
@@ -886,7 +886,7 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Patch");
+                name: "Patches");
 
             migrationBuilder.DropTable(
                 name: "Conversations");

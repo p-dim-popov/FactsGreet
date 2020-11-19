@@ -13,7 +13,7 @@
         requestIsPending = true;
         const articlesResponse =
             await fetch(
-                `/Edits/GetEdits?${window?.globalConstants?.queryParameters ?? ''}&page=${page}`,
+                `/Edits/GetEditsWithArticleCards?${window?.globalConstants?.queryParameters ?? ''}&page=${page}`,
                 {redirect: 'follow'});
         requestIsPending = false;
 

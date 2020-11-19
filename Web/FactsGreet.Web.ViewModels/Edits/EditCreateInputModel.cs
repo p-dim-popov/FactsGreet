@@ -10,7 +10,7 @@
 
         [Required]
         [Display(Name = "Edit summary")]
-        [StringLength(450)]
+        [StringLength(120)]
         public string Comment { get; set; }
     }
 }

@@ -1,9 +1,12 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
+    using System.Text.Json;
     using System.Threading.Tasks;
-
+    using FactsGreet.Data.Models;
     using FactsGreet.Services;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
@@ -12,6 +15,7 @@
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
 
     public class EditsController : BaseController
     {
@@ -105,27 +109,58 @@
         {
             return this.View(new HistoryViewModel
             {
-                Article = await this.articlesService.GetByTitleAsync<ArticleWithEditsViewModel>(title),
+                ArticleTitle = title,
+                Edits = await this.GetEdits<EditShortDescriptionViewModel>(page, filter: x => x.Article.Title == title),
                 PaginationViewModel = new CompactPaginationViewModel { CurrentPage = page },
             });
         }
 
+        public async Task<IActionResult> GetEditsInfoList(
+            string title,
+            char which,
+            DateTime target,
+            int page = 1)
+        {
+            // TODO: add select to corresponding view
+            return this.Json(
+                await this.GetEdits<EditShortDescriptionViewModel>(
+                    page,
+                    filter: x =>
+                        x.Article.Title == title && which == '>'
+                            ? x.CreatedOn > target
+
+                            // ReSharper disable once SimplifyConditionalTernaryExpression
+                            : which == '<'
+                                ? x.CreatedOn < target
+                                : false));
+        }
+
         public async Task<IActionResult> View(Guid id, Guid? against)
         {
-            return this.View(await this.editsService.GetById(id));
+            return this.View(await this.editsService.GetById(id, against));
         }
 
         [Authorize]
-        public async Task<IActionResult> GetEdits(int page = 1, string userId = null)
+        public async Task<IActionResult> GetEditsWithArticleCards(int page = 1, string userId = null)
+        {
+            var edits =
+                await this.GetEdits<CompactEditViewModel>(page, userId);
+
+            return this.PartialView("_ListCompactEditsPartial", edits);
+        }
+
+        private async Task<ICollection<T>> GetEdits<T>(
+            int page = 1,
+            string userId = null,
+            Expression<Func<Edit, bool>> filter = null)
         {
             var pagination = Paginator.GetPagination(page, EditsPerPage);
 
-            var edits =
-                await this.editsService
-                    .GetPaginatedOrderedByDateDescendingAsync<CompactEditViewModel>(
-                        pagination.Skip, pagination.Take, userId);
-
-            return this.PartialView("_ListCompactEditsPartial", edits);
+            return await this.editsService.GetPaginatedOrderedByDateDescendingAsync<T>(
+                pagination.Skip,
+                pagination.Take,
+                userId,
+                filter);
         }
     }
 }
