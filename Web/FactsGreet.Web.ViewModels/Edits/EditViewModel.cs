@@ -5,7 +5,7 @@
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
 
-    public class EditViewModel : IMapFrom<Edit>
+    public class EditViewModel
     {
         public string EditorUserName { get; set; }
 

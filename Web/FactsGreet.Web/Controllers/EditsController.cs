@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Services;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
@@ -69,11 +70,14 @@
             string thumbnailLink;
             try
             {
-                thumbnailLink = model.Article.ThumbnailLink ?? await this.filesService.UploadAsync(
-                    model.Article.ThumbnailImage.OpenReadStream(),
-                    model.Article.ThumbnailImage.Length,
-                    model.Article.ThumbnailImage.FileName,
-                    this.UserId);
+                thumbnailLink = model.Article.ThumbnailLink ??
+                                (model.Article.ThumbnailImage is null
+                                    ? null
+                                    : await this.filesService.UploadAsync(
+                                        model.Article.ThumbnailImage.OpenReadStream(),
+                                        model.Article.ThumbnailImage.Length,
+                                        model.Article.ThumbnailImage.FileName,
+                                        this.UserId));
             }
             catch (InvalidOperationException)
             {
@@ -81,7 +85,7 @@
                 return this.View(model);
             }
 
-            var patch = this.diffMatchPatchService.CreatePatch(
+            var patch = this.diffMatchPatchService.CreateEdit(
                 await this.articlesService.GetContentAsync(model.Article.Id),
                 model.Article.Content);
 
@@ -93,8 +97,7 @@
                 model.Article.Description,
                 model.Article.Categories.Select(x => x.Name).ToArray(),
                 thumbnailLink,
-                model.Comment,
-                patch);
+                model.Comment);
 
             return this.RedirectToRoute("article", new { title = model.Article.Title });
         }
@@ -109,9 +112,9 @@
             });
         }
 
-        public async Task<IActionResult> View(Guid id)
+        public async Task<IActionResult> View(Guid id, Guid? against)
         {
-            return this.View(await this.editsService.GetById<EditViewModel>(id));
+            return this.View(await this.editsService.GetById(id));
         }
 
         [Authorize]

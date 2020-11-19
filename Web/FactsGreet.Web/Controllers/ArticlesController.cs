@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
@@ -126,11 +125,14 @@
             string thumbnailLink;
             try
             {
-                thumbnailLink = model.ThumbnailLink ?? await this.filesService.UploadAsync(
-                    model.ThumbnailImage.OpenReadStream(),
-                    model.ThumbnailImage.Length,
-                    model.ThumbnailImage.FileName,
-                    this.UserId);
+                thumbnailLink = model.ThumbnailLink ??
+                                (model.ThumbnailImage is null
+                                    ? null
+                                    : await this.filesService.UploadAsync(
+                                        model.ThumbnailImage.OpenReadStream(),
+                                        model.ThumbnailImage.Length,
+                                        model.ThumbnailImage.FileName,
+                                        this.UserId));
             }
             catch (InvalidOperationException)
             {

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FactsGreet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201118130529_CreateModels")]
+    [Migration("20201118204435_CreateModels")]
     partial class CreateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,6 +381,34 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("Conversations");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("PatchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatchId");
+
+                    b.ToTable("Diff");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -416,10 +444,6 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<Guid>("NotificationId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Patch")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -582,6 +606,40 @@ namespace FactsGreet.Data.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("EditId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Length1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Length2")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Start1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Start2")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditId");
+
+                    b.ToTable("Patch");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Setting", b =>
@@ -849,6 +907,13 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.Patch", null)
+                        .WithMany("Diffs")
+                        .HasForeignKey("PatchId");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
@@ -938,6 +1003,13 @@ namespace FactsGreet.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.Edit", null)
+                        .WithMany("Patches")
+                        .HasForeignKey("EditId");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Star", b =>
@@ -1049,6 +1121,11 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.Edit", b =>
+                {
+                    b.Navigation("Patches");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
                 {
                     b.Navigation("ArticleDeletionRequestNotifications");
@@ -1056,6 +1133,11 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("EditNotifications");
 
                     b.Navigation("MessageNotifications");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
+                {
+                    b.Navigation("Diffs");
                 });
 #pragma warning restore 612, 618
         }

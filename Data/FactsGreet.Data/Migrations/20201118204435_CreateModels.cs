@@ -325,7 +325,6 @@ namespace FactsGreet.Data.Migrations
                     IsCreation = table.Column<bool>(type: "bit", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     NotificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Patch = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -387,6 +386,52 @@ namespace FactsGreet.Data.Migrations
                         name: "FK_Messages_Notifications_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patch",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Start1 = table.Column<int>(type: "int", nullable: false),
+                    Start2 = table.Column<int>(type: "int", nullable: false),
+                    Length1 = table.Column<int>(type: "int", nullable: false),
+                    Length2 = table.Column<int>(type: "int", nullable: false),
+                    EditId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patch", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patch_Edits_EditId",
+                        column: x => x.EditId,
+                        principalTable: "Edits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Diff",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Operation = table.Column<int>(type: "int", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Diff", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Diff_Patch_PatchId",
+                        column: x => x.PatchId,
+                        principalTable: "Patch",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -464,6 +509,11 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Diff_PatchId",
+                table: "Diff",
+                column: "PatchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Edits_ArticleId",
                 table: "Edits",
                 column: "ArticleId");
@@ -536,6 +586,11 @@ namespace FactsGreet.Data.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patch_EditId",
+                table: "Patch",
+                column: "EditId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stars_ArticleId",
                 table: "Stars",
                 column: "ArticleId");
@@ -565,7 +620,7 @@ namespace FactsGreet.Data.Migrations
                 name: "ArticleDeletionRequests");
 
             migrationBuilder.DropTable(
-                name: "Edits");
+                name: "Diff");
 
             migrationBuilder.DropTable(
                 name: "File");
@@ -586,13 +641,19 @@ namespace FactsGreet.Data.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
+                name: "Patch");
+
+            migrationBuilder.DropTable(
                 name: "Conversations");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "Edits");
 
             migrationBuilder.DropTable(
                 name: "Articles");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
         }
     }
 }

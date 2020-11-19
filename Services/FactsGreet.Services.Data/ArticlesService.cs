@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Data.Models.Enums;
@@ -53,17 +52,17 @@
             string thumbnailLink,
             string description)
         {
-            var inputCategories = categories
+            categories = categories
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(x => x.ToLowerInvariant())
-                .ToList();
+                .ToArray();
 
             var existingCategories = await this.categoryRepository
-                .AllAsNoTracking()
-                .Where(x => inputCategories.Contains(x.Name))
+                .All()
+                .Where(x => categories.Contains(x.Name))
                 .ToListAsync();
 
-            var newCategories = inputCategories
+            var newCategories = categories
                 .Except(existingCategories.Select(x => x.Name))
                 .Select(x => new Category { Name = x })
                 .ToList();
@@ -73,7 +72,6 @@
                 AuthorId = authorId,
                 Title = title,
                 Content = content,
-                ThumbnailLink = thumbnailLink,
                 Description = description,
                 Categories = existingCategories
                     .Concat(newCategories)
@@ -84,10 +82,16 @@
                     {
                         EditorId = authorId,
                         IsCreation = true,
-                        Patch = this.diffMatchPatchService.CreatePatch(string.Empty, content),
+                        Patches = this.diffMatchPatchService.CreateEdit(string.Empty, content),
+                        Notification = { SenderId = authorId },
+                        Comment = "Initial create", // TODO: Think about combining edit and create view bcs of this...
                     },
                 },
             };
+            if (thumbnailLink is { })
+            {
+                article.ThumbnailLink = thumbnailLink;
+            }
 
             await this.articleRepository.AddAsync(article);
             await this.articleRepository.SaveChangesAsync();

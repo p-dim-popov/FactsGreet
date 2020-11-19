@@ -1,8 +1,6 @@
-﻿@model FactsGreet.Web.ViewModels.Edits.EditViewModel
+﻿@model FactsGreet.Services.Data.TransferObjects.EditDto
 @{
-    ViewBag.Title = Model.ArticleTitle;
+    ViewBag.Title = Model;
 }
 
-@Model.EditorUserName
-
-@Model.Patch
+@Model.ArticleContent

@@ -1,21 +1,16 @@
 ﻿namespace FactsGreet.Data.Seeding
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using AngleSharp;
     using AngleSharp.Dom;
     using AngleSharp.Html.Parser;
     using FactsGreet.Data.Models;
-    using FactsGreet.Data.Models.Enums;
     using FactsGreet.Services;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using TrueCommerce.Shared.DiffMatchPatch;
 
     public class ArticlesSeeder : ISeeder
     {
@@ -136,7 +131,7 @@
                         IsCreation = true,
                         Notification = { SenderId = x.AuthorId },
                         Comment = "Initial create",
-                        Patch = dmpService?.CreatePatch(string.Empty, x.Content),
+                        Patches = dmpService?.CreateEdit(string.Empty, x.Content),
                     });
                     return x;
                 })
