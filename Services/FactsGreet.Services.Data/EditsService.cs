@@ -54,26 +54,27 @@
                 .ToListAsync();
         }
 
-        public async Task<EditDto> GetById(Guid id, Guid? against = null)
+        public async Task<EditDto> GetById(Guid targetId, Guid? againstId = null)
         {
-            var againstDate = against.HasValue
+            var againstDate = againstId.HasValue
                 ? await this.editRepository
                     .AllAsNoTracking()
-                    .Where(x => x.Id == id)
+                    .Where(x => x.Id == targetId)
                     .Select(x => x.CreatedOn)
                     .FirstOrDefaultAsync()
                 : DateTime.UtcNow;
 
             var targetDate = await this.editRepository
                 .AllAsNoTracking()
-                .Where(x => x.Id == id)
+                .Where(x => x.Id == targetId)
                 .Select(x => x.CreatedOn)
                 .FirstOrDefaultAsync();
 
+            // all edits made after the requested edit plus the requested edit
             var laterEdits = await this.editRepository
                 .AllAsNoTracking()
                 .OrderBy(x => x.CreatedOn)
-                .Where(x => x.CreatedOn >= targetDate)
+                .Where(x => x.CreatedOn > targetDate)
                 .Include(x => x.Patches)
                 .ThenInclude(x => x.Diffs)
                 .AsSingleQuery()
@@ -84,17 +85,21 @@
                 })
                 .ToListAsync();
 
-            var patches = laterEdits.Aggregate(
-                new { LaterEdits = new List<List<DbPatch>>(), AgainstToCurrentEdits = new List<List<DbPatch>>() },
+            var edits = laterEdits.Aggregate(
+                new
+                {
+                    AgainstToTarget = new List<List<DbPatch>>(),
+                    LatestToAgainst = new List<List<DbPatch>>(),
+                },
                 (acc, cur) =>
                 {
-                    if (cur.CreatedOn <= againstDate)
+                    if (cur.CreatedOn > againstDate)
                     {
-                        acc.LaterEdits.Add(cur.Patches.ToList());
+                        acc.LatestToAgainst.Add(cur.Patches.ToList());
                     }
                     else
                     {
-                        acc.AgainstToCurrentEdits.Add(cur.Patches.ToList());
+                        acc.AgainstToTarget.Add(cur.Patches.ToList());
                     }
 
                     return acc;
@@ -102,21 +107,24 @@
 
             var presentArticle = await this.editRepository
                 .AllAsNoTracking()
-                .Where(x => x.Id == id)
-                .Select(x => x.Article.Content)
+                .Where(x => x.Id == targetId)
+                .Select(x => new { x.Article.Content, x.Article.Title })
                 .FirstOrDefaultAsync();
 
             var againstArticle =
                 this.diffMatchPatchService
-                    .ApplyEdits(presentArticle, patches.AgainstToCurrentEdits);
+                    .ApplyEdits(presentArticle.Content, edits.LatestToAgainst);
 
             var targetArticle =
                 this.diffMatchPatchService
-                    .ApplyEdits(againstArticle, patches.LaterEdits);
+                    .ApplyEdits(againstArticle, edits.AgainstToTarget);
 
             return new EditDto
             {
-                ArticleContent = targetArticle,
+                TargetArticleContent = targetArticle,
+                AgainstArticleContent = againstArticle,
+                ArticleTitle = presentArticle.Title,
+                CreatedOn = targetDate,
             };
         }
 

@@ -43,6 +43,10 @@
     {
       "library": "magic-grid@3.2.4",
       "destination": "wwwroot/lib/magic-grid"
+    },
+    {
+      "library": "sync-scroll@1.0.3",
+      "destination": "wwwroot\\lib\\sync-scroll"
     }
   ]
 }

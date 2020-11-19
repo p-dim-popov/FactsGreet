@@ -1,6 +1,58 @@
-﻿@model FactsGreet.Services.Data.TransferObjects.EditDto
+﻿@using DiffMatchPatchSharp
+@using Westwind.AspNetCore.Markdown
+@model FactsGreet.Services.Data.TransferObjects.EditDto
+@addTagHelper *, Westwind.AspNetCore.Markdown
+@inject HtmlTextDiffChanges HtmlTextDiffChanges
 @{
     ViewBag.Title = Model;
+    var (target,against) = HtmlTextDiffChanges.CompareHtml(
+        $"<div>{Markdown.Parse(Model.TargetArticleContent, sanitizeHtml: true)}</div>",
+        $"<div>{Markdown.Parse(Model.AgainstArticleContent, sanitizeHtml: true)}</div>");
 }
 
-@Model.ArticleContent
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <hr>
+            <h1>Changes</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div id="target" class="col syncscroll rounded border" name="content">
+            @Html.Raw(target)
+        </div>
+        <div id="against" class="col syncscroll rounded border" name="content">
+            @Html.Raw(against)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <hr>
+            <h1>Preview of <span class="utc-to-local">@Model.CreatedOn.ToString("R")</span></h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-auto">
+            <h2>@Model.ArticleTitle</h2>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <markdown normalize-whitespace="false" markdown="@Model.TargetArticleContent"/>
+        </div>
+    </div>
+</div>
+
+@section StyleLinks
+{
+    <link href="~/css/edits/view.css" rel="stylesheet" asp-append-version="true">
+}
+
+@section Scripts
+{
+    <script src="~/lib/sync-scroll/syncscroll.min.js"></script>
+    <script src="~/js/edits/view.js"></script>
+}

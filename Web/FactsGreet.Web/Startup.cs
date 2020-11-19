@@ -1,7 +1,7 @@
 ﻿namespace FactsGreet.Web
 {
     using System.Reflection;
-
+    using DiffMatchPatchSharp;
     using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -24,8 +24,8 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using TrueCommerce.Shared.DiffMatchPatch;
     using Westwind.AspNetCore.Markdown;
+    using DiffMatchPatch = TrueCommerce.Shared.DiffMatchPatch.DiffMatchPatch;
 
     public class Startup
     {
@@ -69,6 +69,7 @@
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
             services.AddScoped(_ => new DropboxClient(this.configuration.GetSection("DropboxAccessToken").Value));
+            services.AddScoped<HtmlTextDiffChanges>();
 
             // Application services
             services.AddTransient<DiffMatchPatch>();

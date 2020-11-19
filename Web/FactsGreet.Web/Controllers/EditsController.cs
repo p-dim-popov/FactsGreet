@@ -58,6 +58,8 @@
                 return this.View(model);
             }
 
+            /* TODO: concurency check */
+
             if (model.Article.Title != await this.articlesService.GetTitleAsync(model.Article.Id))
             {
                 if (await this.articlesService.DoesTitleExistAsync(model.Article.Title))
@@ -84,10 +86,6 @@
                 this.ViewBag.ErrorMessage = "No more available storage. Please delete some files to upload new ones";
                 return this.View(model);
             }
-
-            var patch = this.diffMatchPatchService.CreateEdit(
-                await this.articlesService.GetContentAsync(model.Article.Id),
-                model.Article.Content);
 
             await this.editsService.CreateAsync(
                 model.Article.Id,

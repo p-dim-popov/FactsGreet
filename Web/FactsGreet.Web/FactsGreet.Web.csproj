@@ -32,6 +32,7 @@
     <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.4.5" />
     <PackageReference Include="Dropbox.Api" Version="5.5.0" />
     <PackageReference Include="TrueCommerce.Shared.DiffMatchPatch" Version="4.0.0" />
+    <PackageReference Include="DiffMatchPatchSharp" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
