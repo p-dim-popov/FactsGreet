@@ -12,6 +12,6 @@
 
         public string ArticleTitle { get; set; }
 
-        public ICollection<EditShortDescriptionViewModel> Edits { get; set; }
+        public ICollection<CompactEditViewModel> Edits { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Web
 {
+    using System;
     using System.Reflection;
     using DiffMatchPatchSharp;
     using Dropbox.Api;
@@ -121,8 +122,8 @@
                 if (destination.Contains(' '))
                 {
                     context.Response
-                        .Redirect(destination
-                            .Replace(' ', '_'));
+                        .Redirect(Uri.EscapeUriString(destination
+                            .Replace(' ', '_')));
                 }
 
                 context.Request.Path = destination.Replace('_', ' ');

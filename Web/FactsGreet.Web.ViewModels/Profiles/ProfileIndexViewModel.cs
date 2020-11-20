@@ -18,7 +18,7 @@ namespace FactsGreet.Web.ViewModels.Profiles
         public virtual ICollection<Badge> Badges { get; set; }
             = new HashSet<Badge>();
 
-        public virtual ICollection<CompactEditViewModel> Activities { get; set; }
+        public virtual ICollection<EditWithCompactArticleViewModel> Activities { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {

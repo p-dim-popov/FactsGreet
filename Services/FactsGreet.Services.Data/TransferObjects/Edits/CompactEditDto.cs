@@ -1,11 +1,8 @@
-﻿namespace FactsGreet.Web.ViewModels.Edits
+﻿namespace FactsGreet.Services.Data.TransferObjects.Edits
 {
     using System;
 
-    using FactsGreet.Data.Models;
-    using FactsGreet.Services.Mapping;
-
-    public class EditShortDescriptionViewModel : IMapFrom<Edit>
+    public class CompactEditDto
     {
         public Guid Id { get; set; }
 

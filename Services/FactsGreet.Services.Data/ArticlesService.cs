@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
@@ -144,10 +145,19 @@
                 .CountAsync();
         }
 
-        public async Task<ICollection<T>> GetPaginatedOrderedByDateDescendingAsync<T>(int skip, int take)
+        public async Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T, TOrderKey>(
+            int skip,
+            int take,
+            Expression<Func<Article, TOrderKey>> order)
         {
-            return await this.articleRepository.AllAsNoTracking()
-                .OrderByDescending(x => x.ModifiedOn)
+            var articles = this.articleRepository.AllAsNoTracking();
+
+            if (order is not null)
+            {
+                articles = articles.OrderByDescending(order);
+            }
+
+            return await articles
                 .To<T>()
                 .Skip(skip)
                 .Take(take)

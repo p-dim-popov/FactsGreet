@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
@@ -85,9 +86,10 @@
         {
             var pagination = Paginator.GetPagination(page, ArticlesPerPage);
             var articles = await this.articlesService
-                .GetPaginatedOrderedByDateDescendingAsync<CompactArticleViewModel>(
+                .GetPaginatedOrderedByDescAsync<CompactArticleViewModel, DateTime>(
                     pagination.Skip,
-                    pagination.Take);
+                    pagination.Take,
+                    x => x.CreatedOn);
             return this.View(new AllArticlesViewModel
             {
                 Articles = articles,

@@ -1,25 +1,29 @@
 ﻿namespace FactsGreet.Web.ViewModels.Edits
 {
-    using AutoMapper;
+    using System;
     using FactsGreet.Data.Models;
+    using FactsGreet.Services.Data.TransferObjects.Edits;
     using FactsGreet.Services.Mapping;
-    using FactsGreet.Web.ViewModels.Articles;
 
-    public class CompactEditViewModel : IMapFrom<Edit>, IHaveCustomMappings
+    public class CompactEditViewModel : IMapFrom<Edit>, IMapFrom<CompactEditDto>
     {
-        public CompactArticleViewModel Article { get; set; }
+        public CompactEditViewModel()
+        { }
+
+        public CompactEditViewModel(CompactEditDto compactEditDto)
+        {
+            this.Id = compactEditDto.Id;
+            this.EditorUserName = compactEditDto.EditorUserName;
+            this.CreatedOn = compactEditDto.CreatedOn;
+            this.Comment = compactEditDto.Comment;
+        }
+
+        public Guid Id { get; set; }
 
         public string EditorUserName { get; set; }
 
-        public bool IsCreation { get; set; }
+        public DateTime CreatedOn { get; set; }
 
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Edit, CompactEditViewModel>()
-                .ForMember(
-                    x => x.EditorUserName,
-                    opt => opt
-                        .MapFrom(x => x.Editor.UserName));
-        }
+        public string Comment { get; set; }
     }
 }
