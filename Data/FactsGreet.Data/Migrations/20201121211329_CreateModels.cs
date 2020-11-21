@@ -12,14 +12,18 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -30,20 +34,29 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -60,7 +73,8 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -75,7 +89,8 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -92,8 +107,10 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Value = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -110,9 +127,12 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<string>(type: "text", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    RoleId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ClaimType = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -130,11 +150,16 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    ThumbnailLink = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
-                    AuthorId = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Content = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Description = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ThumbnailLink = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    AuthorId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -157,9 +182,12 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ClaimType = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -176,10 +204,14 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    ProviderKey = table.Column<string>(type: "text", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -196,8 +228,10 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     RoleId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -220,10 +254,14 @@ namespace FactsGreet.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     Value = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -241,8 +279,10 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CreatorId = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    CreatorId = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -264,12 +304,17 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
-                    Filename = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Link = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    Filename = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -288,8 +333,10 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FollowerId = table.Column<string>(type: "text", nullable: false),
-                    FollowedId = table.Column<string>(type: "text", nullable: false),
+                    FollowerId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    FollowedId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -318,7 +365,8 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
-                    SenderId = table.Column<string>(type: "text", nullable: false),
+                    SenderId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -341,6 +389,7 @@ namespace FactsGreet.Data.Migrations
                 {
                     BadgesId = table.Column<Guid>(type: "uuid", nullable: false),
                     UsersWithBadgesId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -390,7 +439,8 @@ namespace FactsGreet.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -419,6 +469,7 @@ namespace FactsGreet.Data.Migrations
                 {
                     ConversationsId = table.Column<Guid>(type: "uuid", nullable: false),
                     UsersId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -443,6 +494,7 @@ namespace FactsGreet.Data.Migrations
                 {
                     SeenNotificationsId = table.Column<Guid>(type: "uuid", nullable: false),
                     SeensId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 },
                 constraints: table =>
                 {
@@ -467,7 +519,8 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Reason = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    Reason = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -496,10 +549,12 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    EditorId = table.Column<string>(type: "text", nullable: false),
+                    EditorId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsCreation = table.Column<bool>(type: "boolean", nullable: false),
-                    Comment = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
+                    Comment = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -534,9 +589,11 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SenderId = table.Column<string>(type: "text", nullable: false),
+                    SenderId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     ConversationId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Content = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    Content = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     NotificationId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -596,7 +653,8 @@ namespace FactsGreet.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Operation = table.Column<int>(type: "integer", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: true),
+                    Text = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
                     PatchId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -761,6 +819,11 @@ namespace FactsGreet.Data.Migrations
                 table: "File",
                 columns: new[] { "Filename", "UserId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_IsDeleted",
+                table: "File",
+                column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_File_UserId",

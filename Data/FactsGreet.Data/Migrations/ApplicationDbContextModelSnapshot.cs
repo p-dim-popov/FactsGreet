@@ -16,6 +16,7 @@ namespace FactsGreet.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityByDefaultColumns()
+                .HasAnnotation("Npgsql:DefaultColumnCollation", "en-x-icu")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
@@ -463,10 +464,16 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Filename")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Link")
                         .IsRequired()
@@ -484,6 +491,8 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("UserId");
 

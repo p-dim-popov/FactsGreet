@@ -73,6 +73,9 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
+            // Npgsql collatioin needs
+            builder.UseDefaultColumnCollation("en-x-icu");
+
             this.ConfigureUserIdentityRelations(builder);
 
             EntityIndexesConfiguration.Configure(builder);
