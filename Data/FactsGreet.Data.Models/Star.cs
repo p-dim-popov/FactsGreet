@@ -5,7 +5,7 @@
 
     using FactsGreet.Data.Common.Models;
 
-    public class Star : BaseModel<int>
+    public class Star : BaseDeletableModel<int>
     {
         public Guid ArticleId { get; set; }
 

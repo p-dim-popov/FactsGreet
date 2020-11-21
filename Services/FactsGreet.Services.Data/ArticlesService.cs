@@ -8,23 +8,22 @@
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
-    using FactsGreet.Data.Models.Enums;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
     public class ArticlesService
     {
         private readonly IDeletableEntityRepository<Article> articleRepository;
-        private readonly IRepository<Category> categoryRepository;
-        private readonly IRepository<Star> starRepository;
+        private readonly IDeletableEntityRepository<Category> categoryRepository;
+        private readonly IDeletableEntityRepository<Star> starRepository;
         private readonly IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
         private readonly IDeletableEntityRepository<Edit> editRepository;
         private readonly DiffMatchPatchService diffMatchPatchService;
 
         public ArticlesService(
             IDeletableEntityRepository<Article> articleRepository,
-            IRepository<Category> categoryRepository,
-            IRepository<Star> starRepository,
+            IDeletableEntityRepository<Category> categoryRepository,
+            IDeletableEntityRepository<Star> starRepository,
             IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
             IDeletableEntityRepository<Edit> editRepository,
             DiffMatchPatchService diffMatchPatchService)
@@ -98,38 +97,14 @@
             await this.articleRepository.SaveChangesAsync();
         }
 
-        public async Task AddStarAsync(string userId, Guid articleId)
-        {
-            var isStarred = await this.starRepository.AllAsNoTracking()
-                .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
-
-            if (!isStarred)
-            {
-                await this.starRepository.AddAsync(new Star { ArticleId = articleId, UserId = userId });
-                await this.articleRepository.SaveChangesAsync();
-            }
-        }
-
-        public async Task RemoveStarAsync(string userId, Guid articleId)
-        {
-            var isStarred = await this.starRepository.AllAsNoTracking()
-                .AnyAsync(x => x.UserId == userId && x.ArticleId == articleId);
-
-            if (isStarred)
-            {
-                this.starRepository.Delete(new Star { ArticleId = articleId, UserId = userId });
-                await this.articleRepository.SaveChangesAsync();
-            }
-        }
-
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
         {
             return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.Replace("\"", string.Empty))
+                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
                 .Aggregate(
                     this.articleRepository.AllAsNoTracking(),
                     (current, keyword)
-                        => current.Where(x => x.Title.Contains(keyword)))
+                        => current.Where(x => x.Title.ToLower().Contains(keyword)))
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
@@ -139,9 +114,11 @@
         public async Task<int> GetCountByTitleKeywordsAsync(string keywords)
         {
             return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value)
-                .Aggregate(this.articleRepository.AllAsNoTracking(), (current, keyword)
-                    => current.Where(x => x.Title.Contains(keyword)))
+                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
+                .Aggregate(
+                    this.articleRepository.AllAsNoTracking(),
+                    (current, keyword)
+                        => current.Where(x => x.Title.ToLower().Contains(keyword)))
                 .CountAsync();
         }
 
@@ -166,8 +143,9 @@
 
         public async Task<T> GetByTitleAsync<T>(string title)
         {
+            title = title.ToLower();
             return await this.articleRepository.AllAsNoTracking()
-                .Where(x => x.Title == title)
+                .Where(x => x.Title.ToLower() == title)
                 .To<T>()
                 .FirstOrDefaultAsync();
         }
@@ -179,8 +157,9 @@
 
         public Task<bool> DoesTitleExistAsync(string title)
         {
+            title = title.ToLower();
             return this.articleRepository.AllAsNoTracking()
-                .AnyAsync(x => x.Title == title);
+                .AnyAsync(x => x.Title.ToLower() == title);
         }
 
         public async Task CreateDeletionRequestAsync(Guid id, string authorId, string reason)

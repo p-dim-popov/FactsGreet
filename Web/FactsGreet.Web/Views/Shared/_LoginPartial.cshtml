@@ -1,18 +1,40 @@
 ﻿@using FactsGreet.Common
 @using FactsGreet.Data.Models
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
     {
-        <li class="nav-item d-none d-lg-block">
-            <a class="nav-link text-dark"
-               asp-area="Identity"
-               asp-page="/Account/Manage/Index" title="Manage">
-                Hello @(this.User.Identity?.Name)!
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle mr-2"
+               href="#"
+               id="profile-dropdown"
+               role="button"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">
+                <img class="img-fluid d-none d-md-inline d-lg-none" src="~/images/user.png" alt="Profile">
+                <span class="d-inline d-md-none d-lg-inline">
+                    Hello @(this.User.Identity?.Name)!
+                </span>
             </a>
+            <div class="dropdown-menu" aria-labelledby="profile-dropdown">
+                <a class="dropdown-item"
+                   asp-area=""
+                   asp-controller="Profiles"
+                   asp-action="Index"
+                   asp-route-email="@this.User.FindFirstValue(ClaimTypes.Email)">
+                    View
+                </a>
+                <a class="dropdown-item"
+                   asp-area="Identity"
+                   asp-page="/Account/Manage/Index">
+                    Manage
+                </a>
+            </div>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle"
@@ -51,8 +73,8 @@
             </li>
         }
         <li class="nav-item">
-            <form class="form-inline" 
-                  asp-area="Identity" 
+            <form class="form-inline"
+                  asp-area="Identity"
                   asp-page="/Account/Logout" asp-route-returnUrl="@(this.Url.Action("Index", "Home", new { area = string.Empty }))">
                 <button type="submit" class="nav-link btn btn-link text-danger">Logout</button>
             </form>
@@ -61,14 +83,18 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-primary" 
-               asp-area="Identity" 
-               asp-page="/Account/Register">Register</a>
+            <a class="nav-link text-primary"
+               asp-area="Identity"
+               asp-page="/Account/Register">
+                Register
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-primary" 
-               asp-area="Identity" 
-               asp-page="/Account/Login">Login</a>
+            <a class="nav-link text-primary"
+               asp-area="Identity"
+               asp-page="/Account/Login">
+                Login
+            </a>
         </li>
     }
 </ul>

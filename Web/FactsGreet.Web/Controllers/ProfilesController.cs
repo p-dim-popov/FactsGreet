@@ -2,23 +2,26 @@
 {
     using System.Security.Claims;
     using System.Threading.Tasks;
-
     using FactsGreet.Services.Data;
     using FactsGreet.Web.ViewModels.Profiles;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     public class ProfilesController : BaseController
     {
         private readonly ApplicationUsersService applicationUsersService;
+        private readonly FollowsService followsService;
 
-        public ProfilesController(ApplicationUsersService applicationUsersService)
+        public ProfilesController(
+            ApplicationUsersService applicationUsersService,
+            FollowsService followsService)
         {
             this.applicationUsersService = applicationUsersService;
+            this.followsService = followsService;
         }
 
-        [Authorize]
-        [HttpGet("[controller]/View/{email}")]
+        [HttpGet("[controller]/View/{email}", Name = "profile_index")]
         public async Task<IActionResult> Index(string email)
         {
             var profile = await this.applicationUsersService.GetByEmailAsync<ProfileIndexViewModel>(email);
@@ -26,13 +29,32 @@
             return this.View("View", profile);
         }
 
-        [Authorize]
         public async Task<IActionResult> RemoveBadge(string name)
         {
             await this.applicationUsersService
                 .RemoveBadgeAsync(this.UserId, name);
 
-            return this.RedirectToRoute($"View/{this.User.FindFirstValue(ClaimTypes.Email)}");
+            return this.RedirectToRoute(
+                "profile_index",
+                new { email = this.User.FindFirstValue(ClaimTypes.Email) });
         }
+
+        public async Task<IActionResult> Follow(string userId)
+        {
+            await this.followsService.Follow(this.UserId, userId);
+            return this.RedirectToRoute(
+                "profile_index",
+                new { email = await this.applicationUsersService.GetEmailAsync(userId) });
+        }
+
+        public async Task<IActionResult> Unfollow(string userId)
+        {
+            await this.followsService.Unfollow(this.UserId, userId);
+            return this.RedirectToRoute(
+                "profile_index",
+                new { email = await this.applicationUsersService.GetEmailAsync(userId) });
+        }
+
+        // TODO: View all starred articles
     }
 }

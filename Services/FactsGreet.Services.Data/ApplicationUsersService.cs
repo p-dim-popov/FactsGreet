@@ -2,7 +2,6 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -34,5 +33,11 @@
                 await this.applicationUserRepository.SaveChangesAsync();
             }
         }
+
+        public Task<string> GetEmailAsync(string id)
+            => this.applicationUserRepository.AllAsNoTrackingWithDeleted()
+                .Where(x => x.Id == id)
+                .Select(x => x.Email)
+                .FirstOrDefaultAsync();
     }
 }

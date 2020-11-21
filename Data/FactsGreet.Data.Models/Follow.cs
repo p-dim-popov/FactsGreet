@@ -4,7 +4,7 @@
 
     using FactsGreet.Data.Common.Models;
 
-    public class Follow : BaseModel<int>
+    public class Follow : BaseDeletableModel<int>
     {
         [Required]
         public string FollowerId { get; set; }

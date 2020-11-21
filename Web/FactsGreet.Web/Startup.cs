@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+
     using DiffMatchPatchSharp;
     using Dropbox.Api;
     using FactsGreet.Data;
@@ -79,12 +80,16 @@
             services.AddTransient<DiffMatchPatch>();
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+
+            // TODO: add interfaces
             services.AddTransient<ArticlesService>();
             services.AddTransient<EditsService>();
             services.AddTransient<NotificationsService>();
             services.AddTransient<ArticleDeletionRequestsService>();
             services.AddTransient<ApplicationUsersService>();
             services.AddTransient<FilesService>();
+            services.AddTransient<StarsService>();
+            services.AddTransient<FollowsService>();
             services.AddTransient<DiffMatchPatchService>();
 
             services.AddMarkdown(config =>

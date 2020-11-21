@@ -18,12 +18,16 @@
 
         private readonly ArticlesService articlesService;
         private readonly FilesService filesService;
+        private readonly StarsService starsService;
 
         public ArticlesController(
-            ArticlesService articlesService, FilesService filesService)
+            ArticlesService articlesService,
+            FilesService filesService,
+            StarsService starsService)
         {
             this.articlesService = articlesService;
             this.filesService = filesService;
+            this.starsService = starsService;
         }
 
         [Route("/Article/{title}", Name = "article")]
@@ -38,6 +42,11 @@
             if (article is null)
             {
                 return this.View("ArticleNotFound", title);
+            }
+
+            if (article.Title != title)
+            {
+                return this.RedirectToRoute("article", new {title = article.Title});
             }
 
             article.IsStarredByUser =
@@ -196,7 +205,7 @@
         [Authorize]
         public async Task<IActionResult> RemoveFromStarred(Guid id)
         {
-            await this.articlesService.RemoveStarAsync(this.UserId, id);
+            await this.starsService.RemoveStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
                 "article",
                 new
@@ -208,7 +217,7 @@
         [Authorize]
         public async Task<IActionResult> AddToStarred(Guid id)
         {
-            await this.articlesService.AddStarAsync(this.UserId, id);
+            await this.starsService.CreateStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
                 "article",
                 new

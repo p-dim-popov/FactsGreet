@@ -503,6 +503,9 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("FollowedId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -511,12 +514,17 @@ namespace FactsGreet.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FollowedId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("FollowerId", "FollowedId")
                         .IsUnique();
@@ -683,6 +691,12 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
@@ -693,6 +707,8 @@ namespace FactsGreet.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("UserId", "ArticleId")
                         .IsUnique();

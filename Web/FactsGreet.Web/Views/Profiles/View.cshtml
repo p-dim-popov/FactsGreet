@@ -1,5 +1,7 @@
 ﻿@using System.Security.Claims
+@using FactsGreet.Services.Data
 @model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
+@inject FollowsService FollowsService
 @{
     ViewBag.Title = $"{Model.UserName}'s profile";
 }
@@ -9,7 +11,33 @@
         <div class="col-auto">
             <h2 class="my-2">@Model.UserName's profile</h2>
         </div>
-        <div class="col-auto"></div>
+        @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.Id)
+        {
+            @if (await FollowsService.IsUserFollowingUserAsync(
+                this.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Model.Id))
+            {
+                <div class="col-auto">
+                    <a class="btn btn-danger"
+                       asp-controller="Profiles"
+                       asp-action="Unfollow"
+                       asp-route-userId="@Model.Id">
+                        Unfollow
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="col-auto">
+                    <a class="btn btn-primary"
+                       asp-controller="Profiles"
+                       asp-action="Follow"
+                       asp-route-userId="@Model.Id">
+                        Follow
+                    </a>
+                </div>
+            }
+        }
         @foreach (var badge in Model.Badges)
         {
             <div class="col-auto">
@@ -29,8 +57,7 @@
                                                     class="badge badge-danger">
                                                 X
                                             </button>
-                                        </form>
-                                    }
+                                        </form>                                    }
                                 </div>
                             </div>
                         </div>

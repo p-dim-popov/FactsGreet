@@ -4,11 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Text.Json;
     using System.Threading.Tasks;
-    using AutoMapper;
     using FactsGreet.Data.Models;
-    using FactsGreet.Services;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
@@ -16,7 +13,6 @@
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Newtonsoft.Json;
 
     public class EditsController : BaseController
     {
@@ -25,18 +21,15 @@
         private readonly EditsService editsService;
         private readonly ArticlesService articlesService;
         private readonly FilesService filesService;
-        private readonly DiffMatchPatchService diffMatchPatchService;
 
         public EditsController(
             EditsService editsService,
             ArticlesService articlesService,
-            FilesService filesService,
-            DiffMatchPatchService diffMatchPatchService)
+            FilesService filesService)
         {
             this.editsService = editsService;
             this.articlesService = articlesService;
             this.filesService = filesService;
-            this.diffMatchPatchService = diffMatchPatchService;
         }
 
         [Authorize]

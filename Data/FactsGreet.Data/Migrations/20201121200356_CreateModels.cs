@@ -291,7 +291,9 @@ namespace FactsGreet.Data.Migrations
                     FollowerId = table.Column<string>(type: "text", nullable: false),
                     FollowedId = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -390,7 +392,9 @@ namespace FactsGreet.Data.Migrations
                     ArticleId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -775,6 +779,11 @@ namespace FactsGreet.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Follows_IsDeleted",
+                table: "Follows",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_ConversationId",
                 table: "Messages",
                 column: "ConversationId");
@@ -818,6 +827,11 @@ namespace FactsGreet.Data.Migrations
                 name: "IX_Stars_ArticleId",
                 table: "Stars",
                 column: "ArticleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Stars_IsDeleted",
+                table: "Stars",
+                column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stars_UserId_ArticleId",

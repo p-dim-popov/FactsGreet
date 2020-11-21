@@ -19,11 +19,11 @@
     {
         private const long MaxStorage = 100 * 1024 * 1024;
         private readonly DropboxClient dropboxClient;
-        private readonly IRepository<File> fileRepository;
+        private readonly IDeletableEntityRepository<File> fileRepository;
 
         public FilesService(
             DropboxClient dropboxClient,
-            IRepository<File> fileRepository)
+            IDeletableEntityRepository<File> fileRepository)
         {
             this.dropboxClient = dropboxClient;
             this.fileRepository = fileRepository;
@@ -96,7 +96,7 @@
 
             await this.dropboxClient.Files.DeleteV2Async("/" + file.Id);
 
-            this.fileRepository.Delete(file);
+            this.fileRepository.HardDelete(file);
             await this.fileRepository.SaveChangesAsync();
         }
 
