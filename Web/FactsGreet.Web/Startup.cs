@@ -3,7 +3,6 @@
     using System;
     using System.Reflection;
 
-    using DiffMatchPatchSharp;
     using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -74,7 +73,6 @@
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
             services.AddScoped(_ => new DropboxClient(this.configuration.GetSection("DropboxAccessToken").Value));
-            services.AddScoped<HtmlTextDiffChanges>();
 
             // Application services
             services.AddTransient<DiffMatchPatch>();

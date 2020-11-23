@@ -5,13 +5,11 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Data.TransferObjects.Edits;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
-
     using DbDiff = FactsGreet.Data.Models.Diff;
     using DbPatch = FactsGreet.Data.Models.Patch;
     using DmpDiff = TrueCommerce.Shared.DiffMatchPatch.Diff;
@@ -36,7 +34,7 @@
             this.diffMatchPatchService = diffMatchPatchService;
         }
 
-        public async Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T, TOrderKey>(
+        public async Task<ICollection<T>> GetPaginatedOrderByDescAsync<T, TOrderKey>(
             int skip,
             int take,
             string userId = null,
@@ -222,6 +220,22 @@
             });
 
             await this.articleRepository.SaveChangesAsync();
+        }
+
+        public Task<DateTime> GetCreationDateAsync(Guid id)
+        {
+            return this.editRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => x.CreatedOn)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<Guid> GetArticleIdAsync(Guid id)
+        {
+            return this.editRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => x.Article.Id)
+                .FirstOrDefaultAsync();
         }
     }
 }

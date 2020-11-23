@@ -1,13 +1,8 @@
-﻿@using DiffMatchPatchSharp
-@using Westwind.AspNetCore.Markdown
+﻿@using FactsGreet.Web.Controllers
 @model FactsGreet.Web.ViewModels.Edits.EditViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
-@inject HtmlTextDiffChanges HtmlTextDiffChanges
 @{
-    ViewBag.Title = Model;
-    var (target,against) = HtmlTextDiffChanges.CompareHtml(
-        $"<div>{Markdown.Parse(Model.TargetArticleContent, sanitizeHtml: true)}</div>",
-        $"<div>{Markdown.Parse(Model.AgainstArticleContent, sanitizeHtml: true)}</div>");
+    ViewBag.Title = Model.ArticleTitle;
 }
 
 <div class="container">
@@ -22,42 +17,49 @@
         <div class="col">
             <div class="form-group">
                 <label for="target-select">Target</label>
-                <select class="form-control" id="target-select">
-                    <option value="loadOlder" class="font-weight-bold">Load older</option>
-                    <option selected value="@Model.TargetEdit.CreatedOn.ToString("R")">
-                        <span class="utc-to-local">@Model.TargetEdit.CreatedOn.ToString("R")</span> |
-                        @Model.TargetEdit.EditorUserName |
-                        @Model.TargetEdit.Comment
-                    </option>
-                    <option value="loadNewer" class="font-weight-bold">Load newer</option>
-                </select>
+                <div class="input-group">
+                    <select class="form-control" id="target-select">
+                        <option value="<" class="font-weight-bold">Load older</option>
+                        <option selected value="@Model.TargetEdit.Id">
+                            @Model.TargetEdit.CreatedOn.ToString("R") |
+                            @Model.TargetEdit.EditorUserName |
+                            @Model.TargetEdit.Comment
+                        </option>
+                        <option value=">" class="font-weight-bold">Load newer</option>
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary input-group-text go-btn">Go</button>
+                    </div>
+                </div>
             </div>
-            <div id="target" class="syncscroll rounded border" name="content">
-                @Html.Raw(target)
-            </div>
+            <textarea id="target-textarea" hidden>@Model.TargetArticleContent</textarea>
         </div>
         <div class="col">
             <div class="form-group">
                 <label for="against-select">Against</label>
-                <select class="form-control" id="against-select">
-                    <option value="loadOlder" class="font-weight-bold">Load older</option>
-                    <option selected value="@Model.AgainstEdit.CreatedOn.ToString("R")">
-                        <span class="utc-to-local">@Model.AgainstEdit.CreatedOn.ToString("R")</span> |
-                        @Model.AgainstEdit.EditorUserName |
-                        @Model.AgainstEdit.Comment
-                    </option>
-                    <option value="loadNewer" class="font-weight-bold">Load newer</option>
-                </select>
+                <div class="input-group">
+                    <select class="form-control" id="against-select">
+                        <option value="<" class="font-weight-bold">Load older</option>
+                        <option selected value="@Model.AgainstEdit.Id">
+                            @Model.AgainstEdit.CreatedOn.ToString("R") |
+                            @Model.AgainstEdit.EditorUserName |
+                            @Model.AgainstEdit.Comment
+                        </option>
+                        <option value=">" class="font-weight-bold">Load newer</option>
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary input-group-text go-btn">Go</button>
+                    </div>
+                </div>
             </div>
-            <div id="against" class="syncscroll rounded border" name="content">
-                @Html.Raw(against)
-            </div>
+            <textarea id="against-textarea" hidden>@Model.AgainstArticleContent</textarea>
         </div>
     </div>
+    <div id="mergely"></div>
     <div class="row">
         <div class="col">
             <hr>
-            <h1>Preview of <span class="utc-to-local">@Model.TargetEdit.CreatedOn.ToString("R")</span></h1>
+            <h1>Preview of <span class="utc-to-local">@Model.TargetEdit.CreatedOn.ToString("s")</span></h1>
             <h6>@Model.TargetEdit.Comment</h6>
             <hr>
         </div>
@@ -75,13 +77,22 @@
     </div>
 </div>
 
+
 @section StyleLinks
 {
     <link href="~/css/edits/view.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/mergely/lib/mergely.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.css"/>
 }
 
 @section Scripts
 {
-    <script src="~/lib/sync-scroll/syncscroll.min.js"></script>
-    <script src="~/js/edits/view.js"></script>
+    <script>
+        window.selectOptionsActionName = '@nameof(EditsController.GetEditsInfoList)'
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/search/searchcursor.min.js"></script>
+    <script src="~/lib/mergely/lib/mergely.js"></script>
+
+    <script src="~/js/edits/view.js" asp-append-version="true"></script>
 }

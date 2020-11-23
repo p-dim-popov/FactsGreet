@@ -47,6 +47,10 @@
     {
       "library": "sync-scroll@1.0.3",
       "destination": "wwwroot\\lib\\sync-scroll"
+    },
+    {
+      "library": "mergely@4.2.1",
+      "destination": "wwwroot\\lib\\mergely"
     }
   ]
 }

@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
     using FactsGreet.Web.Infrastructure;
@@ -44,9 +43,10 @@
                 return this.View("ArticleNotFound", title);
             }
 
+            // p.s.: think about this... wasting resources
             if (article.Title != title)
             {
-                return this.RedirectToRoute("article", new {title = article.Title});
+                return this.RedirectToRoute("article", new { title = article.Title });
             }
 
             article.IsStarredByUser =
