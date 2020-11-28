@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
 
     using FactsGreet.Data.Common.Models;
 
@@ -13,8 +14,6 @@
         public string Title { get; set; }
 
         public string CreatorId { get; set; }
-
-        public virtual ApplicationUser Creator { get; set; }
 
         public virtual ICollection<Message> Messages { get; set; }
             = new HashSet<Message>();

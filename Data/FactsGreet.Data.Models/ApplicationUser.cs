@@ -50,9 +50,6 @@ namespace FactsGreet.Data.Models
         public virtual ICollection<Conversation> Conversations { get; set; }
             = new HashSet<Conversation>();
 
-        public virtual ICollection<Conversation> CreatedConversations { get; set; }
-            = new HashSet<Conversation>();
-
         public virtual ICollection<Follow> Followers { get; set; }
             = new HashSet<Follow>();
 

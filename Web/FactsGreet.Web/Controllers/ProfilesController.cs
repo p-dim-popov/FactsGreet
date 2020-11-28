@@ -55,6 +55,16 @@
                 new { email = await this.applicationUsersService.GetEmailAsync(userId) });
         }
 
+        public IActionResult WhoAmI()
+        {
+            return this.Json(this.UserId);
+        }
+
+        public async Task<IActionResult> Get10EmailsByEmailKeyword(string keyword)
+        {
+            return this.Json(await this.applicationUsersService.Get10EmailsByEmailKeywordAsync(keyword));
+        }
+
         // TODO: View all starred articles
     }
 }

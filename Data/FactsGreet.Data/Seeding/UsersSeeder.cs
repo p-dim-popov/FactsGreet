@@ -28,16 +28,24 @@
             var users = new (ApplicationUser User, string Role, string[] Badges)[]
             {
                 (new ApplicationUser
-                {
-                    UserName = "admin@localhost",
-                    Email = "admin@localhost",
-                }, GlobalConstants.AdministratorRoleName, null),
+                    {
+                        UserName = "admin@localhost",
+                        Email = "admin@localhost",
+                    },
+                    GlobalConstants.AdministratorRoleName, null),
                 (new ApplicationUser
                     {
                         UserName = "notadmin@localhost",
                         Email = "notadmin@localhost",
-                    }, GlobalConstants.RegularRoleName,
-                    new[] {GlobalConstants.Badges.BeingCorrect, GlobalConstants.Badges.Creator}),
+                    },
+                    GlobalConstants.RegularRoleName,
+                    new[] { GlobalConstants.Badges.BeingCorrect, GlobalConstants.Badges.Creator }),
+                (new ApplicationUser
+                    {
+                        UserName = "helper@localhost",
+                        Email = "helper@localhost",
+                    },
+                    GlobalConstants.RegularRoleName, null),
             };
 
             foreach (var (user, role, badges) in users)
@@ -55,7 +63,7 @@
             string[] badges)
         {
             user.Badges = badges
-                ?.Select(x => new Badge {Name = x})
+                ?.Select(x => new Badge { Name = x })
                 .ToList();
 
             var result = await userManager

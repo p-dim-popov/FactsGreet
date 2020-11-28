@@ -371,8 +371,6 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
-
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Conversations");
@@ -919,15 +917,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Notification");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Conversation", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Creator")
-                        .WithMany("CreatedConversations")
-                        .HasForeignKey("CreatorId");
-
-                    b.Navigation("Creator");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Patch", null)
@@ -1108,8 +1097,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Articles");
 
                     b.Navigation("Claims");
-
-                    b.Navigation("CreatedConversations");
 
                     b.Navigation("Edits");
 

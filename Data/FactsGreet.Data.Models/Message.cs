@@ -10,7 +10,7 @@
         [Required]
         public string SenderId { get; set; }
 
-        public ApplicationUser Sender { get; set; }
+        public virtual ApplicationUser Sender { get; set; }
 
         public Guid ConversationId { get; set; }
 

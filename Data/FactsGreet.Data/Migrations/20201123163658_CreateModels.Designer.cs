@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FactsGreet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201121211329_CreateModels")]
+    [Migration("20201123163658_CreateModels")]
     partial class CreateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -372,8 +372,6 @@ namespace FactsGreet.Data.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
 
                     b.HasIndex("IsDeleted");
 
@@ -921,15 +919,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Notification");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Conversation", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Creator")
-                        .WithMany("CreatedConversations")
-                        .HasForeignKey("CreatorId");
-
-                    b.Navigation("Creator");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Patch", null)
@@ -1110,8 +1099,6 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Articles");
 
                     b.Navigation("Claims");
-
-                    b.Navigation("CreatedConversations");
 
                     b.Navigation("Edits");
 

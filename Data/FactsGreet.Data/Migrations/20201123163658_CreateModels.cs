@@ -102,6 +102,25 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Conversations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    CreatorId = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Conversations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Settings",
                 columns: table => new
                 {
@@ -275,31 +294,6 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Conversations",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
-                    CreatorId = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Conversations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Conversations_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "File",
                 columns: table => new
                 {
@@ -409,6 +403,31 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ApplicationUserConversation",
+                columns: table => new
+                {
+                    ConversationsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UsersId = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserConversation", x => new { x.ConversationsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserConversation_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserConversation_Conversations_ConversationsId",
+                        column: x => x.ConversationsId,
+                        principalTable: "Conversations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ArticleCategory",
                 columns: table => new
                 {
@@ -459,31 +478,6 @@ namespace FactsGreet.Data.Migrations
                         name: "FK_Stars_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApplicationUserConversation",
-                columns: table => new
-                {
-                    ConversationsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UsersId = table.Column<string>(type: "text", nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserConversation", x => new { x.ConversationsId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserConversation_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserConversation_Conversations_ConversationsId",
-                        column: x => x.ConversationsId,
-                        principalTable: "Conversations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -778,11 +772,6 @@ namespace FactsGreet.Data.Migrations
                 table: "Categories",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Conversations_CreatorId",
-                table: "Conversations",
-                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Conversations_IsDeleted",

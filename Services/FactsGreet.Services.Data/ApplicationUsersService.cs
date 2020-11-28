@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Services.Data
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
@@ -39,5 +40,33 @@
                 .Where(x => x.Id == id)
                 .Select(x => x.Email)
                 .FirstOrDefaultAsync();
+
+        public Task<string> GetIdByEmailAsync(string email)
+        {
+            return this.applicationUserRepository.AllAsNoTracking()
+                .Where(x => x.Email == email)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<bool> EmailExistsAsync(string last)
+        {
+            last = last.ToUpper();
+            return this.applicationUserRepository
+                .AllAsNoTracking()
+                .AnyAsync(x => x.NormalizedEmail == last);
+        }
+
+        public async Task<ICollection<string>> Get10EmailsByEmailKeywordAsync(string keyword)
+        {
+            keyword = keyword.ToUpperInvariant();
+            return await this.applicationUserRepository
+                .AllAsNoTracking()
+                .Where(x => x.NormalizedEmail.StartsWith(keyword))
+                .Select(x => x.Email)
+                .OrderBy(x => x.Length)
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

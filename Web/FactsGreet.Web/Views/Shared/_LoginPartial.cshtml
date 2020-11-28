@@ -36,15 +36,31 @@
                 </a>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link"
+               asp-area=""
+               asp-controller="Conversations"
+               asp-action="Index">
+                <img class="d-none d-md-inline d-lg-none" src="~/images/message.png" alt="Profile">
+                <span class="d-inline d-md-none d-lg-inline">
+                    Messages
+                </span>
+            </a>
+        </li>
+        <li  id="messages-count" class="nav-item text-danger">
+        </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle"
+            <a class="nav-link dropdown-toggle mr-2"
                href="#"
                id="files-dropdown"
                role="button"
                data-toggle="dropdown"
                aria-haspopup="true"
                aria-expanded="false">
-                Files
+                <img class="img-fluid d-none d-md-inline d-lg-none" src="~/images/files.png" alt="Profile">
+                <span class="d-inline d-md-none d-lg-inline">
+                    Files
+                </span>
             </a>
             <div class="dropdown-menu" aria-labelledby="files-dropdown">
                 <a class="dropdown-item"

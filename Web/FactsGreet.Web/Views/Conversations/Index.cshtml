@@ -1,0 +1,63 @@
+﻿@model ICollection<FactsGreet.Web.ViewModels.Conversations.ConversationInfoViewModel>
+@{
+    ViewBag.Title = "Conversations";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <label for="group-participants-input">Find conversation with: </label>
+                        <input id="group-participants-input" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="groups-list" class="list-group">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <label for="group-participants-input">Find user to chat: </label>
+                        <input id="user-email-input" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="user-emails-list" class="list-group">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <ul class="col">
+            <div id="conversations-list" class="container overflow-auto" style="height: 60vh">
+                <div class="row">
+                    @*button*@
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary" id="load-older-button">Load older...</button>
+                    </div>
+                    <div class="col"></div>
+                </div> @*button*@
+            </div>
+        </ul>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/conversations/index.js"></script>
+}

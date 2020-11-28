@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Data
 {
+    using System;
     using System.IO;
 
     using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,12 @@
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}", optional: true)
                 .Build();
 
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();

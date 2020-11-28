@@ -1,0 +1,47 @@
+﻿@model FactsGreet.Web.ViewModels.Conversations.MessagesViewModel
+@{
+    ViewBag.Title = $"Conversation: {Model.ConversationTitle}";
+}
+
+<div class="container border rounded">
+    <div class="row">
+        <div class="col">
+            <h4>@ViewBag.Title</h4>
+            <span id="conversation-id" hidden>@Model.ConversationId</span>
+        </div>
+    </div>
+    <div class="row border rounded">
+        <ul class="col">
+            <div id="messages-list" class="container overflow-auto" style="height: 45vh">
+                <div class="container">
+                    <div class="row"> @*button*@
+                        <div class="col"></div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" id="load-older-button">Load older...</button>
+                        </div>
+                        <div class="col"></div>
+                    </div> @*button*@
+                </div>
+            </div>
+        </ul>
+    </div>
+    <div class="row border rounded m-2">
+        <form asp-controller="Conversations"
+              asp-action="SendMessage"
+              class="form-inline">
+        </form>
+        <div class="col">
+            <label for="message-textarea">Message</label>
+            <textarea id="message-textarea" class="form-control mb-3"></textarea>
+        </div>
+        <div class="col-auto">
+            <button id="send-button" class="btn btn-primary mt-5 mb-3">Send</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/conversations/messages.js"></script>
+}

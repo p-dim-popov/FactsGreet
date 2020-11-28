@@ -11,10 +11,6 @@
             builder
                 .HasMany(x => x.Users)
                 .WithMany(x => x.Conversations);
-
-            builder
-                .HasOne(x => x.Creator)
-                .WithMany(x => x.CreatedConversations);
         }
     }
 }

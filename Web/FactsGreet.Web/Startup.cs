@@ -2,7 +2,6 @@
 {
     using System;
     using System.Reflection;
-
     using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -15,6 +14,7 @@
     using FactsGreet.Services.Mapping;
     using FactsGreet.Services.Messaging;
     using FactsGreet.Web.Controllers;
+    using FactsGreet.Web.Hubs;
     using FactsGreet.Web.ViewModels;
     using Markdig;
     using Microsoft.AspNetCore.Builder;
@@ -26,7 +26,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Westwind.AspNetCore.Markdown;
-
     using DiffMatchPatch = TrueCommerce.Shared.DiffMatchPatch.DiffMatchPatch;
 
     public class Startup
@@ -41,6 +40,8 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
+
             services.AddDbContext<ApplicationDbContext>(
                 options =>
                     // options.UseSqlServer(this.configuration.GetConnectionString("SqlServer")));
@@ -88,6 +89,8 @@
             services.AddTransient<FilesService>();
             services.AddTransient<StarsService>();
             services.AddTransient<FollowsService>();
+            services.AddTransient<ConversationsService>();
+            services.AddTransient<MessagesService>();
             services.AddTransient<DiffMatchPatchService>();
 
             services.AddMarkdown(config =>
@@ -163,6 +166,7 @@
                     endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                     endpoints.MapRazorPages();
+                    endpoints.MapHub<ChatHub>("/chathub");
                 });
         }
     }

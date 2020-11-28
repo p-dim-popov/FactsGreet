@@ -51,6 +51,14 @@
     {
       "library": "mergely@4.2.1",
       "destination": "wwwroot\\lib\\mergely"
+    },
+    {
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot\\lib\\microsoft/signalr"
+    },
+    {
+      "library": "@popperjs/core@2.5.4",
+      "destination": "wwwroot\\lib\\popperjs/core"
     }
   ]
 }

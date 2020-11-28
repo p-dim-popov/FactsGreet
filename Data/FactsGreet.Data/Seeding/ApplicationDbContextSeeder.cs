@@ -28,8 +28,10 @@
                               new RolesSeeder(),
                               new BadgesSeeder(),
                               new UsersSeeder(),
+                              new FollowsSeeder(),
                               new CategoriesSeeder(),
                               new ArticlesSeeder(),
+                              new ConversationsSeeder(),
                           };
 
             foreach (var seeder in seeders)
