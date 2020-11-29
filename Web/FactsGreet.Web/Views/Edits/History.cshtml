@@ -11,23 +11,51 @@
     </div>
     <div class="row">
         <div class="list-group col">
-            <a class="list-group-item-dark font-weight-bold">
-                <span class="text-primary">
-                    [Created On]
-                </span>
-                EditorUserName - Comment
-            </a>
+            <div class="list-group-item-dark font-weight-bold">
+                <div class="container">
+                    <div class="row">
+                        <div class="col text-primary">
+                            [Created On]
+                        </div>
+                        <div class="col">EditorUserName</div>
+                        <div class="col">Comment</div>
+                    </div>
+                </div>
+            </div>
             @foreach (var edit in Model.Edits)
             {
-                <a asp-controller="Edits"
-                   asp-action="View"
-                   asp-route-id="@edit.Id"
-                   class="list-group-item list-group-item-action">
-                    <span class="text-primary">
-                        [<span class="utc-to-local">@edit.CreatedOn.ToString("R")</span>]
-                    </span>
-                    @edit.EditorUserName - @edit.Comment
-                </a>
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col text-primary" style="transform: rotate(0);">
+                                [<span class="utc-to-local">@edit.CreatedOn.ToString("R")</span>]
+                                <a asp-controller="Edits"
+                                   asp-action="View"
+                                   asp-route-id="@edit.Id"
+                                   class="stretched-link">
+                                </a>
+                            </div>
+                            <div class="col" style="transform: rotate(0);">
+                                @{
+                                    var email = new Dictionary<string, string> { { "email", edit.EditorUserName } };
+                                }
+                                <a asp-route="profile_index"
+                                   asp-all-route-data="email"
+                                   class="stretched-link text-dark">
+                                    @edit.EditorUserName
+                                </a>
+                            </div>
+                            <div class="col" style="transform: rotate(0);">
+                                @edit.Comment
+                                <a asp-controller="Edits"
+                                   asp-action="View"
+                                   asp-route-id="@edit.Id"
+                                   class="stretched-link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
             }
         </div>
     </div>

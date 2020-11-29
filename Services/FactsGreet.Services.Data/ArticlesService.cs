@@ -100,11 +100,16 @@
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
         {
             return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
+                .Select(x => x.Value.Replace("\"", string.Empty).ToLowerInvariant())
                 .Aggregate(
                     this.articleRepository.AllAsNoTracking(),
                     (current, keyword)
-                        => current.Where(x => x.Title.ToLower().Contains(keyword)))
+
+                        // Search if title contains keyword or have exact category as keyword
+                        => current.Where(x => x.Title.ToLower().Contains(keyword) ||
+                                              x.Categories
+                                                  .Select(y => y.Name)
+                                                  .Contains(keyword)))
                 .To<T>()
                 .Skip(skip)
                 .Take(take)

@@ -3,7 +3,15 @@
 @foreach (var feedModel in Model)
 {
     <div class="rounded border-top mb-5">
-        <small>@feedModel.EditorUserName @(feedModel.IsCreation ? "created" : "edited") an article</small>
+        <small>
+            @{
+                var email = new Dictionary<string, string> { { "email", feedModel.EditorUserName } };
+    <a asp-route="profile_index" asp-all-route-data="email">
+        @feedModel.EditorUserName
+    </a>
+            }
+            @(feedModel.IsCreation ? "created" : "edited") an article
+        </small>
         <partial name="_CompactArticlePartial" model="feedModel.Article"/>
     </div>
 }

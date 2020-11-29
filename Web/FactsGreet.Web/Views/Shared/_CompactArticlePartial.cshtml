@@ -14,18 +14,21 @@
             <div class="card-body">
                 <h5 class="card-title">@Model.Title</h5>
                 <p class="card-text">
-                     @if (string.IsNullOrWhiteSpace(Model.Description))
-                     {
-                         @Html.Raw(Markdown.ToPlainText(Model.ShortContent))
-                     }
-                     else
-                     {
+                    @if (string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        @Html.Raw(Markdown.ToPlainText(Model.ShortContent))
+                    }
+                    else
+                    {
                         @Model.Description
                     }
                 </p>
             </div>
         </div>
-        <a href="/Article/@Model.Title" class="stretched-link"></a>
+        @{
+            var title = new Dictionary<string, string> { { "title", Model.Title } };
+    <a asp-route="article" asp-all-route-data="title" class="stretched-link"></a>
+        }
     </div>
 
     <div class="card-footer w-100 text-muted">
@@ -41,9 +44,32 @@
                 <small class="text-muted">Categories: </small>
                 @foreach (var category in Model.Categories.Take(categoriesDisplayCount))
                 {
-                    <a class="btn btn-primary">@category</a>
+                    <a asp-area=""
+                       asp-controller="Articles"
+                       asp-action="Search"
+                       asp-route-slug="@category"
+                       class="btn btn-primary">
+                        @category
+                    </a>                }
+                @if (Model.Categories.Count > categoriesDisplayCount)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ...
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            @foreach (var category in Model.Categories.Skip(categoriesDisplayCount))
+                            {
+                                <a asp-area=""
+                                   asp-controller="Articles"
+                                   asp-action="Search"
+                                   asp-route-slug="@category"
+                                   class="btn btn-primary">
+                                    @category
+                                </a>                            }
+                        </div>
+                    </div>
                 }
-                @(Model.Categories.Count > categoriesDisplayCount ? "..." : "")
             </div>
         </div>
     </div>
