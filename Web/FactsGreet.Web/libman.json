@@ -37,28 +37,28 @@
       ]
     },
     {
-      "library": "simplemde@1.11.2",
-      "destination": "wwwroot/lib/simplemde"
-    },
-    {
       "library": "magic-grid@3.2.4",
       "destination": "wwwroot/lib/magic-grid"
     },
     {
       "library": "sync-scroll@1.0.3",
-      "destination": "wwwroot\\lib\\sync-scroll"
+      "destination": "wwwroot/lib/sync-scroll"
     },
     {
       "library": "mergely@4.2.1",
-      "destination": "wwwroot\\lib\\mergely"
+      "destination": "wwwroot/lib/mergely"
     },
     {
       "library": "@microsoft/signalr@latest",
-      "destination": "wwwroot\\lib\\microsoft/signalr"
+      "destination": "wwwroot/lib/microsoft/signalr"
     },
     {
       "library": "@popperjs/core@2.5.4",
-      "destination": "wwwroot\\lib\\popperjs/core"
+      "destination": "wwwroot/lib/popperjs/core"
+    },
+    {
+      "library": "easymde@2.13.0",
+      "destination": "wwwroot/lib/easymde"
     }
   ]
 }

@@ -77,7 +77,7 @@
                 Users = users,
                 Messages = new List<Message>
                 {
-                    new()
+                    new Message
                     {
                         Content = "Say hello to each other :) !",
                         SenderId = await this.applicationUserRepository.AllAsNoTracking()

@@ -16,7 +16,7 @@
 
         public static EditViewModel CreateFrom(EditDto editDto)
         {
-            return new ()
+            return new EditViewModel
             {
                 TargetArticleContent = editDto.TargetArticleContent,
                 AgainstArticleContent = editDto.AgainstArticleContent,

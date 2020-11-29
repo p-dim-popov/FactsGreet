@@ -17,7 +17,7 @@
             thumbnailLinkInput.value = '';
         })
 
-    new SimpleMDE({element: document.getElementById('content-textarea')})
+    new EasyMDE({element: document.getElementById('content-textarea')})
 
     const categoryRows = document.getElementById('category-rows');
 

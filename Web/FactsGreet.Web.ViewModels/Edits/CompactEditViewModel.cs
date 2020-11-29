@@ -21,7 +21,7 @@
         public string Comment { get; set; }
 
         public static CompactEditViewModel CreateFrom(CompactEditDto compactEditDto)
-            => new()
+            => new CompactEditViewModel
             {
                 Id = compactEditDto.Id,
                 EditorUserName = compactEditDto.EditorUserName,
