@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
     using System.Collections.Generic;
@@ -10,10 +10,7 @@
     using FactsGreet.Services.Data.TransferObjects.Edits;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
-    using DbDiff = FactsGreet.Data.Models.Diff;
     using DbPatch = FactsGreet.Data.Models.Patch;
-    using DmpDiff = TrueCommerce.Shared.DiffMatchPatch.Diff;
-    using DmpPatch = TrueCommerce.Shared.DiffMatchPatch.Patch;
 
     public class EditsService
     {

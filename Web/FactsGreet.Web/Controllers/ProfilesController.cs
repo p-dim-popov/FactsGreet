@@ -3,6 +3,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.ViewModels.Profiles;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;

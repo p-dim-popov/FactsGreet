@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
-
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Hubs;
     using FactsGreet.Web.ViewModels.Conversations;
     using Microsoft.AspNetCore.Authorization;
@@ -19,14 +19,14 @@
         private const int ConversationsPerPage = 3;
 
         private readonly ConversationsService conversationsService;
-        private readonly MessagesService messagesService;
+        private readonly IMessagesService messagesService;
         private readonly ApplicationUsersService applicationUsersService;
         private readonly FollowsService followsService;
         private readonly IHubContext<ChatHub> chatHubContext;
 
         public ConversationsController(
             ConversationsService conversationsService,
-            MessagesService messagesService,
+            IMessagesService messagesService,
             ApplicationUsersService applicationUsersService,
             FollowsService followsService,
             IHubContext<ChatHub> chatHubContext)
@@ -45,11 +45,6 @@
 
         public async Task<IActionResult> Messages(string email, Guid? id)
         {
-            if (this.User.FindFirstValue(ClaimTypes.Email) == email)
-            {
-                return this.Forbid();
-            }
-
             ConversationViewModel convo;
 
             if (id.HasValue)
@@ -80,9 +75,10 @@
                     }
 
                     // If the user is followed by the target, allow conversation creation
-                    convo = await this.conversationsService.CreateAsync<ConversationViewModel>(
-                        this.UserId,
-                        targetUserId);
+                    convo = await this.conversationsService
+                        .CreateAsync<ConversationViewModel>(
+                            this.UserId,
+                            targetUserId);
                 }
             }
 

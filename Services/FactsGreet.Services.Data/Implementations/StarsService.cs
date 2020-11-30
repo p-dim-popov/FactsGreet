@@ -1,9 +1,7 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using Microsoft.EntityFrameworkCore;

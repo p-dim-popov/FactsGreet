@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.ViewModels.Files;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,9 @@
     [Authorize]
     public class FilesController : BaseController
     {
-        private readonly FilesService filesService;
+        private readonly IFilesService filesService;
 
-        public FilesController(FilesService filesService)
+        public FilesController(IFilesService filesService)
         {
             this.filesService = filesService;
         }
@@ -21,17 +22,17 @@
         {
             return this.View(new AllFilesViewModel
             {
-                Count = await this.filesService.GetCount(),
-                Files = await this.filesService.GetAllForUser<FileViewModel>(this.UserId),
+                Count = await this.filesService.GetCountAsync(),
+                Files = await this.filesService.GetAllForUserAsync<FileViewModel>(this.UserId),
                 UsedSize = await this.filesService
-                    .GetUsedSize(this.UserId),
+                    .GetUsedSizeAsync(this.UserId),
             });
         }
 
         public async Task<IActionResult> Delete(FileDeleteInputModel file)
         {
             // Check if the user owns the file
-            if (!this.UserId.Equals(await this.filesService.GetUserId(file.Id)))
+            if (!this.UserId.Equals(await this.filesService.GetUserIdAsync(file.Id)))
             {
                 return this.Unauthorized();
             }
@@ -49,13 +50,13 @@
             }
 
             // Check if the user owns the file
-            if (!this.UserId.Equals(await this.filesService.GetUserId(file.Id)))
+            if (!this.UserId.Equals(await this.filesService.GetUserIdAsync(file.Id)))
             {
                 return this.Unauthorized();
             }
 
             // Check if user already has file with that name
-            if (!await this.filesService.IsFilenameAvailable(file.Filename, this.UserId))
+            if (!await this.filesService.IsFilenameAvailableAsync(file.Filename, this.UserId))
             {
                 this.ViewBag.ErrorMessage = $"Filename already exists: {file.Filename}";
                 return this.RedirectToAction(nameof(this.All));
@@ -81,7 +82,7 @@
             var filename = model.Filename ?? model.File.FileName;
 
             // Check if user already has file with that name
-            if (!await this.filesService.IsFilenameAvailable(filename, this.UserId))
+            if (!await this.filesService.IsFilenameAvailableAsync(filename, this.UserId))
             {
                 this.ViewBag.ErrorMessage = $"Filename already exists: {filename}";
                 return this.View(model);
@@ -91,7 +92,6 @@
             {
                 await this.filesService.UploadAsync(
                     model.File.OpenReadStream(),
-                    model.File.Length,
                     filename,
                     this.UserId);
             }

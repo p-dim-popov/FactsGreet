@@ -8,14 +8,24 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
-    <PackageReference Include="Moq" Version="4.14.7" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="MockQueryable.Moq" Version="5.0.0" />
+    <PackageReference Include="Moq" Version="4.15.2" />
+    <PackageReference Include="NLipsum" Version="1.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
@@ -29,6 +39,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\FactsGreet.Data\FactsGreet.Data.csproj" />
     <ProjectReference Include="..\..\Services\FactsGreet.Services.Data\FactsGreet.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Web\FactsGreet.Web.ViewModels\FactsGreet.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

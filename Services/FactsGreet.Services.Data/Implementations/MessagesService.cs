@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
     using System.Collections.Generic;
@@ -10,16 +10,18 @@
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class MessagesService
+    public class MessagesService : IMessagesService
     {
         private readonly IDeletableEntityRepository<Message> messageRepository;
 
-        public MessagesService(IDeletableEntityRepository<Message> messageRepository)
+        public MessagesService(
+            IDeletableEntityRepository<Message> messageRepository)
         {
             this.messageRepository = messageRepository;
         }
 
         public Task<T> GetByIdAsync<T>(Guid messageId)
+            where T : IMapFrom<Message>
         {
             return this.messageRepository
                 .AllAsNoTracking()

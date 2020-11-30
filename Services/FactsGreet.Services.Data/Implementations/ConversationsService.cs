@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
     using System.Collections.Generic;
@@ -30,6 +30,7 @@
         public async Task<T> GetAsync<T>(params string[] userIds)
             where T : IMapFrom<Conversation>
         {
+            userIds = userIds.Distinct().ToArray();
             return await this.conversationRepository.AllAsNoTracking()
                 .Where(x => x.Users.Count == userIds.Length &&
                             x.Users.All(y => userIds.Contains(y.Id)))
@@ -62,12 +63,9 @@
         public async Task<T> CreateAsync<T>(params string[] userIds)
             where T : class, IMapFrom<Conversation>
         {
-            if (userIds.Length < 2)
-            {
-                throw new InvalidOperationException("Cannot create conversation with less than 2 people!");
-            }
-
-            var users = await this.applicationUserRepository.All()
+            userIds = userIds.Distinct().ToArray();
+            var users = await this.applicationUserRepository
+                .All()
                 .Where(x => userIds.Contains(x.Id))
                 .ToListAsync();
 

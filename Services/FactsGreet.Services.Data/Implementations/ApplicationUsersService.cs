@@ -1,8 +1,9 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;

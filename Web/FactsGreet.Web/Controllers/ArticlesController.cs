@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Shared;
@@ -16,12 +17,12 @@
         private const int ArticlesPerPage = 2;
 
         private readonly ArticlesService articlesService;
-        private readonly FilesService filesService;
+        private readonly IFilesService filesService;
         private readonly StarsService starsService;
 
         public ArticlesController(
             ArticlesService articlesService,
-            FilesService filesService,
+            IFilesService filesService,
             StarsService starsService)
         {
             this.articlesService = articlesService;
@@ -141,7 +142,6 @@
                                     ? null
                                     : await this.filesService.UploadAsync(
                                         model.ThumbnailImage.OpenReadStream(),
-                                        model.ThumbnailImage.Length,
                                         model.ThumbnailImage.FileName,
                                         this.UserId));
             }

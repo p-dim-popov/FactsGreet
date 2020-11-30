@@ -13,6 +13,7 @@
     using FactsGreet.Data.Repositories;
     using FactsGreet.Data.Seeding;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Services.Messaging;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

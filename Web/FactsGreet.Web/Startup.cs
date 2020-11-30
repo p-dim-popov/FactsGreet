@@ -11,6 +11,7 @@
     using FactsGreet.Data.Seeding;
     using FactsGreet.Services;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Services.Mapping;
     using FactsGreet.Services.Messaging;
     using FactsGreet.Web.Controllers;
@@ -86,12 +87,13 @@
             services.AddTransient<NotificationsService>();
             services.AddTransient<ArticleDeletionRequestsService>();
             services.AddTransient<ApplicationUsersService>();
-            services.AddTransient<FilesService>();
+            services.AddTransient<IFilesService, FilesService>();
             services.AddTransient<StarsService>();
             services.AddTransient<FollowsService>();
             services.AddTransient<ConversationsService>();
-            services.AddTransient<MessagesService>();
+            services.AddTransient<IMessagesService, MessagesService>();
             services.AddTransient<DiffMatchPatchService>();
+            services.AddTransient<IDropboxService, DropboxService>();
 
             services.AddMarkdown(config =>
             {

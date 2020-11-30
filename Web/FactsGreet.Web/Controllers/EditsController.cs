@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Data;
+    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Edits;
@@ -20,12 +21,12 @@
 
         private readonly EditsService editsService;
         private readonly ArticlesService articlesService;
-        private readonly FilesService filesService;
+        private readonly IFilesService filesService;
 
         public EditsController(
             EditsService editsService,
             ArticlesService articlesService,
-            FilesService filesService)
+            IFilesService filesService)
         {
             this.editsService = editsService;
             this.articlesService = articlesService;
@@ -75,7 +76,6 @@
                                     ? null
                                     : await this.filesService.UploadAsync(
                                         model.Article.ThumbnailImage.OpenReadStream(),
-                                        model.Article.ThumbnailImage.Length,
                                         model.Article.ThumbnailImage.FileName,
                                         this.UserId));
             }

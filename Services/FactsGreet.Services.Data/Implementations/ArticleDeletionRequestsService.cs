@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Services.Data
+﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
     using System.Collections.Generic;
