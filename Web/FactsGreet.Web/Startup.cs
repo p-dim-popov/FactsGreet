@@ -92,7 +92,7 @@
             services.AddTransient<FollowsService>();
             services.AddTransient<ConversationsService>();
             services.AddTransient<IMessagesService, MessagesService>();
-            services.AddTransient<DiffMatchPatchService>();
+            services.AddTransient<IDiffMatchPatchService, DiffMatchPatchService>();
             services.AddTransient<IDropboxService, DropboxService>();
 
             services.AddMarkdown(config =>

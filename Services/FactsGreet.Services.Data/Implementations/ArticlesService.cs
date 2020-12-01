@@ -19,7 +19,7 @@
         private readonly IDeletableEntityRepository<Star> starRepository;
         private readonly IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
         private readonly IDeletableEntityRepository<Edit> editRepository;
-        private readonly DiffMatchPatchService diffMatchPatchService;
+        private readonly IDiffMatchPatchService diffMatchPatchService;
 
         public ArticlesService(
             IDeletableEntityRepository<Article> articleRepository,
@@ -27,7 +27,7 @@
             IDeletableEntityRepository<Star> starRepository,
             IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
             IDeletableEntityRepository<Edit> editRepository,
-            DiffMatchPatchService diffMatchPatchService)
+            IDiffMatchPatchService diffMatchPatchService)
         {
             this.articleRepository = articleRepository;
             this.categoryRepository = categoryRepository;

@@ -17,13 +17,13 @@
         private readonly IDeletableEntityRepository<Edit> editRepository;
         private readonly IDeletableEntityRepository<Category> categoryRepository;
         private readonly IDeletableEntityRepository<Article> articleRepository;
-        private readonly DiffMatchPatchService diffMatchPatchService;
+        private readonly IDiffMatchPatchService diffMatchPatchService;
 
         public EditsService(
             IDeletableEntityRepository<Edit> editRepository,
             IDeletableEntityRepository<Category> categoryRepository,
             IDeletableEntityRepository<Article> articleRepository,
-            DiffMatchPatchService diffMatchPatchService)
+            IDiffMatchPatchService diffMatchPatchService)
         {
             this.editRepository = editRepository;
             this.categoryRepository = categoryRepository;

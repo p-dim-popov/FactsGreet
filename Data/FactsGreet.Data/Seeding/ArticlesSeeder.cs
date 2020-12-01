@@ -21,7 +21,7 @@
                 return;
             }
 
-            var dmpService = serviceProvider.GetService<DiffMatchPatchService>();
+            var dmpService = serviceProvider.GetService<IDiffMatchPatchService>();
             var rng = new Random(DateTime.Now.Millisecond);
             var categories = await dbContext.Categories.ToListAsync();
 

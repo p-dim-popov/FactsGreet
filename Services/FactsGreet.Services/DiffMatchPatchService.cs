@@ -12,7 +12,7 @@
     using DmpPatch = TrueCommerce.Shared.DiffMatchPatch.Patch;
 
     // Edit > Patch > Diff
-    public class DiffMatchPatchService
+    public class DiffMatchPatchService : IDiffMatchPatchService
     {
         private readonly DiffMatchPatch dmp;
 
