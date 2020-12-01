@@ -18,12 +18,12 @@
 
         private readonly ArticlesService articlesService;
         private readonly IFilesService filesService;
-        private readonly StarsService starsService;
+        private readonly IStarsService starsService;
 
         public ArticlesController(
             ArticlesService articlesService,
             IFilesService filesService,
-            StarsService starsService)
+            IStarsService starsService)
         {
             this.articlesService = articlesService;
             this.filesService = filesService;

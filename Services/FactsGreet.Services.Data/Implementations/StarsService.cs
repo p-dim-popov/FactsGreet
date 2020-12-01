@@ -2,11 +2,12 @@
 {
     using System;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using Microsoft.EntityFrameworkCore;
 
-    public class StarsService
+    public class StarsService : IStarsService
     {
         private readonly IDeletableEntityRepository<Star> starRepository;
 
@@ -27,6 +28,10 @@
             else if (star.IsDeleted)
             {
                 this.starRepository.Undelete(star);
+            }
+            else
+            {
+                return;
             }
 
             await this.starRepository.SaveChangesAsync();

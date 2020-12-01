@@ -88,7 +88,7 @@
             services.AddTransient<ArticleDeletionRequestsService>();
             services.AddTransient<ApplicationUsersService>();
             services.AddTransient<IFilesService, FilesService>();
-            services.AddTransient<StarsService>();
+            services.AddTransient<IStarsService, StarsService>();
             services.AddTransient<FollowsService>();
             services.AddTransient<ConversationsService>();
             services.AddTransient<IMessagesService, MessagesService>();
