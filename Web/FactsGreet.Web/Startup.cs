@@ -16,6 +16,7 @@
     using FactsGreet.Services.Messaging;
     using FactsGreet.Web.Controllers;
     using FactsGreet.Web.Hubs;
+    using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels;
     using Markdig;
     using Microsoft.AspNetCore.Builder;
@@ -124,20 +125,7 @@
                     .Wait();
             }
 
-            app.Use(async (context, next) =>
-            {
-                var destination = context.Request.Path.Value ?? string.Empty;
-                if (destination.Contains(' '))
-                {
-                    context.Response
-                        .Redirect(Uri.EscapeUriString(destination
-                            .Replace(' ', '_')));
-                }
-
-                context.Request.Path = destination.Replace('_', ' ');
-
-                await next.Invoke();
-            });
+            app.UseUnderscoreInsteadOfWhitespaceInUrl();
 
             app.UseStatusCodePagesWithReExecute($"/Errors/{nameof(ErrorsController.StatusCodePage)}/{{0}}");
 
