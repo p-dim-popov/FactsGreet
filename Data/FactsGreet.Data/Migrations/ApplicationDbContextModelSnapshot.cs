@@ -50,21 +50,6 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("ApplicationUserConversation");
                 });
 
-            modelBuilder.Entity("ApplicationUserNotification", b =>
-                {
-                    b.Property<Guid>("SeenNotificationsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("SeensId")
-                        .HasColumnType("text");
-
-                    b.HasKey("SeenNotificationsId", "SeensId");
-
-                    b.HasIndex("SeensId");
-
-                    b.ToTable("ApplicationUserNotification");
-                });
-
             modelBuilder.Entity("ArticleCategory", b =>
                 {
                     b.Property<Guid>("ArticlesId")
@@ -78,6 +63,41 @@ namespace FactsGreet.Data.Migrations
                     b.HasIndex("CategoriesId");
 
                     b.ToTable("ArticleCategory");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.AdminRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("MotivationalLetter")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("RequestId");
+
+                    b.ToTable("AdminRequest");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.ApplicationRole", b =>
@@ -127,6 +147,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<Guid?>("AdminRequestId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -186,6 +209,8 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdminRequestId");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("NormalizedEmail")
@@ -217,6 +242,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("DeletionRequestId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasMaxLength(300)
@@ -255,6 +283,9 @@ namespace FactsGreet.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("ArticleId")
                         .HasColumnType("uuid");
 
@@ -270,23 +301,26 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("NotificationId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
+                    b.Property<Guid?>("RequestId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticleId");
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ArticleId")
+                        .IsUnique();
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("NotificationId");
+                    b.HasIndex("RequestId");
 
-                    b.ToTable("ArticleDeletionRequests");
+                    b.ToTable("ArticleDeletionRequest");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Badge", b =>
@@ -448,8 +482,6 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("NotificationId");
-
                     b.ToTable("Edits");
                 });
 
@@ -565,9 +597,6 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("NotificationId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -578,45 +607,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.HasIndex("NotificationId");
-
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
@@ -653,12 +646,11 @@ namespace FactsGreet.Data.Migrations
                     b.ToTable("Patches");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Setting", b =>
+            modelBuilder.Entity("FactsGreet.Data.Models.Request", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
@@ -672,17 +664,20 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("SenderId")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Settings");
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Request");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Star", b =>
@@ -857,21 +852,6 @@ namespace FactsGreet.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ApplicationUserNotification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.Notification", null)
-                        .WithMany()
-                        .HasForeignKey("SeenNotificationsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("SeensId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ArticleCategory", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Article", null)
@@ -887,6 +867,25 @@ namespace FactsGreet.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FactsGreet.Data.Models.AdminRequest", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.Request", "Request")
+                        .WithMany("AdminRequests")
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Request");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.AdminRequest", "AdminRequest")
+                        .WithMany()
+                        .HasForeignKey("AdminRequestId");
+
+                    b.Navigation("AdminRequest");
+                });
+
             modelBuilder.Entity("FactsGreet.Data.Models.Article", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Author")
@@ -900,21 +899,24 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.ArticleDeletionRequest", b =>
                 {
+                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", null)
+                        .WithMany("ArticleDeletionRequests")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("FactsGreet.Data.Models.Article", "Article")
-                        .WithMany("DeletionRequests")
-                        .HasForeignKey("ArticleId")
+                        .WithOne("DeletionRequest")
+                        .HasForeignKey("FactsGreet.Data.Models.ArticleDeletionRequest", "ArticleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FactsGreet.Data.Models.Notification", "Notification")
-                        .WithMany("ArticleDeletionRequestNotifications")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.HasOne("FactsGreet.Data.Models.Request", "Request")
+                        .WithMany("ArticleDeletionRequests")
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Article");
 
-                    b.Navigation("Notification");
+                    b.Navigation("Request");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Diff", b =>
@@ -938,17 +940,9 @@ namespace FactsGreet.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FactsGreet.Data.Models.Notification", "Notification")
-                        .WithMany("EditNotifications")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Article");
 
                     b.Navigation("Editor");
-
-                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.File", b =>
@@ -989,12 +983,8 @@ namespace FactsGreet.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FactsGreet.Data.Models.Notification", null)
-                        .WithMany("MessageNotifications")
-                        .HasForeignKey("NotificationId");
-
                     b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
-                        .WithMany("SentMessages")
+                        .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1004,22 +994,22 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
-                {
-                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
-                        .WithMany("Notifications")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
                 {
                     b.HasOne("FactsGreet.Data.Models.Edit", null)
                         .WithMany("Patches")
                         .HasForeignKey("EditId");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Request", b =>
+                {
+                    b.HasOne("FactsGreet.Data.Models.ApplicationUser", "Sender")
+                        .WithMany("Requests")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Star", b =>
@@ -1094,6 +1084,8 @@ namespace FactsGreet.Data.Migrations
 
             modelBuilder.Entity("FactsGreet.Data.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("ArticleDeletionRequests");
+
                     b.Navigation("Articles");
 
                     b.Navigation("Claims");
@@ -1106,18 +1098,16 @@ namespace FactsGreet.Data.Migrations
 
                     b.Navigation("Logins");
 
-                    b.Navigation("Notifications");
+                    b.Navigation("Requests");
 
                     b.Navigation("Roles");
-
-                    b.Navigation("SentMessages");
 
                     b.Navigation("StarredArticles");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Article", b =>
                 {
-                    b.Navigation("DeletionRequests");
+                    b.Navigation("DeletionRequest");
 
                     b.Navigation("Edits");
 
@@ -1134,18 +1124,16 @@ namespace FactsGreet.Data.Migrations
                     b.Navigation("Patches");
                 });
 
-            modelBuilder.Entity("FactsGreet.Data.Models.Notification", b =>
-                {
-                    b.Navigation("ArticleDeletionRequestNotifications");
-
-                    b.Navigation("EditNotifications");
-
-                    b.Navigation("MessageNotifications");
-                });
-
             modelBuilder.Entity("FactsGreet.Data.Models.Patch", b =>
                 {
                     b.Navigation("Diffs");
+                });
+
+            modelBuilder.Entity("FactsGreet.Data.Models.Request", b =>
+                {
+                    b.Navigation("AdminRequests");
+
+                    b.Navigation("ArticleDeletionRequests");
                 });
 #pragma warning restore 612, 618
         }

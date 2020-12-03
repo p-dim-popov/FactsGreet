@@ -210,10 +210,6 @@
                         .Select(x => x.Content)
                         .FirstOrDefaultAsync(),
                     newContent),
-                Notification =
-                {
-                    SenderId = editorId,
-                },
             });
 
             await this.articleRepository.SaveChangesAsync();

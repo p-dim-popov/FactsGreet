@@ -9,6 +9,7 @@
     using FactsGreet.Services.Data;
     using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
+    using FactsGreet.Web.Infrastructure.Attributes;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Edits;
     using FactsGreet.Web.ViewModels.Shared;
@@ -34,7 +35,7 @@
         }
 
         [Authorize]
-        [HttpGet("[controller]/[action]/{title}", Name = "edits_create")]
+        [Route("[controller]/[action]/{title}")]
         public async Task<IActionResult> Create(string title)
         {
             var article = await this.articlesService.GetByTitleAsync<ArticleCreateEditInputModel>(title);
@@ -98,7 +99,7 @@
             return this.RedirectToRoute("article", new { title = model.Article.Title });
         }
 
-        [Route("[controller]/[action]/{title}", Name = "edits_history")]
+        [Route("[controller]/[action]/{title}", Name = nameof(EditsController) + nameof(History))]
         public async Task<IActionResult> History(string title, int page = 1)
         {
             return this.View(new HistoryViewModel
@@ -106,7 +107,11 @@
                 ArticleTitle = title,
                 Edits = await this.GetEditsPagedOrderByDescAsync<CompactEditViewModel>(
                     page, filter: x => x.Article.Title == title),
-                PaginationViewModel = new CompactPaginationViewModel { CurrentPage = page },
+                PaginationViewModel = new CompactPaginationViewModel(
+                    page,
+                    typeof(EditsController),
+                    nameof(this.History),
+                    new { title }),
             });
         }
 

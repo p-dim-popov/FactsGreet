@@ -1,7 +1,9 @@
-﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestsViewModel
+﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.AdminRequestsViewModel
+
 @{
-    ViewBag.Title = "Article Deletion Requests";
+    ViewBag.Title = "Admin Requests";
 }
+
 <div class="container">
     <div class="row">
         <div class="col">
@@ -13,7 +15,7 @@
             @foreach (var request in Model.Requests)
             {
                 <a asp-controller="Dashboard"
-                   asp-action="ArticleDeletionRequest"
+                   asp-action="AdminRequest"
                    asp-route-id="@request.Id"
                    class="list-group-item list-group-item-action">
                     <span class="text-primary">
@@ -21,7 +23,7 @@
                         <span class="utc-to-local">@request.CreatedOn.ToString("R")</span>
                         ]
                     </span>
-                    @request.ArticleAuthorUserName requested the deletion of @request.ArticleTitle
+                    @request.RequestSenderEmail requested admin promotion
                 </a>
             }
         </div>

@@ -2,7 +2,8 @@
 {
     public enum RequestType
     {
-        UserReport = 1,
+        Base = 0,
+        Admin = 1,
         ArticleDeletion = 2,
     }
 }

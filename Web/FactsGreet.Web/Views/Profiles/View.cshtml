@@ -1,8 +1,10 @@
 ﻿@using System.Security.Claims
+@using FactsGreet.Common
 @using FactsGreet.Services.Data
 @using FactsGreet.Services.Data.Implementations
 @model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
 @inject FollowsService FollowsService
+@inject AdminRequestsService AdminRequestsService
 @{
     ViewBag.Title = $"{Model.UserName}'s profile";
 }
@@ -39,6 +41,20 @@
                 </div>
             }
         }
+        @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+        {
+            <div class="col-auto">
+                <h4>
+                    <span class="badge badge-info text-white">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-auto p-1 m-0">Admin</div>
+                            </div>
+                        </div>
+                    </span>
+                </h4>
+            </div>   
+        }
         @foreach (var badge in Model.Badges)
         {
             <div class="col-auto">
@@ -68,6 +84,20 @@
         }
         <div class="col"></div>
     </div>
+    @if (!this.User.IsInRole(GlobalConstants.AdministratorRoleName) &&
+         await AdminRequestsService.CanUserBecomeAdminAsync(this.User.FindFirstValue(ClaimTypes.NameIdentifier)))
+    {
+        <div class="row">
+            <div class="col-auto">
+                <a asp-controller="Profiles"
+                   asp-action="CreateAdminRequest"
+                   class="btn btn-success">
+                    Create Admin Request
+                </a>
+            </div>
+            <div class="col"></div>
+        </div>
+    }
     <div class="row">
         <div class="col">
             <div id="app">

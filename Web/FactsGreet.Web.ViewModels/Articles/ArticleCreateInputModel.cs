@@ -8,7 +8,7 @@
     using AutoMapper;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
-    using FactsGreet.Web.Infrastructure.ValidationAttributes;
+    using FactsGreet.Web.Infrastructure.Attributes.Validation;
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Http;
 

@@ -34,7 +34,7 @@
             // Check if the user owns the file
             if (!this.UserId.Equals(await this.filesService.GetUserIdAsync(file.Id)))
             {
-                return this.Unauthorized();
+                return this.Forbid();
             }
 
             await this.filesService.DeleteAsync(file.Id);
@@ -52,7 +52,7 @@
             // Check if the user owns the file
             if (!this.UserId.Equals(await this.filesService.GetUserIdAsync(file.Id)))
             {
-                return this.Unauthorized();
+                return this.Forbid();
             }
 
             // Check if user already has file with that name

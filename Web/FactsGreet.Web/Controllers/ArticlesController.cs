@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
@@ -11,6 +12,7 @@
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
 
     public class ArticlesController : BaseController
     {
@@ -30,7 +32,7 @@
             this.starsService = starsService;
         }
 
-        [Route("/Article/{title}", Name = "article")]
+        [Route("Article/{title}", Name = nameof(ArticlesController) + nameof(GetByTitle))]
         public async Task<IActionResult> GetByTitle(string title)
         {
             if (title is null)
@@ -47,7 +49,7 @@
             // p.s.: think about this... wasting resources
             if (article.Title != title)
             {
-                return this.RedirectToRoute("article", new { title = article.Title });
+                return this.RedirectToRoute(nameof(this.GetByTitle), new { title = article.Title });
             }
 
             article.IsStarredByUser =
@@ -72,26 +74,21 @@
                     pagination.Take,
                     slug);
 
-            return this.View(new SearchArticlesViewModel
+            var model = new SearchArticlesViewModel
             {
                 Articles = articles,
-                PaginationViewModel = new PaginationViewModel
-                {
-                    ItemsCount = ArticlesPerPage,
-                    PagesCount =
-                        (int)Math.Ceiling(1.0 * await this.articlesService
-                                              .GetCountByTitleKeywordsAsync(slug) /
-                                          ArticlesPerPage),
-                    CurrentPage = page,
-                    Path = $"/{nameof(ArticlesController).Replace("Controller", string.Empty)}/{nameof(this.Search)}",
-                    Query = { ("slug", slug) },
-                },
+                PaginationViewModel = new PaginationViewModel(
+                    page,
+                    ArticlesPerPage,
+                    await this.articlesService.GetCountByTitleKeywordsAsync(slug),
+                    allRouteDataObject: new { slug }),
                 Slug = slug,
-            });
+            };
+            return this.View(model);
         }
 
         [HttpGet("[controller]")]
-        [HttpGet("[controller]/[action]")]
+        [HttpGet("[controller]/[action]", Name = nameof(All))]
         public async Task<IActionResult> All(int page = 1)
         {
             var pagination = Paginator.GetPagination(page, ArticlesPerPage);
@@ -100,16 +97,14 @@
                     pagination.Skip,
                     pagination.Take,
                     x => x.CreatedOn);
+
             return this.View(new AllArticlesViewModel
             {
                 Articles = articles,
-                PaginationViewModel = new PaginationViewModel
-                {
-                    CurrentPage = page,
-                    ItemsCount = ArticlesPerPage,
-                    PagesCount = (int)Math.Ceiling(1.0 * await this.articlesService.GetCountAsync() / ArticlesPerPage),
-                    Path = $"/{nameof(ArticlesController).Replace("Controller", string.Empty)}/{nameof(this.All)}",
-                },
+                PaginationViewModel = new PaginationViewModel(
+                    page,
+                    ArticlesPerPage,
+                    await this.articlesService.GetCountAsync()),
             });
         }
 
@@ -159,7 +154,7 @@
                 thumbnailLink,
                 model.Description);
 
-            return this.RedirectToRoute("article", new
+            return this.RedirectToRoute(nameof(this.GetByTitle), new
             {
                 title = model.Title,
             });
@@ -170,7 +165,13 @@
         public async Task<IActionResult> Delete(Guid id)
         {
             await this.articlesService.DeleteAsync(id);
-            return this.RedirectToAction(nameof(this.All));
+            return this.RedirectToRoute(
+                new
+                {
+                    area = "Administration",
+                    controller = "Dashboard",
+                    action = "ArticleDeletionRequests",
+                });
         }
 
         [Authorize]
@@ -178,7 +179,7 @@
         {
             if (this.UserId != await this.articlesService.GetAuthorIdAsync(id))
             {
-                return this.Unauthorized();
+                return this.Forbid();
             }
 
             return this.View(new ArticleDeletionRequestCreateInputModel
@@ -195,10 +196,10 @@
             var authorId = await this.articlesService.GetAuthorIdAsync(model.Id);
             if (this.UserId != authorId)
             {
-                return this.Unauthorized();
+                return this.Forbid();
             }
 
-            await this.articlesService.CreateDeletionRequestAsync(model.Id, authorId, model.Reason);
+            await this.articlesService.CreateDeletionRequestAsync(model.Id, this.UserId, model.Reason);
             return this.RedirectToAction(nameof(this.All));
         }
 
@@ -207,7 +208,7 @@
         {
             await this.starsService.RemoveStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
-                "article",
+                nameof(this.GetByTitle),
                 new
                 {
                     title = await this.articlesService.GetTitleAsync(id),
@@ -219,7 +220,7 @@
         {
             await this.starsService.CreateStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
-                "article",
+                nameof(this.GetByTitle),
                 new
                 {
                     title = await this.articlesService.GetTitleAsync(id),

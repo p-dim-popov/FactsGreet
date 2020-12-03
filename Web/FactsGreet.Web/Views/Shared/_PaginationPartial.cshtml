@@ -5,7 +5,10 @@
         @if (Model.CurrentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="@($"{Model.Url}&page={Model.PreviousPage}")" aria-label="Previous">
+                <a class="page-link"
+                   asp-route="@Model.Route"
+                   asp-all-route-data="@Model.GetAllRouteDataForPage(Model.PreviousPage)"
+                   aria-label="Previous">
                     <span aria-hidden="true">
                         &laquo;
                     </span>
@@ -14,7 +17,7 @@
         }
         @{
             const int morePagesToShow = 3;
-            var pagesToShow = new List<int>();
+            var pagesToShow = Enumerable.Range(1, morePagesToShow).ToList();
             for (var i = 1; i <= morePagesToShow; i++)
             {
                 pagesToShow.Add(i);
@@ -50,13 +53,17 @@
             if (i > 0 && pageNumber - 1 != pagesToShow[i - 1])
             {
                 <li class="page-item @className">
-                    <a class="page-link" href="@($"{Model.Url}&page={pagesToShow[i - 1] + 1}")">
+                    <a class="page-link"
+                       asp-route="@Model.Route"
+                       asp-all-route-data="Model.GetAllRouteDataForPage(pagesToShow[i - 1] + 1)">
                         ...
                     </a>
                 </li>
             }
             <li class="page-item @className">
-                <a class="page-link" href="@($"{Model.Url}&page={pageNumber}")">
+                <a class="page-link"
+                   asp-route="@Model.Route"
+                   asp-all-route-data="Model.GetAllRouteDataForPage(pageNumber)">
                     @pageNumber
                 </a>
             </li>
@@ -64,7 +71,10 @@
         @if (Model.CurrentPage < Model.PagesCount)
         {
             <li class="page-item">
-                <a class="page-link" href="@($"{Model.Url}&page={Model.NextPage}")" aria-label="Next">
+                <a class="page-link"
+                   asp-route="@Model.Route"
+                   asp-all-route-data="Model.GetAllRouteDataForPage(Model.NextPage)"
+                   aria-label="Next">
                     <span aria-hidden="true">
                         &raquo;
                     </span>

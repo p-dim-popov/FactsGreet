@@ -24,8 +24,6 @@
         {
         }
 
-        public DbSet<Setting> Settings { get; set; }
-
         /////////////////////////////////////////////////////////////
         public DbSet<Article> Articles { get; set; }
 
@@ -39,11 +37,7 @@
 
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<ArticleDeletionRequest> ArticleDeletionRequests { get; set; }
-
         public DbSet<Star> Stars { get; set; }
-
-        public DbSet<Notification> Notifications { get; set; }
 
         public DbSet<Badge> Badges { get; set; }
 

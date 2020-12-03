@@ -2,8 +2,10 @@
 {
     public class IndexViewModel
     {
-        public int NotificationsCount { get; set; }
+        public int JobsCount => this.ArticleDeletionRequestsCount + this.AdminRequestsCount;
 
-        public int ArticleDeletionRequestNotificationsCount { get; set; }
+        public int ArticleDeletionRequestsCount { get; set; }
+
+        public int AdminRequestsCount { get; set; }
     }
 }

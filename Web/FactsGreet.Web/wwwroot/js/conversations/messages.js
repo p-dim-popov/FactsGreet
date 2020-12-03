@@ -50,7 +50,7 @@ ${isSender ? '<div class="col"></div>' : ''}
         </div>
         <div class="row">
             <div class="col">
-                <p class="p-2 border rounded text-white ${isSender ? "bg-secondary" : "bg-info"}">
+                <p class="p-2 border rounded ${isSender ? "bg-secondary text-info" : "bg-info text-white"}">
                     ${content}
                 </p>
             </div>

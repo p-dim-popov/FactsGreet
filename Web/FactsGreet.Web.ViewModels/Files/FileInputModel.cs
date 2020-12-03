@@ -1,7 +1,7 @@
 ﻿namespace FactsGreet.Web.ViewModels.Files
 {
     using System.ComponentModel.DataAnnotations;
-    using FactsGreet.Web.Infrastructure.ValidationAttributes;
+    using FactsGreet.Web.Infrastructure.Attributes.Validation;
     using Microsoft.AspNetCore.Http;
 
     public class FileInputModel

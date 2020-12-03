@@ -85,8 +85,8 @@
             // TODO: add interfaces
             services.AddTransient<ArticlesService>();
             services.AddTransient<EditsService>();
-            services.AddTransient<NotificationsService>();
             services.AddTransient<ArticleDeletionRequestsService>();
+            services.AddTransient<AdminRequestsService>();
             services.AddTransient<ApplicationUsersService>();
             services.AddTransient<IFilesService, FilesService>();
             services.AddTransient<IStarsService, StarsService>();

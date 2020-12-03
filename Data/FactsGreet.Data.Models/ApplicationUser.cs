@@ -40,6 +40,7 @@ namespace FactsGreet.Data.Models
         */
 
         public virtual ICollection<Badge> Badges { get; set; }
+            = new HashSet<Badge>();
 
         public virtual ICollection<Edit> Edits { get; set; }
             = new HashSet<Edit>();
@@ -56,16 +57,17 @@ namespace FactsGreet.Data.Models
         public virtual ICollection<Follow> Followings { get; set; }
             = new HashSet<Follow>();
 
-        public virtual ICollection<Message> SentMessages { get; set; }
-            = new HashSet<Message>();
-
         public virtual ICollection<Star> StarredArticles { get; set; }
             = new HashSet<Star>();
 
-        public virtual ICollection<Notification> Notifications { get; set; }
-            = new HashSet<Notification>();
+        public virtual ICollection<Request> Requests { get; set; }
+            = new HashSet<Request>();
 
-        public virtual ICollection<Notification> SeenNotifications { get; set; }
-            = new HashSet<Notification>();
+        public virtual ICollection<ArticleDeletionRequest> ArticleDeletionRequests { get; set; }
+            = new HashSet<ArticleDeletionRequest>();
+
+        public Guid? AdminRequestId { get; set; }
+
+        public virtual AdminRequest AdminRequest { get; set; }
     }
 }

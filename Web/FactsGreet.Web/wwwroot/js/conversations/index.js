@@ -101,6 +101,8 @@
     }, 500);
 
     setInterval(async function (){
+        if (!!main.actionIsPending) return;
+        main.actionIsPending = true;
         const searchForUser = document.getElementById('user-email-input').value;
         if (main.searchForUser === searchForUser) return;
         main.searchForUser = searchForUser;
@@ -118,5 +120,7 @@
             link.classList.add('list-group-item')
             main.usersList.appendChild(link);
         })
+        
+        main.actionIsPending = false;
     }, 500);
 })()

@@ -6,7 +6,6 @@
     using System.Linq.Expressions;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -17,7 +16,7 @@
         private readonly IDeletableEntityRepository<Article> articleRepository;
         private readonly IDeletableEntityRepository<Category> categoryRepository;
         private readonly IDeletableEntityRepository<Star> starRepository;
-        private readonly IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
+        private readonly IRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
         private readonly IDeletableEntityRepository<Edit> editRepository;
         private readonly IDiffMatchPatchService diffMatchPatchService;
 
@@ -25,7 +24,7 @@
             IDeletableEntityRepository<Article> articleRepository,
             IDeletableEntityRepository<Category> categoryRepository,
             IDeletableEntityRepository<Star> starRepository,
-            IDeletableEntityRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
+            IRepository<ArticleDeletionRequest> articleDeletionRequestRepository,
             IDeletableEntityRepository<Edit> editRepository,
             IDiffMatchPatchService diffMatchPatchService)
         {
@@ -84,7 +83,6 @@
                         EditorId = authorId,
                         IsCreation = true,
                         Patches = this.diffMatchPatchService.CreateEdit(string.Empty, content),
-                        Notification = { SenderId = authorId },
                         Comment = "Initial create", // TODO: Think about combining edit and create view bcs of this...
                     },
                 },
@@ -100,17 +98,7 @@
 
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
         {
-            return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.Replace("\"", string.Empty).ToLowerInvariant())
-                .Aggregate(
-                    this.articleRepository.AllAsNoTracking(),
-                    (current, keyword)
-
-                        // Search if title contains keyword or have exact category as keyword
-                        => current.Where(x => x.Title.ToLower().Contains(keyword) ||
-                                              x.Categories
-                                                  .Select(y => y.Name)
-                                                  .Contains(keyword)))
+            return await this.PrepareQueryForSearch(keywords)
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
@@ -119,12 +107,7 @@
 
         public async Task<int> GetCountByTitleKeywordsAsync(string keywords)
         {
-            return await Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
-                .Select(x => x.Value.Replace("\"", string.Empty).ToLower())
-                .Aggregate(
-                    this.articleRepository.AllAsNoTracking(),
-                    (current, keyword)
-                        => current.Where(x => x.Title.ToLower().Contains(keyword)))
+            return await this.PrepareQueryForSearch(keywords)
                 .CountAsync();
         }
 
@@ -168,13 +151,13 @@
                 .AnyAsync(x => x.Title.ToLower() == title);
         }
 
-        public async Task CreateDeletionRequestAsync(Guid id, string authorId, string reason)
+        public async Task CreateDeletionRequestAsync(Guid id, string userId, string reason)
         {
             await this.articleDeletionRequestRepository.AddAsync(new ArticleDeletionRequest
             {
                 ArticleId = id,
-                Notification = { SenderId = authorId },
                 Reason = reason,
+                Request = { SenderId = userId },
             });
 
             await this.articleDeletionRequestRepository.SaveChangesAsync();
@@ -182,16 +165,15 @@
 
         public async Task DeleteAsync(Guid id)
         {
-            var article = await this.articleRepository.All()
-                .Include(x => x.DeletionRequests)
+            var article = await this.articleRepository
+                .All()
+                .Include(x => x.DeletionRequest)
                 .Include(x => x.Stars)
                 .Include(x => x.Edits)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            foreach (var request in article.DeletionRequests)
-            {
-                this.articleDeletionRequestRepository.Delete(request);
-            }
+            // DeletionRequest is set OnDelete.Cascade but this is not actually a deletion
+            this.articleDeletionRequestRepository.Delete(article.DeletionRequest);
 
             foreach (var star in article.Stars)
             {
@@ -230,5 +212,18 @@
                 .Where(x => x.Id == id)
                 .Select(x => x.Content)
                 .FirstOrDefaultAsync();
+
+        private IQueryable<Article> PrepareQueryForSearch(string keywords)
+            => Regex.Matches(keywords, @"\""([^)]+)\""|([^\s"".?!]+)")
+                .Select(x => x.Value.Replace("\"", string.Empty).ToLowerInvariant())
+                .Aggregate(
+                    this.articleRepository.AllAsNoTracking(),
+                    (current, keyword)
+
+                        // Search if title contains keyword or have exact category as keyword
+                        => current.Where(x => x.Title.ToLower().Contains(keyword) ||
+                                              x.Categories
+                                                  .Select(y => y.Name)
+                                                  .Contains(keyword)));
     }
 }

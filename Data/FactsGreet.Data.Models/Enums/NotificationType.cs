@@ -1,6 +1,6 @@
 ﻿namespace FactsGreet.Data.Models.Enums
 {
-    public enum NotificationType
+    public enum NotificationType1
     {
         None = 0,
         Message = 1,

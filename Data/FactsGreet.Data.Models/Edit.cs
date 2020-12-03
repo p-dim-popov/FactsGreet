@@ -28,8 +28,5 @@
 
         public virtual ICollection<Patch> Patches { get; set; }
             = new HashSet<Patch>();
-
-        public virtual Notification Notification { get; set; }
-            = new Notification { Type = NotificationType.Edit };
     }
 }

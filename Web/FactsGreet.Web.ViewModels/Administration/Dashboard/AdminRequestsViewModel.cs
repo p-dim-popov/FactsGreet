@@ -4,10 +4,10 @@
 
     using FactsGreet.Web.ViewModels.Shared;
 
-    public class ArticleDeletionRequestsViewModel
+    public class AdminRequestsViewModel
     {
         public CompactPaginationViewModel CompactPaginationViewModel { get; set; }
 
-        public ICollection<CompactArticleDeletionRequestViewModel> Requests { get; set; }
+        public ICollection<CompactAdminRequestViewModel> Requests { get; set; }
     }
 }

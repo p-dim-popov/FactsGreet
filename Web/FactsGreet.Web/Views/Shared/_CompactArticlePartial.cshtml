@@ -1,4 +1,7 @@
 ﻿@using Markdig
+@using FactsGreet.Web.Controllers
+@using WebExtensions = FactsGreet.Web.Infrastructure.Extensions
+@using FactsGreet.Common
 @model FactsGreet.Web.ViewModels.Articles.CompactArticleViewModel
 @{
     const int categoriesDisplayCount = 3;
@@ -25,10 +28,10 @@
                 </p>
             </div>
         </div>
-        @{
-            var title = new Dictionary<string, string> { { "title", Model.Title } };
-    <a asp-route="article" asp-all-route-data="title" class="stretched-link"></a>
-        }
+        
+        <a asp-route="@WebExtensions.FirstOrDefaultNotNullRouteName(typeof(ArticlesController), nameof(ArticlesController.GetByTitle))" 
+           asp-all-route-data="new { title = Model.Title }.ToDictionary()" 
+           class="stretched-link"></a>
     </div>
 
     <div class="card-footer w-100 text-muted">

@@ -1,15 +1,13 @@
-﻿@model ICollection<FactsGreet.Web.ViewModels.Edits.EditWithCompactArticleViewModel>
+﻿@using FactsGreet.Common
+@model ICollection<FactsGreet.Web.ViewModels.Edits.EditWithCompactArticleViewModel>
 
 @foreach (var feedModel in Model)
 {
     <div class="rounded border-top mb-5">
         <small>
-            @{
-                var email = new Dictionary<string, string> { { "email", feedModel.EditorUserName } };
-    <a asp-route="profile_index" asp-all-route-data="email">
-        @feedModel.EditorUserName
-    </a>
-            }
+            <a asp-route="profile_index" asp-all-route-data="new { email = feedModel.EditorUserName }.ToDictionary()">
+                @feedModel.EditorUserName
+            </a>
             @(feedModel.IsCreation ? "created" : "edited") an article
         </small>
         <partial name="_CompactArticlePartial" model="feedModel.Article"/>

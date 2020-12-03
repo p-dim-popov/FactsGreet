@@ -129,7 +129,6 @@
                     {
                         EditorId = x.AuthorId,
                         IsCreation = true,
-                        Notification = { SenderId = x.AuthorId },
                         Comment = "Initial create",
                         Patches = dmpService?.CreateEdit(string.Empty, x.Content),
                     });

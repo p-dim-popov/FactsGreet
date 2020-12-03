@@ -1,4 +1,5 @@
-﻿@model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestViewModel
+﻿@using FactsGreet.Common
+@model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestViewModel
 @{
     ViewBag.Title = $"Delete {Model.Article.Title}";
 }
@@ -6,10 +7,16 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h3>Article Deletion Request: @Model.Id</h3>
+            <h3>Article Deletion Request: </h3>
+            <h4>@Model.Id</h4>
             <div class="form-group">
-                <label asp-for="ArticleAuthorUserName"></label>
-                <input asp-for="ArticleAuthorUserName" class="form-control" disabled>
+                <label for="username-link">User</label>
+                <a id="username-link"
+                   asp-route="profile_index"
+                   asp-all-route-data="new { email = Model.ArticleAuthorUserName }.ToDictionary()"
+                   class="btn btn-secondary">
+                    @Model.ArticleAuthorUserName
+                </a>
             </div>
             <div class="form-group">
                 <label asp-for="Reason"></label>

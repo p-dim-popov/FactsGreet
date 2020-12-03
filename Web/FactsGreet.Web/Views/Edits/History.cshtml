@@ -1,4 +1,5 @@
-﻿@model FactsGreet.Web.ViewModels.Edits.HistoryViewModel
+﻿@using FactsGreet.Common
+@model FactsGreet.Web.ViewModels.Edits.HistoryViewModel
 @{
     ViewBag.Title = $"History of: {Model.ArticleTitle}";
 }
@@ -36,11 +37,8 @@
                                 </a>
                             </div>
                             <div class="col" style="transform: rotate(0);">
-                                @{
-                                    var email = new Dictionary<string, string> { { "email", edit.EditorUserName } };
-                                }
                                 <a asp-route="profile_index"
-                                   asp-all-route-data="email"
+                                   asp-all-route-data="new { email = edit.EditorUserName }.ToDictionary()"
                                    class="stretched-link text-dark">
                                     @edit.EditorUserName
                                 </a>

@@ -1,4 +1,4 @@
-﻿namespace FactsGreet.Web.Infrastructure.ValidationAttributes
+﻿namespace FactsGreet.Web.Infrastructure.Attributes.Validation
 {
     using System.ComponentModel.DataAnnotations;
     using System.Text.RegularExpressions;

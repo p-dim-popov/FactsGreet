@@ -26,7 +26,9 @@
 
         public async Task RemoveBadgeAsync(string userId, string badgeName)
         {
-            var user = await this.applicationUserRepository.All()
+            var user = await this.applicationUserRepository
+                .All()
+                .Include(x => x.Badges.Where(y => y.Name == badgeName))
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user.Badges.FirstOrDefault(x => x.Name == badgeName) is { } badge)

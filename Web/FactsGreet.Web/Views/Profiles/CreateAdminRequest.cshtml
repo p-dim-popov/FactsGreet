@@ -1,0 +1,16 @@
+﻿@model FactsGreet.Web.ViewModels.Profiles.CreateAdminRequestInputModel
+@{
+    ViewBag.Title = "Request to become admin";
+}
+
+<form asp-controller="Profiles"
+      asp-action="CreateAdminRequest"
+      method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="MotivationalLetter" class="h4"></label>
+        <textarea asp-for="MotivationalLetter" class="form-control" rows="3" placeholder="Explain your deepest desire to become administrator here..."></textarea>
+        <span asp-validation-for="MotivationalLetter" class="text-danger"></span>
+    </div>
+    <button class="btn btn-success">Request Admin Promotion</button>
+</form>

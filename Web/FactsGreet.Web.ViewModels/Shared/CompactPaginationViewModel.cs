@@ -2,27 +2,44 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+
+    using FactsGreet.Common;
+
+    using Extensions = FactsGreet.Web.Infrastructure.Extensions;
 
     public class CompactPaginationViewModel
     {
-        private int currentPage = 1;
+        private readonly int currentPage = 1;
+        private readonly object allRouteDataObject;
+
+        public CompactPaginationViewModel(
+            int currentPage,
+            Type controller = null,
+            string action = null,
+            object allRouteDataObject = null)
+        {
+            this.CurrentPage = currentPage;
+            this.Controller = controller;
+            this.Action = action;
+            this.allRouteDataObject = allRouteDataObject ?? new { };
+        }
 
         public int CurrentPage
         {
             get => this.currentPage;
-            set => this.currentPage = Math.Max(1, value);
+            private init => this.currentPage = Math.Max(1, value);
         }
 
-        public string Path { get; set; }
+        public string Route
+            => Extensions.FirstOrDefaultNotNullRouteName(this.Controller, this.Action);
 
-        public ICollection<(string Key, object Value)> Query { get; set; }
-            = new HashSet<(string Key, object Value)>();
+        private Type Controller { get; }
 
-        public string QueryString
-            => string.Join('&', this.Query
-                .Select(kvp => $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value.ToString())}"));
+        private string Action { get; }
 
-        public string Url => $"{this.Path}?{this.QueryString}";
+        public IDictionary<string, string> GetAllRouteDataForPage(int page)
+            => this.allRouteDataObject
+                .ToDictionary()
+                .AppendElement("page", page.ToString());
     }
 }

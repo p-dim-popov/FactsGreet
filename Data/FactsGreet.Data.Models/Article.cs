@@ -26,6 +26,10 @@
 
         public virtual ApplicationUser Author { get; set; }
 
+        public Guid? DeletionRequestId { get; set; }
+
+        public virtual ArticleDeletionRequest DeletionRequest { get; set; }
+
         public virtual ICollection<Category> Categories { get; set; }
             = new HashSet<Category>();
 
@@ -34,8 +38,5 @@
 
         public virtual ICollection<Star> Stars { get; set; }
             = new HashSet<Star>();
-
-        public virtual ICollection<ArticleDeletionRequest> DeletionRequests { get; set; }
-            = new HashSet<ArticleDeletionRequest>();
     }
 }

@@ -12,15 +12,16 @@
 
     public class ArticleDeletionRequestsService
     {
-        private readonly IRepository<ArticleDeletionRequest> aricleDeletionRequestRepository;
+        private readonly IRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
 
-        public ArticleDeletionRequestsService(IRepository<ArticleDeletionRequest> aricleDeletionRequestRepository)
+        public ArticleDeletionRequestsService(IRepository<ArticleDeletionRequest> articleDeletionRequestRepository)
         {
-            this.aricleDeletionRequestRepository = aricleDeletionRequestRepository;
+            this.articleDeletionRequestRepository = articleDeletionRequestRepository;
         }
 
         public async Task<ICollection<T>> GetPaginatedOrderedByCreationDateAsync<T>(int skip, int take)
-            => await this.aricleDeletionRequestRepository.AllAsNoTracking()
+            => await this.articleDeletionRequestRepository
+                .AllAsNoTracking()
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip(skip)
                 .Take(take)
@@ -28,10 +29,13 @@
                 .ToListAsync();
 
         public Task<int> GetCountAsync()
-            => this.aricleDeletionRequestRepository.AllAsNoTracking().CountAsync();
+            => this.articleDeletionRequestRepository
+                .AllAsNoTracking()
+                .CountAsync();
 
         public Task<T> GetById<T>(Guid id)
-            => this.aricleDeletionRequestRepository.All()
+            => this.articleDeletionRequestRepository
+                .AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .To<T>()
                 .FirstOrDefaultAsync();

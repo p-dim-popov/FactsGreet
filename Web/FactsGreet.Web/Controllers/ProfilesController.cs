@@ -1,11 +1,16 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
+    using System;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using FactsGreet.Services.Data;
+    using FactsGreet.Common;
+    using FactsGreet.Data.Models;
     using FactsGreet.Services.Data.Implementations;
+    using FactsGreet.Web.Areas.Administration.Controllers;
+    using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Profiles;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
@@ -13,13 +18,19 @@
     {
         private readonly ApplicationUsersService applicationUsersService;
         private readonly FollowsService followsService;
+        private readonly AdminRequestsService adminRequestsService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public ProfilesController(
             ApplicationUsersService applicationUsersService,
-            FollowsService followsService)
+            FollowsService followsService,
+            AdminRequestsService adminRequestsService,
+            UserManager<ApplicationUser> userManager)
         {
             this.applicationUsersService = applicationUsersService;
             this.followsService = followsService;
+            this.adminRequestsService = adminRequestsService;
+            this.userManager = userManager;
         }
 
         [HttpGet("[controller]/View/{email}", Name = "profile_index")]
@@ -66,6 +77,48 @@
             return this.Json(await this.applicationUsersService.Get10EmailsByEmailKeywordAsync(keyword));
         }
 
-        // TODO: View all starred articles
+        [Authorize(Roles = GlobalConstants.RegularRoleName)]
+        public IActionResult CreateAdminRequest()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.RegularRoleName)]
+        public async Task<IActionResult> CreateAdminRequest(CreateAdminRequestInputModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            await this.adminRequestsService.CreateAsync(this.UserId, model.MotivationalLetter);
+
+            return this.RedirectToRoute(
+                "profile_index",
+                new { email = this.User.FindFirstValue(ClaimTypes.Email) });
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> AddToRole(string email, string role)
+        {
+            var user = await this.userManager.FindByEmailAsync(email);
+
+            if (role is GlobalConstants.AdministratorRoleName)
+            {
+                await this.userManager.RemoveFromRoleAsync(user, GlobalConstants.RegularRoleName);
+                await this.adminRequestsService.DeleteForUserIdAsync(user.Id);
+                await this.userManager.AddToRoleAsync(user, role);
+                return this.RedirectToRoute(
+                    new
+                    {
+                        area = "Administration",
+                        controller = "Dashboard",
+                        action = "AdminRequests",
+                    });
+            }
+
+            return this.RedirectToRoute(new { area = "Administration", controller = "Dashboard", action = "Index" });
+        }
     }
 }
