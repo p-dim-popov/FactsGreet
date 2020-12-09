@@ -1,6 +1,7 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using FactsGreet.Common;
@@ -20,17 +21,20 @@
         private readonly FollowsService followsService;
         private readonly AdminRequestsService adminRequestsService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly BadgesService badgesService;
 
         public ProfilesController(
             ApplicationUsersService applicationUsersService,
             FollowsService followsService,
             AdminRequestsService adminRequestsService,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            BadgesService badgesService)
         {
             this.applicationUsersService = applicationUsersService;
             this.followsService = followsService;
             this.adminRequestsService = adminRequestsService;
             this.userManager = userManager;
+            this.badgesService = badgesService;
         }
 
         [HttpGet("[controller]/View/{email}", Name = "profile_index")]
@@ -41,21 +45,11 @@
             return this.View("View", profile);
         }
 
-        public async Task<IActionResult> RemoveBadge(string name)
-        {
-            await this.applicationUsersService
-                .RemoveBadgeAsync(this.UserId, name);
-
-            return this.RedirectToRoute(
-                "profile_index",
-                new { email = this.User.FindFirstValue(ClaimTypes.Email) });
-        }
-
         public async Task<IActionResult> Follow(string userId)
         {
             await this.followsService.Follow(this.UserId, userId);
             return this.RedirectToRoute(
-                "profile_index",
+                Helpers.GetRouteNames(this.GetType(), nameof(this.Index)).FirstOrDefault(),
                 new { email = await this.applicationUsersService.GetEmailAsync(userId) });
         }
 
@@ -63,7 +57,7 @@
         {
             await this.followsService.Unfollow(this.UserId, userId);
             return this.RedirectToRoute(
-                "profile_index",
+                Helpers.GetRouteNames(this.GetType(), nameof(this.Index)).FirstOrDefault(),
                 new { email = await this.applicationUsersService.GetEmailAsync(userId) });
         }
 
@@ -95,7 +89,7 @@
             await this.adminRequestsService.CreateAsync(this.UserId, model.MotivationalLetter);
 
             return this.RedirectToRoute(
-                "profile_index",
+                Helpers.GetRouteNames(this.GetType(), nameof(this.Index)).FirstOrDefault(),
                 new { email = this.User.FindFirstValue(ClaimTypes.Email) });
         }
 
@@ -119,6 +113,33 @@
             }
 
             return this.RedirectToRoute(new { area = "Administration", controller = "Dashboard", action = "Index" });
+        }
+
+        public async Task<IActionResult> RemoveBadge(string name)
+        {
+            await this.badgesService
+                .RemoveBadgeFromUserAsync(this.UserId, name);
+
+            return this.RedirectToRoute(new
+            {
+                action = "Index",
+                email = this.User.FindFirstValue(ClaimTypes.Email),
+            });
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        [HttpPost]
+        public async Task<IActionResult> AddBadge(string email, string badge)
+        {
+            await this.badgesService
+                .AddBadgeToUserAsync(await this.applicationUsersService.GetIdByEmailAsync(email), badge);
+
+            return this.RedirectToRoute(new
+            {
+                area = "Administration",
+                controller = "Dashboard",
+                action = "MostActiveUsers",
+            });
         }
     }
 }

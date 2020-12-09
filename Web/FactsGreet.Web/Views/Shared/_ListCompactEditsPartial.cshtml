@@ -1,15 +1,18 @@
 ﻿@using FactsGreet.Common
+@using FactsGreet.Web.Controllers
+@using FactsGreet.Web.Infrastructure
 @model ICollection<FactsGreet.Web.ViewModels.Edits.EditWithCompactArticleViewModel>
 
 @foreach (var feedModel in Model)
 {
     <div class="rounded border-top mb-5">
-        <small>
-            <a asp-route="profile_index" asp-all-route-data="new { email = feedModel.EditorUserName }.ToDictionary()">
+        <span>
+            <a asp-route="@(Helpers.GetRouteNames<ProfilesController>(nameof(ProfilesController.Index)).FirstOrDefault())" 
+               asp-all-route-data="new { email = feedModel.EditorUserName }.ToDictionary()">
                 @feedModel.EditorUserName
             </a>
             @(feedModel.IsCreation ? "created" : "edited") an article
-        </small>
+        </span>
         <partial name="_CompactArticlePartial" model="feedModel.Article"/>
     </div>
 }

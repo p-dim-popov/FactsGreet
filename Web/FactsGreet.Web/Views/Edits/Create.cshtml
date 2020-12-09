@@ -6,7 +6,10 @@
 
 <h2>@ViewBag.Title</h2>
 
-<form asp-controller="Edits" asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-controller="Edits" 
+      asp-action="Create" 
+      method="post"
+      enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <input asp-for="Article.Id" hidden>
     <div class="container">
@@ -112,7 +115,7 @@
         <div class="row">
             <div class="col">
                 <label asp-for="Comment"></label>
-                <textarea asp-for="Comment" class="form-control"></textarea>
+                <textarea asp-for="Comment" class="form-control" placeholder="Edit summary"></textarea>
                 <span asp-validation-for="Comment" class="text-danger"></span>
             </div>
         </div>

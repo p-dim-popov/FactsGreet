@@ -1,11 +1,9 @@
 ﻿namespace FactsGreet.Web.Infrastructure
 {
     using System;
-    using System.Linq;
 
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Http;
 
     public static class Extensions
     {
@@ -25,16 +23,7 @@
                 await next.Invoke();
             });
 
-        public static string FirstOrDefaultNotNullRouteName(Type controllerType, string actionName)
-            => controllerType
-                ?.GetMethod(actionName)
-                ?.GetCustomAttributes(true)
-                .OfType<IRouteTemplateProvider>()
-                .Select(x => x?.Name)
-                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-
-        public static string FirstOrDefaultNotNullRouteName<T>(this T controller, string actionName)
-            where T : ControllerBase
-            => FirstOrDefaultNotNullRouteName(typeof(T), actionName);
+        public static string GetLocationHref(this HttpContext context)
+            => context.Request.Host + context.Request.Path;
     }
 }

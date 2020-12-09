@@ -11,16 +11,15 @@
     {
         public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
-            if (!await dbContext.Badges.AnyAsync())
+            if (await dbContext.Badges.AnyAsync())
             {
                 return;
             }
 
             var badges = new[]
             {
-                new Badge {Name = GlobalConstants.Badges.Creator},
-                new Badge {Name = GlobalConstants.Badges.BeingCorrect},
-                new Badge {Name = GlobalConstants.Badges.ConversationStarter},
+                new Badge { Name = GlobalConstants.Badges.Creator },
+                new Badge { Name = GlobalConstants.Badges.Editor },
             };
 
             await dbContext.Badges.AddRangeAsync(badges);

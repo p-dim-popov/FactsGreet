@@ -3,6 +3,7 @@
     using System;
 
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Server.Kestrel.Https;
     using Microsoft.Extensions.Hosting;
 
     public static class Program
@@ -21,8 +22,9 @@
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
+                        .UseKestrel()
                         .UseStartup<Startup>()
-                        .UseUrls($"https://+.:{Port}")
+                        // .UseUrls($"http://+.:{Port}")
                             ;
                 });
     }

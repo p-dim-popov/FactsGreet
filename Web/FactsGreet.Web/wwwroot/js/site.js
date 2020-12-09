@@ -5,6 +5,6 @@
 [...document.getElementsByClassName("utc-to-local")]
     .forEach(x => {
         if (!!x.value)
-            x.value = new Date(x.value).toLocaleString()
-        else x.textContent = new Date(x.textContent).toLocaleString()
+            x.value = new Date(x.value.trim()).toLocaleString()
+        else x.textContent = new Date(x.textContent.trim()).toLocaleString()
     })

@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Services.Data.Implementations
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -24,20 +25,6 @@
                 .To<T>()
                 .FirstOrDefaultAsync();
 
-        public async Task RemoveBadgeAsync(string userId, string badgeName)
-        {
-            var user = await this.applicationUserRepository
-                .All()
-                .Include(x => x.Badges.Where(y => y.Name == badgeName))
-                .FirstOrDefaultAsync(x => x.Id == userId);
-
-            if (user.Badges.FirstOrDefault(x => x.Name == badgeName) is { } badge)
-            {
-                user.Badges.Remove(badge);
-                await this.applicationUserRepository.SaveChangesAsync();
-            }
-        }
-
         public Task<string> GetEmailAsync(string id)
             => this.applicationUserRepository.AllAsNoTrackingWithDeleted()
                 .Where(x => x.Id == id)
@@ -52,14 +39,6 @@
                 .FirstOrDefaultAsync();
         }
 
-        public Task<bool> EmailExistsAsync(string last)
-        {
-            last = last.ToUpper();
-            return this.applicationUserRepository
-                .AllAsNoTracking()
-                .AnyAsync(x => x.NormalizedEmail == last);
-        }
-
         public async Task<ICollection<string>> Get10EmailsByEmailKeywordAsync(string keyword)
         {
             keyword = keyword.ToUpperInvariant();
@@ -69,6 +48,21 @@
                 .Select(x => x.Email)
                 .OrderBy(x => x.Length)
                 .Take(10)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<T>> Get10MostActiveUsersForTheLastWeekAsync<T>()
+        {
+            var lastWeek = DateTime.UtcNow.AddDays(-7);
+            return await this.applicationUserRepository
+                .AllAsNoTracking()
+                .OrderByDescending(x => x
+                    .Edits.Count(y => y.CreatedOn > lastWeek))
+                .ThenByDescending(x => x.Edits
+                    .Where(y => y.IsCreation)
+                    .Count(y => y.CreatedOn > lastWeek))
+                .Take(10)
+                .To<T>()
                 .ToListAsync();
         }
     }

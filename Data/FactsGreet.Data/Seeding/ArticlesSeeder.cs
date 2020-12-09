@@ -22,7 +22,6 @@
             }
 
             var dmpService = serviceProvider.GetService<IDiffMatchPatchService>();
-            var rng = new Random(DateTime.Now.Millisecond);
             var categories = await dbContext.Categories.ToListAsync();
 
             var users = await dbContext.Users
@@ -73,8 +72,21 @@
                             "https://bg.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BD%D1%86%D0%B5%D1%80%D0%BD",
                             "https://bg.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BD%D0%B3%D0%BB%D0%BE%D0%BC%D0%B5%D1%80%D0%B0%D1%82_(%D0%B8%D0%BA%D0%BE%D0%BD%D0%BE%D0%BC%D0%B8%D0%BA%D0%B0)",
                             "https://bg.wikipedia.org/wiki/%D0%9F%D1%80%D0%B5%D0%B4%D0%BF%D1%80%D0%B8%D1%8F%D1%82%D0%B8%D0%B5",
+                            "https://en.wikipedia.org/wiki/Linux",
+                            "https://en.wikipedia.org/wiki/Unix",
+                            "https://en.wikipedia.org/wiki/Linus_Torvalds",
+                            "https://en.wikipedia.org/wiki/Linux_kernel",
+                            "https://en.wikipedia.org/wiki/Windowing_system",
+                            "https://en.wikipedia.org/wiki/X86",
+                            "https://en.wikipedia.org/wiki/GNU",
+                            "https://en.wikipedia.org/wiki/Richard_Stallman",
+                            "https://en.wikipedia.org/wiki/Emacs",
+                            "https://en.wikipedia.org/wiki/GNU_Compiler_Collection",
+                            "https://en.wikipedia.org/wiki/C%2B%2B17",
+                            "https://en.wikipedia.org/wiki/CXX",
+                            "https://en.wikipedia.org/wiki/C_(programming_language)",
                         }
-                        .OrderBy(x => rng.Next())
+                        .OrderBy(x => ISeeder.Random.Next())
                         .Select(x => context.OpenAsync(x))))
                     .Select(x =>
                     {
@@ -111,8 +123,8 @@
                 })
                 .Select(x => new Article
                 {
-                    AuthorId = users[rng.Next(0, users.Length)],
-                    Categories = Enumerable.Range(rng.Next(), rng.Next(0, categories.Count))
+                    AuthorId = users[ISeeder.Random.Next(0, users.Length)],
+                    Categories = Enumerable.Range(ISeeder.Random.Next(), ISeeder.Random.Next(0, categories.Count))
                         .Select(y => categories[y % categories.Count])
                         .ToList(),
                     Content = editRegex
@@ -121,7 +133,7 @@
                                 .Replace("/wiki/", "/Article/"),
                             "(/Edits/Create/${title})"),
                     Title = x.Title,
-                    ThumbnailLink = $"https://picsum.photos/{rng.Next(200, 400)}",
+                    ThumbnailLink = $"https://picsum.photos/{ISeeder.Random.Next(200, 400)}",
                 })
                 .Select(x =>
                 {
@@ -131,6 +143,7 @@
                         IsCreation = true,
                         Comment = "Initial create",
                         Patches = dmpService?.CreateEdit(string.Empty, x.Content),
+                        CreatedOn = DateTime.UtcNow.AddDays(-ISeeder.Random.Next(0, 14)), // Two weeks range for creation because of ranking system
                     });
                     return x;
                 })

@@ -2,10 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using System.Linq;
     using FactsGreet.Common;
-
-    using Extensions = FactsGreet.Web.Infrastructure.Extensions;
+    using FactsGreet.Web.Infrastructure;
 
     public class CompactPaginationViewModel
     {
@@ -31,7 +30,9 @@
         }
 
         public string Route
-            => Extensions.FirstOrDefaultNotNullRouteName(this.Controller, this.Action);
+            => Helpers
+                .GetRouteNames(this.Controller, this.Action)
+                ?.FirstOrDefault();
 
         private Type Controller { get; }
 

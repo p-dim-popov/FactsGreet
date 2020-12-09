@@ -79,18 +79,26 @@
                 .then(r => r.json())
                 .then(messages => messages.forEach(message => loadConversationInfo(message)));
         })
-    
-    setInterval(async function (){
+
+    setInterval(async function () {
+        if (!!main.isGroupSearchLock) return;
+        main.isGroupSearchLock = true;
         const searchForConversation = document.getElementById('group-participants-input').value;
-        if (main.searchForConversation === searchForConversation) return;
+        if (main.searchForConversation === searchForConversation) {
+            main.isGroupSearchLock = false;
+            return;
+        }
         main.searchForConversation = searchForConversation;
 
         [...main.groupsList.children].forEach(c => c.remove());
-        if (main.searchForConversation === '') return;
-        
+        if (main.searchForConversation === '') {
+            main.isGroupSearchLock = false;
+            return;
+        }
+
         const conversations = await fetch(`/Conversations/GetConversationsIdsByEmails?users=${main.searchForConversation}`)
             .then(r => r.json());
-        
+
         conversations.forEach(({id, title}) => {
             const link = document.createElement('a');
             link.href = `/Conversations/Messages?id=${id}`;
@@ -98,17 +106,25 @@
             link.classList.add('list-group-item')
             main.groupsList.appendChild(link);
         })
+        
+        main.isGroupSearchLock = false;
     }, 500);
 
-    setInterval(async function (){
-        if (!!main.actionIsPending) return;
-        main.actionIsPending = true;
+    setInterval(async function () {
+        if (!!main.isUserSearchLock) return;
+        main.isUserSearchLock = true;
         const searchForUser = document.getElementById('user-email-input').value;
-        if (main.searchForUser === searchForUser) return;
+        if (main.searchForUser === searchForUser) {
+            main.isUserSearchLock = false;
+            return;
+        }
         main.searchForUser = searchForUser;
 
         [...main.usersList.children].forEach(c => c.remove());
-        if (main.searchForUser === '') return;
+        if (main.searchForUser === '') {
+            main.isUserSearchLock = false;
+            return;
+        }
 
         const users = await fetch(`/Profiles/Get10EmailsByEmailKeyword?keyword=${main.searchForUser}`)
             .then(r => r.json());
@@ -120,7 +136,7 @@
             link.classList.add('list-group-item')
             main.usersList.appendChild(link);
         })
-        
-        main.actionIsPending = false;
+
+        main.isUserSearchLock = false;
     }, 500);
 })()

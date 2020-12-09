@@ -326,7 +326,7 @@ namespace FactsGreet.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "File",
+                name: "Files",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -344,9 +344,9 @@ namespace FactsGreet.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_File_AspNetUsers_UserId",
+                        name: "FK_Files_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -755,6 +755,12 @@ namespace FactsGreet.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Badges_Name",
+                table: "Badges",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_IsDeleted",
                 table: "Categories",
                 column: "IsDeleted");
@@ -791,19 +797,19 @@ namespace FactsGreet.Data.Migrations
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_Filename_UserId",
-                table: "File",
+                name: "IX_Files_Filename_UserId",
+                table: "Files",
                 columns: new[] { "Filename", "UserId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_IsDeleted",
-                table: "File",
+                name: "IX_Files_IsDeleted",
+                table: "Files",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_UserId",
-                table: "File",
+                name: "IX_Files_UserId",
+                table: "Files",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -914,7 +920,7 @@ namespace FactsGreet.Data.Migrations
                 name: "Diffs");
 
             migrationBuilder.DropTable(
-                name: "File");
+                name: "Files");
 
             migrationBuilder.DropTable(
                 name: "Follows");

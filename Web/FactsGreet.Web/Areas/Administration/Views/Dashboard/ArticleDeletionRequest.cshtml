@@ -1,4 +1,6 @@
 ﻿@using FactsGreet.Common
+@using FactsGreet.Web.Controllers
+@using FactsGreet.Web.Infrastructure
 @model FactsGreet.Web.ViewModels.Administration.Dashboard.ArticleDeletionRequestViewModel
 @{
     ViewBag.Title = $"Delete {Model.Article.Title}";
@@ -12,7 +14,7 @@
             <div class="form-group">
                 <label for="username-link">User</label>
                 <a id="username-link"
-                   asp-route="profile_index"
+                   asp-route="@(Helpers.GetRouteNames<ProfilesController>(nameof(ProfilesController.Index)).FirstOrDefault())"
                    asp-all-route-data="new { email = Model.ArticleAuthorUserName }.ToDictionary()"
                    class="btn btn-secondary">
                     @Model.ArticleAuthorUserName

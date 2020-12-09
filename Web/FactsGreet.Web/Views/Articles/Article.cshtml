@@ -1,11 +1,19 @@
 ﻿@using System.Security.Claims
 @using FactsGreet.Common
+@using FactsGreet.Services
+@using FactsGreet.Web.Infrastructure
 @model FactsGreet.Web.ViewModels.Articles.ArticleViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
+@inject QuickResponseCodeService QuickResponseCodeService
 @{
     ViewBag.Title = Model.Title;
 }
 <div class="row">
+    <div class="col-auto">
+        <img src="@QuickResponseCodeService.GetQuickResponseCodeImageSource(Context.GetLocationHref())"
+             alt="@Context.GetLocationHref()"
+             style="width: 10vw">
+    </div>
     <h1 class="col-auto">@Model.Title</h1>
     <div class="col-auto">
         <a asp-controller="Edits"
@@ -31,8 +39,7 @@
                         asp-route-id="@Model.Id">
                     Delete
                 </button>
-            </form>
-        }
+            </form>        }
         else if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.AuthorId)
         {
             <a class="btn btn-danger"
@@ -40,8 +47,7 @@
                asp-action="CreateDeletionRequest"
                asp-route-id="@Model.Id">
                 Request Delete
-            </a>
-        }
+            </a>        }
     </div>
     <div class="col"></div>
     <h3 class="col-auto">

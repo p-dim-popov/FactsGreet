@@ -20,9 +20,11 @@
         public int PagesCount
             => (int)Math.Ceiling(1.0 * this.ItemsCount / this.ItemsPerPage);
 
-        public int PreviousPage => this.CurrentPage == 1 ? 1 : this.CurrentPage - 1;
+        public int PreviousPage 
+            => this.CurrentPage == 1 ? 1 : this.CurrentPage - 1;
 
-        public int NextPage => this.CurrentPage == this.PagesCount ? this.PagesCount : this.CurrentPage + 1;
+        public int NextPage 
+            => this.CurrentPage == this.PagesCount ? this.PagesCount : this.CurrentPage + 1;
 
         private int ItemsPerPage { get; }
 

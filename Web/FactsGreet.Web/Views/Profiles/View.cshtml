@@ -1,16 +1,26 @@
 ﻿@using System.Security.Claims
 @using FactsGreet.Common
-@using FactsGreet.Services.Data
+@using FactsGreet.Data.Models
+@using FactsGreet.Services
 @using FactsGreet.Services.Data.Implementations
+@using FactsGreet.Web.Infrastructure
+@using Microsoft.AspNetCore.Identity
 @model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
 @inject FollowsService FollowsService
 @inject AdminRequestsService AdminRequestsService
+@inject QuickResponseCodeService QuickResponseCodeService
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewBag.Title = $"{Model.UserName}'s profile";
 }
 
 <div class="container">
     <div class="row">
+        <div class="col-auto">
+            <img src="@QuickResponseCodeService.GetQuickResponseCodeImageSource(Context.GetLocationHref())" 
+                 alt="@Context.GetLocationHref()"
+                 style="width: 10vw">
+        </div>
         <div class="col-auto">
             <h2 class="my-2">@Model.UserName's profile</h2>
         </div>
@@ -41,7 +51,7 @@
                 </div>
             }
         }
-        @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+        @if (await UserManager.IsInRoleAsync(await UserManager.FindByIdAsync(Model.Id), GlobalConstants.AdministratorRoleName))
         {
             <div class="col-auto">
                 <h4>
@@ -53,33 +63,31 @@
                         </div>
                     </span>
                 </h4>
-            </div>   
+            </div>
         }
         @foreach (var badge in Model.Badges)
         {
-            <div class="col-auto">
-                <h4>
-                    <span class="badge badge-warning">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-auto p-1 m-0">@badge.Name</div>
-                                <div class="col-auto p-1 m-0">
-                                    @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.Id)
-                                    {
-                                        <form method="post" class="form-inline">
-                                            <button asp-area=""
-                                                    asp-controller="Profiles"
-                                                    asp-action="RemoveBadge"
-                                                    asp-route-name="@badge.Name"
-                                                    class="badge badge-danger">
-                                                X
-                                            </button>
-                                        </form>                                    }
-                                </div>
+            <div class="col-auto h4">
+                <span class="badge badge-warning">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-auto p-1 m-0">@badge.Name</div>
+                            <div class="col-auto p-1 m-0">
+                                @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.Id)
+                                {
+                                    <form method="post" class="form-inline">
+                                        <button asp-area=""
+                                                asp-controller="Profiles"
+                                                asp-action="RemoveBadge"
+                                                asp-route-name="@badge.Name"
+                                                class="badge badge-danger">
+                                            X
+                                        </button>
+                                    </form>                                }
                             </div>
                         </div>
-                    </span>
-                </h4>
+                    </div>
+                </span>
             </div>
         }
         <div class="col"></div>

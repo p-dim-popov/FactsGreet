@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FactsGreet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201202185722_CreateModels")]
+    [Migration("20201207183321_CreateModels")]
     partial class CreateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -342,6 +342,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Badges");
                 });
 
@@ -531,7 +534,7 @@ namespace FactsGreet.Data.Migrations
                     b.HasIndex("Filename", "UserId")
                         .IsUnique();
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>

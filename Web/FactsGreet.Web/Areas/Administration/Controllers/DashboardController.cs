@@ -5,22 +5,28 @@
 
     using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
+    using FactsGreet.Web.ViewModels;
     using FactsGreet.Web.ViewModels.Administration.Dashboard;
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Mvc;
 
     public class DashboardController : AdministrationController
     {
-        private const int DeletionRequestsPerPage = 3;
+        private const int ArticleDeletionRequestsPerPage = 3;
+        private const int AdminRequestsPerPage = 3;
 
         private readonly ArticleDeletionRequestsService articleDeletionRequestsService;
         private readonly AdminRequestsService adminRequestsService;
+        private readonly ApplicationUsersService applicationUsersService;
 
         public DashboardController(
-            ArticleDeletionRequestsService articleDeletionRequestsService, AdminRequestsService adminRequestsService)
+            ArticleDeletionRequestsService articleDeletionRequestsService, 
+            AdminRequestsService adminRequestsService,
+            ApplicationUsersService applicationUsersService)
         {
             this.articleDeletionRequestsService = articleDeletionRequestsService;
             this.adminRequestsService = adminRequestsService;
+            this.applicationUsersService = applicationUsersService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,7 +41,7 @@
 
         public async Task<IActionResult> ArticleDeletionRequests(int page)
         {
-            var pagination = Paginator.GetPagination(page, DeletionRequestsPerPage);
+            var pagination = Paginator.GetPagination(page, ArticleDeletionRequestsPerPage);
             return this.View(new ArticleDeletionRequestsViewModel
             {
                 CompactPaginationViewModel = new CompactPaginationViewModel(page),
@@ -52,19 +58,15 @@
                 .GetById<ArticleDeletionRequestViewModel>(id));
         }
 
-        public IActionResult MostActiveUsers(int page)
+        public async Task<IActionResult> MostActiveUsers()
         {
-            return this.View();
-        }
-
-        public IActionResult View(Guid id)
-        {
-            return this.View();
+            return this.View(await this.applicationUsersService
+                .Get10MostActiveUsersForTheLastWeekAsync<ActiveUserViewModel>());
         }
 
         public async Task<IActionResult> AdminRequests(int page)
         {
-            var pagination = Paginator.GetPagination(page, DeletionRequestsPerPage);
+            var pagination = Paginator.GetPagination(page, AdminRequestsPerPage);
             return this.View(new AdminRequestsViewModel
             {
                 CompactPaginationViewModel = new CompactPaginationViewModel(page),

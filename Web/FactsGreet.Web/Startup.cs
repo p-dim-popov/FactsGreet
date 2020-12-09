@@ -1,7 +1,7 @@
 ﻿namespace FactsGreet.Web
 {
-    using System;
     using System.Reflection;
+
     using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -27,7 +27,9 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using QRCoder;
     using Westwind.AspNetCore.Markdown;
+
     using DiffMatchPatch = TrueCommerce.Shared.DiffMatchPatch.DiffMatchPatch;
 
     public class Startup
@@ -79,6 +81,7 @@
 
             // Application services
             services.AddTransient<DiffMatchPatch>();
+            services.AddTransient<QRCodeGenerator>();
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
 
@@ -91,10 +94,12 @@
             services.AddTransient<IFilesService, FilesService>();
             services.AddTransient<IStarsService, StarsService>();
             services.AddTransient<FollowsService>();
+            services.AddTransient<BadgesService>();
             services.AddTransient<ConversationsService>();
             services.AddTransient<IMessagesService, MessagesService>();
             services.AddTransient<IDiffMatchPatchService, DiffMatchPatchService>();
             services.AddTransient<IDropboxService, DropboxService>();
+            services.AddTransient<QuickResponseCodeService>();
 
             services.AddMarkdown(config =>
             {

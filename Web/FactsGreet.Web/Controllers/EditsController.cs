@@ -51,6 +51,7 @@
         }
 
         [Authorize]
+        [HttpPost("[controller]/[action]/{title}")]
         public async Task<IActionResult> Create(EditCreateInputModel model)
         {
             if (!this.ModelState.IsValid)
@@ -96,7 +97,12 @@
                 thumbnailLink,
                 model.Comment);
 
-            return this.RedirectToRoute("article", new { title = model.Article.Title });
+            return this.RedirectToRoute(new
+            {
+                controller = "Articles",
+                action = "GetByTitle",
+                title = model.Article.Title,
+            });
         }
 
         [Route("[controller]/[action]/{title}", Name = nameof(EditsController) + nameof(History))]

@@ -340,6 +340,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Badges");
                 });
 
@@ -529,7 +532,7 @@ namespace FactsGreet.Data.Migrations
                     b.HasIndex("Filename", "UserId")
                         .IsUnique();
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("FactsGreet.Data.Models.Follow", b =>

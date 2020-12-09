@@ -27,6 +27,8 @@
         /////////////////////////////////////////////////////////////
         public DbSet<Article> Articles { get; set; }
 
+        public DbSet<File> Files { get; set; }
+
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Conversation> Conversations { get; set; }

@@ -59,6 +59,14 @@
     {
       "library": "easymde@2.13.0",
       "destination": "wwwroot/lib/easymde"
+    },
+    {
+      "library": "chart.js@2.9.4",
+      "destination": "wwwroot\\lib\\chart.js"
+    },
+    {
+      "library": "moment@2.29.1",
+      "destination": "wwwroot\\lib\\moment"
     }
   ]
 }

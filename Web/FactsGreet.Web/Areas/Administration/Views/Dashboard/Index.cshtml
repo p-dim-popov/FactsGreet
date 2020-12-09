@@ -25,17 +25,21 @@
     </div>
     <div class="card" style="width: 300px;">
         <div class="card-header">
-            @* @Model.MostActiveUsersCount*@ user/s deserve a special badge
+            Top 10 users deserve a special badge
         </div>
         <div class="card-body">
             <h5 class="card-title">Active Users</h5>
             <p class="card-text">Keep active users motivated by giving them a badge to distinct them from regular users.</p>
-            <a href="#" class="btn btn-primary">Give some badges</a>
+            <a asp-controller="Dashboard"
+               asp-action="MostActiveUsers"
+               class="btn btn-primary">
+                Give some badges
+            </a>
         </div>
     </div>
     <div class="card" style="width: 300px;">
         <div class="card-header">
-            @Model.AdminRequestsCount 
+            @Model.AdminRequestsCount
             @(Model.AdminRequestsCount == 1 ? "user" : "users")
             want to become @(Model.AdminRequestsCount == 1 ? "admin" : "admins")
         </div>
@@ -43,11 +47,14 @@
             <h5 class="card-title">Admin Requests</h5>
             <p class="card-text">
                 Users with badges at some want to become part of this community at a higher level.
-                Honnor them by giving the most honorable title [@GlobalConstants.AdministratorRoleName]
+                Honnor them by giving the most honorable title
+                <span class="badge badge-info text-white p-1 m-0">Admin</span>
             </p>
-            <a  asp-controller="Dashboard"
-                asp-action="AdminRequests"
-                class="btn btn-primary">Make new admins</a>
+            <a asp-controller="Dashboard"
+               asp-action="AdminRequests"
+               class="btn btn-primary">
+                Make new admins
+            </a>
         </div>
     </div>
 </div>

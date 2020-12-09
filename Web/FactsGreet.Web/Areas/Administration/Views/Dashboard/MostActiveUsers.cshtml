@@ -1,6 +1,119 @@
-﻿@{
-    ViewBag.Title = "title";
+﻿@using FactsGreet.Web.Infrastructure
+@using FactsGreet.Web.Controllers
+@using FactsGreet.Common
+@using FactsGreet.Services.Data.Implementations
+@model ICollection<FactsGreet.Web.ViewModels.Administration.Dashboard.ActiveUserViewModel>
+@inject BadgesService BadgesService
+@{
+    ViewBag.Title = "Most Active Users";
+    // ReSharper disable once InconsistentNaming
+    var Badges = await this.BadgesService.GetAllAsync();
 }
 
-<h2>title</h2>
-//TODO: make graph of postings
+<textarea id="users-data" hidden>@Json.Serialize(Model)</textarea>
+<div class="row">
+    <canvas id="line-chart" width="400px" height="400px"></canvas>
+</div>
+<div class="row">
+    <canvas id="bar-chart" width="400px" height="400px"></canvas>
+</div>
+<div class="row pt-3">
+    @foreach (var user in Model)
+    {
+        <table class="table table-striped border rounded">
+            <thead>
+            <tr>
+                <td>
+                    User:
+                    <a asp-area=""
+                       asp-controller="Profiles"
+                       asp-action="Index"
+                       asp-route-email="@user.Email">
+                        <b>@user.Email</b>
+                    </a>
+                </td>
+                <form class="form-inline"
+                      asp-area=""
+                      asp-controller="Profiles"
+                      asp-action="AddBadge"
+                      method="post">
+                    <input name="email" value="@user.Email" hidden/>
+                    <td>
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Give: </div>
+                            </div>
+                            <select class="form-control" name="badge">
+                                @foreach (var badge in Badges.Where(x => user.Badges.All(y => y.Name != x.Name)))
+                                {
+                                    <option value="@badge.Name">@badge.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-success">Add</button>
+                    </td>
+                </form>
+            </tr>
+            </thead>
+            <thead>
+            <tr>
+                <td>
+                    <b>Article Title</b>
+                </td>
+                <td>
+                    <b>Created On</b>
+                </td>
+                <td>
+                    <b>Creation/Edit</b>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var edit in user.Edits)
+            {
+                <tr>
+                    <td>
+                        @if (edit.IsCreation)
+                        {
+                            <a asp-route="@(Helpers.GetRouteNames<ArticlesController>(nameof(ArticlesController.GetByTitle)).FirstOrDefault())"
+                               asp-all-route-data="new { title = @edit.ArticleTitle }.ToDictionary()">
+                                @edit.ArticleTitle
+                            </a>                        }
+                        else
+                        {
+                            <a asp-area=""
+                               asp-controller="Edits"
+                               asp-action="View"
+                               asp-route-id="@edit.Id">
+                                @edit.ArticleTitle
+                            </a>                        }
+                    </td>
+                    <td>
+                        <span class="utc-to-local">
+                            @edit.CreatedOn.ToString("s")
+                        </span>
+                    </td>
+                    <td>
+                        @(edit.IsCreation ? "Creation" : "Edit")
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@section StyleLinks
+{
+    <link rel="stylesheet" href="~/lib/chart.js/dist/Chart.min.css">
+}
+
+@section Scripts
+{
+    <script src="~/lib/moment/moment.min.js"></script>
+    <script src="~/lib/chart.js/dist/Chart.min.js"></script>
+    <script src="~/js/administration/dashboard/most-active-users.js"></script>
+}

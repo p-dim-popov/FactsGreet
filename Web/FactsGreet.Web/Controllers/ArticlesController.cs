@@ -49,7 +49,7 @@
             // p.s.: think about this... wasting resources
             if (article.Title != title)
             {
-                return this.RedirectToRoute(nameof(this.GetByTitle), new { title = article.Title });
+                return this.RedirectToRoute(new { action = "GetByTitle", title = article.Title });
             }
 
             article.IsStarredByUser =
@@ -154,8 +154,9 @@
                 thumbnailLink,
                 model.Description);
 
-            return this.RedirectToRoute(nameof(this.GetByTitle), new
+            return this.RedirectToRoute(new
             {
+                action = "GetByTitle",
                 title = model.Title,
             });
         }

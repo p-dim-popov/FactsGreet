@@ -1,4 +1,6 @@
 ﻿@using FactsGreet.Common
+@using FactsGreet.Web.Controllers
+@using FactsGreet.Web.Infrastructure
 @model FactsGreet.Web.ViewModels.Edits.HistoryViewModel
 @{
     ViewBag.Title = $"History of: {Model.ArticleTitle}";
@@ -37,7 +39,7 @@
                                 </a>
                             </div>
                             <div class="col" style="transform: rotate(0);">
-                                <a asp-route="profile_index"
+                                <a asp-route="@(Helpers.GetRouteNames<ProfilesController>(nameof(ProfilesController.Index)).FirstOrDefault())"
                                    asp-all-route-data="new { email = edit.EditorUserName }.ToDictionary()"
                                    class="stretched-link text-dark">
                                     @edit.EditorUserName
