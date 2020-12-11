@@ -9,12 +9,12 @@
 
     public interface IMessagesService
     {
-        public Task<T> GetByIdAsync<T>(Guid messageId)
+        Task<T> GetByIdAsync<T>(Guid messageId)
             where T : IMapFrom<Message>;
 
-        public Task<bool> CanUserGetMessageAsync(Guid messageId, string userId);
+        Task<bool> CanUserGetMessageAsync(Guid messageId, string userId);
 
-        public Task<ICollection<T>> GetFewOlderThanAsync<T>(
+        Task<ICollection<T>> GetFewOlderThanAsync<T>(
             Guid? referenceMessageId,
             Guid conversationId,
             int take)
