@@ -24,7 +24,6 @@ As a guest user you can read all articles and view the whole history of an artic
 * SignalR
 * Dropbox
 * AngleSharp
-* QRCoder
 * Bootstrap 4
 * JavaScript (ES2015) | used libraries:
 	- [Magic Grid](https://github.com/e-oj/Magic-Grid)
@@ -33,6 +32,7 @@ As a guest user you can read all articles and view the whole history of an artic
 	- [Chart.js](https://github.com/chartjs/Chart.js)
 	- [Moment.js](https://github.com/moment/moment)
 	- [jsdifflib](https://github.com/cemerick/jsdifflib)
+	- [QRCode.js](https://github.com/davidshimjs/qrcodejs)
 * xUnit, Moq
 
 

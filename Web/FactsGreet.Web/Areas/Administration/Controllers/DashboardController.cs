@@ -3,9 +3,9 @@
     using System;
     using System.Threading.Tasks;
 
+    using FactsGreet.Services.Data;
     using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
-    using FactsGreet.Web.ViewModels;
     using FactsGreet.Web.ViewModels.Administration.Dashboard;
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Mvc;
@@ -17,12 +17,12 @@
 
         private readonly ArticleDeletionRequestsService articleDeletionRequestsService;
         private readonly AdminRequestsService adminRequestsService;
-        private readonly ApplicationUsersService applicationUsersService;
+        private readonly IApplicationUsersService applicationUsersService;
 
         public DashboardController(
-            ArticleDeletionRequestsService articleDeletionRequestsService, 
+            ArticleDeletionRequestsService articleDeletionRequestsService,
             AdminRequestsService adminRequestsService,
-            ApplicationUsersService applicationUsersService)
+            IApplicationUsersService applicationUsersService)
         {
             this.articleDeletionRequestsService = articleDeletionRequestsService;
             this.adminRequestsService = adminRequestsService;

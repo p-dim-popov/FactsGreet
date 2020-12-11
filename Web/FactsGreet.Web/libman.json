@@ -62,11 +62,16 @@
     },
     {
       "library": "chart.js@2.9.4",
-      "destination": "wwwroot\\lib\\chart.js"
+      "destination": "wwwroot/lib/chart.js"
     },
     {
       "library": "moment@2.29.1",
-      "destination": "wwwroot\\lib\\moment"
+      "destination": "wwwroot/lib/moment"
+    },
+    {
+      "provider": "filesystem",
+      "library": "wwwroot/js/jsdifflib",
+      "destination": "wwwroot/lib/jsdifflib"
     }
   ]
 }

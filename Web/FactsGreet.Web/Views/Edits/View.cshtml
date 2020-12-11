@@ -1,4 +1,6 @@
 ﻿@using FactsGreet.Web.Controllers
+@using FactsGreet.Web.Infrastructure
+@using FactsGreet.Common
 @model FactsGreet.Web.ViewModels.Edits.EditViewModel
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @{
@@ -8,8 +10,20 @@
 <div class="container">
     <div class="row">
         <div class="col">
+            <h1>
+                <a asp-route="@(Helpers.GetRouteNames<ArticlesController>(nameof(ArticlesController.GetByTitle)).FirstOrDefault())"
+                   asp-all-route-data="new { title = Model.ArticleTitle }.ToDictionary()">
+                    @Model.ArticleTitle
+                </a>
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <hr>
-            <h1>Changes</h1>
+            <h2>
+                Changes
+            </h2>
             <hr>
         </div>
     </div>
@@ -55,11 +69,15 @@
             <textarea id="against-textarea" hidden>@Model.AgainstArticleContent</textarea>
         </div>
     </div>
-    <div id="mergely"></div>
+    <div class="row">
+        <div class="col-auto">
+            <div id="diffoutput"></div>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
             <hr>
-            <h1>Preview of <span class="utc-to-local">@Model.TargetEdit.CreatedOn.ToString("s")</span></h1>
+            <h2>Preview of <span class="utc-to-local">@Model.TargetEdit.CreatedOn.ToString("s")</span></h2>
             <h6>@Model.TargetEdit.Comment</h6>
             <hr>
         </div>
@@ -81,8 +99,7 @@
 @section StyleLinks
 {
     <link href="~/css/edits/view.css" rel="stylesheet" asp-append-version="true">
-    <link rel="stylesheet" href="~/lib/mergely/lib/mergely.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.css"/>
+    <link rel="stylesheet" href="~/js/jsdifflib/diffview.css">
 }
 
 @section Scripts
@@ -90,9 +107,8 @@
     <script>
         window.selectOptionsActionName = '@nameof(EditsController.GetEditsInfoList)'
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/search/searchcursor.min.js"></script>
-    <script src="~/lib/mergely/lib/mergely.js"></script>
 
+    <script src="~/js/jsdifflib/diffview.js"></script>
+    <script src="~/js/jsdifflib/difflib.js"></script>
     <script src="~/js/edits/view.js" asp-append-version="true"></script>
 }

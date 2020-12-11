@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using FactsGreet.Common;
     using FactsGreet.Data.Models;
+    using FactsGreet.Services.Data;
     using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Areas.Administration.Controllers;
     using FactsGreet.Web.Infrastructure;
@@ -17,14 +18,14 @@
     [Authorize]
     public class ProfilesController : BaseController
     {
-        private readonly ApplicationUsersService applicationUsersService;
+        private readonly IApplicationUsersService applicationUsersService;
         private readonly FollowsService followsService;
         private readonly AdminRequestsService adminRequestsService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly BadgesService badgesService;
 
         public ProfilesController(
-            ApplicationUsersService applicationUsersService,
+            IApplicationUsersService applicationUsersService,
             FollowsService followsService,
             AdminRequestsService adminRequestsService,
             UserManager<ApplicationUser> userManager,

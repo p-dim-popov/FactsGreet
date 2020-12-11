@@ -24,7 +24,7 @@
                     webBuilder
                         .UseKestrel()
                         .UseStartup<Startup>()
-                        // .UseUrls($"http://+.:{Port}")
+                        .UseUrls($"http://+.:{Port}")
                             ;
                 });
     }

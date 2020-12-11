@@ -20,14 +20,14 @@
 
         private readonly ConversationsService conversationsService;
         private readonly IMessagesService messagesService;
-        private readonly ApplicationUsersService applicationUsersService;
+        private readonly IApplicationUsersService applicationUsersService;
         private readonly FollowsService followsService;
         private readonly IHubContext<ChatHub> chatHubContext;
 
         public ConversationsController(
             ConversationsService conversationsService,
             IMessagesService messagesService,
-            ApplicationUsersService applicationUsersService,
+            IApplicationUsersService applicationUsersService,
             FollowsService followsService,
             IHubContext<ChatHub> chatHubContext)
         {

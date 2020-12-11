@@ -1,25 +1,38 @@
 ﻿@using System.Security.Claims
 @using FactsGreet.Common
 @using FactsGreet.Data.Models
-@using FactsGreet.Services
 @using FactsGreet.Services.Data.Implementations
 @using FactsGreet.Web.Infrastructure
 @using Microsoft.AspNetCore.Identity
 @model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
 @inject FollowsService FollowsService
 @inject AdminRequestsService AdminRequestsService
-@inject QuickResponseCodeService QuickResponseCodeService
 @inject UserManager<ApplicationUser> UserManager
 @{
     ViewBag.Title = $"{Model.UserName}'s profile";
 }
 
 <div class="container">
+    <div class="row mb-3">
+        <div class="col"></div>
+        <div class="col-auto">
+            <div id="qrcode" class="d-block d-md-none"></div>
+            <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+            <script type="text/javascript">
+                new QRCode(document.getElementById("qrcode"), "@this.Context.GetLocationHref()");
+                document.getElementById('qrcode').children[1].style.width = '30vw';
+            </script>
+        </div>
+        <div class="col"></div>
+    </div>
     <div class="row">
         <div class="col-auto">
-            <img src="@QuickResponseCodeService.GetQuickResponseCodeImageSource(Context.GetLocationHref())" 
-                 alt="@Context.GetLocationHref()"
-                 style="width: 10vw">
+            <div id="qrcode-md" class="d-none d-md-block"></div>
+            <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+            <script type="text/javascript">
+                new QRCode(document.getElementById("qrcode-md"), "@this.Context.GetLocationHref()");
+                document.getElementById('qrcode-md').children[1].style.width = '10vw';
+            </script>
         </div>
         <div class="col-auto">
             <h2 class="my-2">@Model.UserName's profile</h2>
