@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Data.Implementations;
@@ -127,6 +126,42 @@
             Assert.Empty(list);
             starRepo.Verify(x => x.Delete(It.IsAny<Star>()), Times.Never);
             starRepo.Verify(x => x.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task IsArticleStarredByUserAsync_ShouldReturnTrue_WhenArticleIsStarred()
+        {
+            var user = this.GetUsers().OrderBy(_ => this.Random.Next()).First();
+            var article = this.GetArticles().OrderBy(_ => this.Random.Next()).First();
+            var list = new List<Star>
+            {
+                new Star { ArticleId = article.Id, UserId = user.Id },
+            };
+            var starRepo = new Mock<IDeletableEntityRepository<Star>>();
+            starRepo
+                .Setup(x => x.AllAsNoTracking())
+                .Returns(list.AsQueryable().BuildMock().Object);
+            var service = new StarsService(starRepo.Object);
+
+            var result = await service.IsArticleStarredByUserAsync(article.Id, user.Id);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task IsArticleStarredByUserAsync_ShouldReturnFalse_WhenArticleIsNotStarred()
+        {
+            var user = this.GetUsers().OrderBy(_ => this.Random.Next()).First();
+            var article = this.GetArticles().OrderBy(_ => this.Random.Next()).First();
+            var starRepo = new Mock<IDeletableEntityRepository<Star>>();
+            starRepo
+                .Setup(x => x.AllAsNoTracking())
+                .Returns(new List<Star>().AsQueryable().BuildMock().Object);
+            var service = new StarsService(starRepo.Object);
+
+            var result = await service.IsArticleStarredByUserAsync(article.Id, user.Id);
+
+            Assert.False(result);
         }
     }
 }

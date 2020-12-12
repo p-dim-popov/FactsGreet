@@ -9,6 +9,8 @@
     [Table("Patches")]
     public class Patch : BaseModel<Guid>
     {
+        public int Index { get; set; }
+
         public int Start1 { get; set; }
 
         public int Start2 { get; set; }

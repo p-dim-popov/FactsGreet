@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FactsGreet.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201207183321_CreateModels")]
+    [Migration("20201212172532_CreateModels")]
     partial class CreateModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -424,6 +424,9 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
@@ -628,6 +631,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<Guid?>("EditId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Index")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Length1")
                         .HasColumnType("integer");

@@ -9,6 +9,8 @@
     [Table("Diffs")]
     public class Diff : BaseModel<Guid>
     {
+        public int Index { get; set; }
+
         public DiffOperation Operation { get; set; }
 
         public string Text { get; set; }

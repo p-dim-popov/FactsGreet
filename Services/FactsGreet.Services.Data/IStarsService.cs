@@ -8,5 +8,7 @@
         Task CreateStarLinkAsync(string userId, Guid articleId);
 
         Task RemoveStarLinkAsync(string userId, Guid articleId);
+
+        Task<bool> IsArticleStarredByUserAsync(Guid articleId, string userId);
     }
 }

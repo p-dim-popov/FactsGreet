@@ -79,11 +79,10 @@
             // Application services
             services.AddTransient<DiffMatchPatch>();
             services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<ISettingsService, SettingsService>();
 
             // TODO: add interfaces
-            services.AddTransient<ArticlesService>();
-            services.AddTransient<EditsService>();
+            services.AddTransient<IArticlesService, ArticlesService>();
+            services.AddTransient<IEditsService, EditsService>();
             services.AddTransient<ArticleDeletionRequestsService>();
             services.AddTransient<AdminRequestsService>();
             services.AddTransient<IApplicationUsersService, ApplicationUsersService>();

@@ -8,6 +8,7 @@
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Data;
     using FactsGreet.Services.Data.Implementations;
+    using FactsGreet.Services.Mapping;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.Infrastructure.Attributes;
     using FactsGreet.Web.ViewModels.Articles;
@@ -20,13 +21,13 @@
     {
         private const int EditsPerPage = 3;
 
-        private readonly EditsService editsService;
-        private readonly ArticlesService articlesService;
+        private readonly IEditsService editsService;
+        private readonly IArticlesService articlesService;
         private readonly IFilesService filesService;
 
         public EditsController(
-            EditsService editsService,
-            ArticlesService articlesService,
+            IEditsService editsService,
+            IArticlesService articlesService,
             IFilesService filesService)
         {
             this.editsService = editsService;
@@ -35,7 +36,7 @@
         }
 
         [Authorize]
-        [Route("[controller]/[action]/{title}")]
+        [Route("[controller]/[action]/{title}", Name = nameof(EditsController) + nameof(Create) + "GET")]
         public async Task<IActionResult> Create(string title)
         {
             var article = await this.articlesService.GetByTitleAsync<ArticleCreateEditInputModel>(title);
@@ -106,13 +107,14 @@
         }
 
         [Route("[controller]/[action]/{title}", Name = nameof(EditsController) + nameof(History))]
-        public async Task<IActionResult> History(string title, int page = 1)
+        public async Task<IActionResult> History(string title, int page)
         {
+            var pagination = Paginator.GetPagination(page, EditsPerPage);
             return this.View(new HistoryViewModel
             {
                 ArticleTitle = title,
-                Edits = await this.GetEditsPagedOrderByDescAsync<CompactEditViewModel>(
-                    page, filter: x => x.Article.Title == title),
+                Edits = await this.editsService.GetPaginatedOrderByDescAsync<CompactEditViewModel>(
+                    pagination.Skip, pagination.Take, filter: x => x.Article.Title == title),
                 PaginationViewModel = new CompactPaginationViewModel(
                     page,
                     typeof(EditsController),
@@ -124,14 +126,19 @@
         public async Task<IActionResult> GetEditsInfoList(
             Guid id,
             char which,
-            int page = 1)
+            int page)
         {
+            var pagination = Paginator.GetPagination(page, EditsPerPage);
             var creationDate = await this.editsService.GetCreationDateAsync(id);
             var articleId = await this.editsService.GetArticleIdAsync(id);
             var edits = which switch
             {
-                '>' => await this.GetEditsInfoListNewerThan<CompactEditViewModel>(articleId, creationDate, page),
-                '<' => await this.GetEditsInfoListOlderThan<CompactEditViewModel>(articleId, creationDate, page),
+                '>' => await this.editsService
+                    .GetEditsInfoListNewerThan<CompactEditViewModel>(
+                        pagination.Skip, pagination.Take, articleId, creationDate),
+                '<' => await this.editsService
+                    .GetEditsInfoListOlderThan<CompactEditViewModel>(
+                        pagination.Skip, pagination.Take, articleId, creationDate),
                 _ => null,
             };
 
@@ -144,60 +151,16 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> GetEditsWithArticleCards(int page = 1, string userId = null)
-        {
-            var edits =
-                await this.GetEditsPagedOrderByDescAsync<EditWithCompactArticleViewModel>(page, userId);
-
-            return this.PartialView("_ListCompactEditsPartial", edits);
-        }
-
-        private Task<ICollection<T>> GetEditsPagedOrderByDescAsync<T>(
-            int page = 1,
-            string userId = null,
-            Expression<Func<Edit, bool>> filter = null)
-        {
-            return this.GetEditsPagedOrderByDescAsync<T, DateTime>(page, userId, filter);
-        }
-
-        private async Task<ICollection<T>> GetEditsPagedOrderByDescAsync<T, TOrderKey>(
-            int page = 1,
-            string userId = null,
-            Expression<Func<Edit, bool>> filter = null,
-            Expression<Func<Edit, TOrderKey>> order = null)
+        public async Task<IActionResult> GetEditsWithArticleCards(int page, string userId = null)
         {
             var pagination = Paginator.GetPagination(page, EditsPerPage);
+            var edits =
+                await this.editsService.GetPaginatedOrderByDescAsync<EditWithCompactArticleViewModel>(
+                    pagination.Skip,
+                    pagination.Take,
+                    userId);
 
-            return await this.editsService.GetPaginatedOrderByDescAsync<T, TOrderKey>(
-                pagination.Skip,
-                pagination.Take,
-                userId,
-                filter,
-                order);
-        }
-
-        private async Task<ICollection<T>> GetEditsInfoListNewerThan<T>(
-            Guid articleId,
-            DateTime creationDate,
-            int page)
-        {
-            var edits = await this.GetEditsPagedOrderByDescAsync<T>(
-                page,
-                filter: x =>
-                    x.Article.Id == articleId && x.CreatedOn > creationDate);
-            return edits;
-        }
-
-        private async Task<ICollection<T>> GetEditsInfoListOlderThan<T>(
-            Guid articleId,
-            DateTime creationDate,
-            int page)
-        {
-            var edits = await this.GetEditsPagedOrderByDescAsync<T>(
-                page,
-                filter: x =>
-                    x.Article.Id == articleId && x.CreatedOn < creationDate);
-            return edits;
+            return this.PartialView("_ListCompactEditsPartial", edits);
         }
     }
 }

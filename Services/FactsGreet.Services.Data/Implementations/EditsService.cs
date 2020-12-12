@@ -12,7 +12,7 @@
     using Microsoft.EntityFrameworkCore;
     using DbPatch = FactsGreet.Data.Models.Patch;
 
-    public class EditsService
+    public class EditsService : IEditsService
     {
         private readonly IDeletableEntityRepository<Edit> editRepository;
         private readonly IDeletableEntityRepository<Category> categoryRepository;
@@ -31,14 +31,44 @@
             this.diffMatchPatchService = diffMatchPatchService;
         }
 
-        public async Task<ICollection<T>> GetPaginatedOrderByDescAsync<T, TOrderKey>(
+        public Task<ICollection<T>> GetEditsInfoListNewerThan<T>(
+            int skip,
+            int take,
+            Guid articleId,
+            DateTime creationDate)
+            where T : IMapFrom<Edit>
+        {
+            var edits = this.GetPaginatedOrderByDescAsync<T>(
+                skip,
+                take,
+                filter: x =>
+                    x.Article.Id == articleId && x.CreatedOn > creationDate);
+            return edits;
+        }
+
+        public Task<ICollection<T>> GetEditsInfoListOlderThan<T>(
+            int skip,
+            int take,
+            Guid articleId,
+            DateTime creationDate)
+            where T : IMapFrom<Edit>
+        {
+            var edits = this.GetPaginatedOrderByDescAsync<T>(
+                skip,
+                take,
+                filter: x =>
+                    x.Article.Id == articleId && x.CreatedOn < creationDate);
+            return edits;
+        }
+
+        public async Task<ICollection<T>> GetPaginatedOrderByDescAsync<T>(
             int skip,
             int take,
             string userId = null,
-            Expression<Func<Edit, bool>> filter = null,
-            Expression<Func<Edit, TOrderKey>> order = null)
+            Expression<Func<Edit, bool>> filter = null)
+            where T : IMapFrom<Edit>
         {
-            var edits = this.editRepository.All();
+            var edits = this.editRepository.AllAsNoTracking();
 
             if (userId is not null)
             {
@@ -50,11 +80,8 @@
                 edits = edits.Where(filter);
             }
 
-            edits = order is not null
-                ? edits.OrderByDescending(order)
-                : edits.OrderByDescending(x => x.CreatedOn);
-
             return await edits
+                .OrderByDescending(x => x.CreatedOn)
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
@@ -97,15 +124,14 @@
             // all edits made after the requested edit
             var laterEdits = (await this.editRepository
                     .AllAsNoTracking()
-                    .OrderBy(x => x.CreatedOn)
+                    .OrderByDescending(x => x.CreatedOn)
                     .Where(x => x.CreatedOn > targetEdit.CreatedOn)
-                    .Include(x => x.Patches)
-                    .ThenInclude(x => x.Diffs)
+                    .Include(x => x.Patches.OrderBy(y => y.Index))
+                    .ThenInclude(x => x.Diffs.OrderBy(y => y.Index))
                     .AsSingleQuery()
                     .Select(x => new
                     {
-                        x.CreatedOn,
-                        x.Patches,
+                        x.CreatedOn, Patches = x.Patches.OrderBy(y => y.Index).ToList(),
                     })
                     .ToListAsync())
                 .Aggregate(
@@ -134,18 +160,30 @@
                 .Select(x => new { x.Article.Content, x.Article.Title })
                 .FirstOrDefaultAsync();
 
-            var againstArticle =
-                this.diffMatchPatchService
-                    .ApplyEdits(presentArticle.Content, laterEdits.LatestToAgainst);
+            var againstArticleContent = presentArticle.Content;
+            foreach (var edit in laterEdits.LatestToAgainst)
+            {
+                againstArticleContent = this.diffMatchPatchService.ApplyEdit(againstArticleContent, edit);
+            }
 
-            var targetArticle =
+            /*var againstArticle =
                 this.diffMatchPatchService
-                    .ApplyEdits(againstArticle, laterEdits.AgainstToTarget);
+                    .ApplyEdits(presentArticle.Content, laterEdits.LatestToAgainst);*/
+
+            var targetArticleContent = againstArticleContent;
+            foreach (var edit in laterEdits.AgainstToTarget)
+            {
+                targetArticleContent = this.diffMatchPatchService.ApplyEdit(targetArticleContent, edit);
+            }
+
+            /*var targetArticle =
+                this.diffMatchPatchService
+                    .ApplyEdits(againstArticle, laterEdits.AgainstToTarget);*/
 
             return new EditDto
             {
-                TargetArticleContent = targetArticle,
-                AgainstArticleContent = againstArticle,
+                TargetArticleContent = targetArticleContent,
+                AgainstArticleContent = againstArticleContent,
                 ArticleTitle = presentArticle.Title,
                 TargetEdit = targetEdit,
                 AgainstEdit = againstEdit,
@@ -216,19 +254,15 @@
         }
 
         public Task<DateTime> GetCreationDateAsync(Guid id)
-        {
-            return this.editRepository.AllAsNoTracking()
+            => this.editRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .Select(x => x.CreatedOn)
                 .FirstOrDefaultAsync();
-        }
 
         public Task<Guid> GetArticleIdAsync(Guid id)
-        {
-            return this.editRepository.AllAsNoTracking()
+            => this.editRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .Select(x => x.Article.Id)
                 .FirstOrDefaultAsync();
-        }
     }
 }

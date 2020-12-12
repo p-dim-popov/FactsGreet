@@ -18,12 +18,12 @@
     {
         private const int ArticlesPerPage = 2;
 
-        private readonly ArticlesService articlesService;
+        private readonly IArticlesService articlesService;
         private readonly IFilesService filesService;
         private readonly IStarsService starsService;
 
         public ArticlesController(
-            ArticlesService articlesService,
+            IArticlesService articlesService,
             IFilesService filesService,
             IStarsService starsService)
         {
@@ -53,7 +53,7 @@
             }
 
             article.IsStarredByUser =
-                await this.articlesService.IsStarredByUserAsync(
+                await this.starsService.IsArticleStarredByUserAsync(
                     article.Id,
                     this.UserId);
 

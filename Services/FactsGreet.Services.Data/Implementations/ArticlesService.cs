@@ -6,12 +6,13 @@
     using System.Linq.Expressions;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class ArticlesService
+    public class ArticlesService : IArticlesService
     {
         private readonly IDeletableEntityRepository<Article> articleRepository;
         private readonly IDeletableEntityRepository<Category> categoryRepository;
@@ -37,12 +38,10 @@
         }
 
         public Task<string> GetTitleAsync(Guid id)
-        {
-            return this.articleRepository.AllAsNoTracking()
+            => this.articleRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .Select(x => x.Title)
                 .FirstOrDefaultAsync();
-        }
 
         public async Task CreateAsync(
             string authorId,
@@ -97,24 +96,22 @@
         }
 
         public async Task<ICollection<T>> GetPaginatedByTitleKeywordsAsync<T>(int skip, int take, string keywords)
-        {
-            return await this.PrepareQueryForSearch(keywords)
+            where T : IMapFrom<Article>
+            => await this.PrepareQueryForSearch(keywords)
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
-        }
 
-        public async Task<int> GetCountByTitleKeywordsAsync(string keywords)
-        {
-            return await this.PrepareQueryForSearch(keywords)
+        public Task<int> GetCountByTitleKeywordsAsync(string keywords)
+            => this.PrepareQueryForSearch(keywords)
                 .CountAsync();
-        }
 
         public async Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T, TOrderKey>(
             int skip,
             int take,
             Expression<Func<Article, TOrderKey>> order)
+            where T : IMapFrom<Article>
         {
             var articles = this.articleRepository.AllAsNoTracking();
 
@@ -131,25 +128,18 @@
         }
 
         public async Task<T> GetByTitleAsync<T>(string title)
-        {
-            title = title.ToLower();
-            return await this.articleRepository.AllAsNoTracking()
-                .Where(x => x.Title.ToLower() == title)
+            where T : IMapFrom<Article>
+            => await this.articleRepository.AllAsNoTracking()
+                .Where(x => x.Title.ToLower() == title.ToLower())
                 .To<T>()
                 .FirstOrDefaultAsync();
-        }
 
         public Task<int> GetCountAsync()
-        {
-            return this.articleRepository.AllAsNoTracking().CountAsync();
-        }
+            => this.articleRepository.AllAsNoTracking().CountAsync();
 
         public Task<bool> DoesTitleExistAsync(string title)
-        {
-            title = title.ToLower();
-            return this.articleRepository.AllAsNoTracking()
-                .AnyAsync(x => x.Title.ToLower() == title);
-        }
+            => this.articleRepository.AllAsNoTracking()
+                .AnyAsync(x => x.Title.ToLower() == title.ToLower());
 
         public async Task CreateDeletionRequestAsync(Guid id, string userId, string reason)
         {
@@ -172,8 +162,10 @@
                 .Include(x => x.Edits)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            // DeletionRequest is set OnDelete.Cascade but this is not actually a deletion
-            this.articleDeletionRequestRepository.Delete(article.DeletionRequest);
+            if (article.DeletionRequest is not null)
+            {
+                this.articleDeletionRequestRepository.Delete(article.DeletionRequest);
+            }
 
             foreach (var star in article.Stars)
             {
@@ -191,26 +183,16 @@
         }
 
         public Task<string> GetAuthorIdAsync(Guid id)
-            => this.articleRepository.All().Where(x => x.Id == id)
+            => this.articleRepository.AllAsNoTracking()
+                .Where(x => x.Id == id)
                 .Select(x => x.AuthorId)
                 .FirstOrDefaultAsync();
 
         public Task<T> GetByIdAsync<T>(Guid id)
-        {
-            return this.articleRepository.AllAsNoTracking()
-                .Where(x => x.Id == id)
-                .To<T>()
-                .FirstOrDefaultAsync();
-        }
-
-        public Task<bool> IsStarredByUserAsync(Guid articleId, string userId)
-            => this.starRepository.AllAsNoTracking()
-                .AnyAsync(x => x.ArticleId == articleId && x.UserId == userId);
-
-        public Task<string> GetContentAsync(Guid id)
+            where T : IMapFrom<Article>
             => this.articleRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
-                .Select(x => x.Content)
+                .To<T>()
                 .FirstOrDefaultAsync();
 
         private IQueryable<Article> PrepareQueryForSearch(string keywords)

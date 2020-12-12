@@ -422,6 +422,9 @@ namespace FactsGreet.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp without time zone");
 
@@ -626,6 +629,9 @@ namespace FactsGreet.Data.Migrations
 
                     b.Property<Guid?>("EditId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Index")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Length1")
                         .HasColumnType("integer");

@@ -23,20 +23,27 @@
 
         public ICollection<DbPatch> CreateEdit(string oldText, string newText)
         {
+            var patchesCount = 0;
             return this.dmp.PatchMake(newText, oldText)
-                .Select(x => new DbPatch
+                .Select(x =>
                 {
-                    Diffs = x.Diffs
-                        .Select(y => new DbDiff
-                        {
-                            Operation = (DiffOperation)y.Operation,
-                            Text = y.Text,
-                        })
-                        .ToList(),
-                    Length1 = x.Length1,
-                    Length2 = x.Length2,
-                    Start1 = x.Start1,
-                    Start2 = x.Start2,
+                    var diffsCount = 0;
+                    return new DbPatch
+                    {
+                        Index = patchesCount++,
+                        Diffs = x.Diffs
+                            .Select(y => new DbDiff
+                            {
+                                Index = diffsCount++,
+                                Operation = (DiffOperation)y.Operation,
+                                Text = y.Text,
+                            })
+                            .ToList(),
+                        Length1 = x.Length1,
+                        Length2 = x.Length2,
+                        Start1 = x.Start1,
+                        Start2 = x.Start2,
+                    };
                 })
                 .ToList();
         }

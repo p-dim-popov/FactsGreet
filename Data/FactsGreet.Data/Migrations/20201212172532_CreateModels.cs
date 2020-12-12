@@ -598,6 +598,7 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Index = table.Column<int>(type: "integer", nullable: false),
                     Start1 = table.Column<int>(type: "integer", nullable: false),
                     Start2 = table.Column<int>(type: "integer", nullable: false),
                     Length1 = table.Column<int>(type: "integer", nullable: false),
@@ -622,6 +623,7 @@ namespace FactsGreet.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Index = table.Column<int>(type: "integer", nullable: false),
                     Operation = table.Column<int>(type: "integer", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "en-x-icu"),

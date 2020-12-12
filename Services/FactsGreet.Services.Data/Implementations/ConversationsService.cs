@@ -61,7 +61,7 @@
         }
 
         public async Task<T> CreateAsync<T>(params string[] userIds)
-            where T : class, IMapFrom<Conversation>
+            where T : IMapFrom<Conversation>
         {
             userIds = userIds.Distinct().ToArray();
             var users = await this.applicationUserRepository
@@ -89,9 +89,7 @@
             await this.conversationRepository.AddAsync(conversation);
             await this.conversationRepository.SaveChangesAsync();
 
-            return new MapperConfiguration(cfg => cfg.CreateMap<Conversation, T>())
-                .CreateMapper()
-                .Map<Conversation, T>(conversation);
+            return AutoMapperConfig.MapperInstance.Map<Conversation, T>(conversation);
         }
 
         public Task<bool> IsUserParticipantAsync(Guid id, string userId)

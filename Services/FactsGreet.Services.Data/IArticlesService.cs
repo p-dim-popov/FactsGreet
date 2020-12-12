@@ -46,7 +46,5 @@
 
         Task<T> GetByIdAsync<T>(Guid id)
             where T : IMapFrom<Article>;
-
-        Task<bool> IsStarredByUserAsync(Guid articleId, string userId);
     }
 }

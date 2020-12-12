@@ -2,7 +2,6 @@
 {
     using System;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using Microsoft.EntityFrameworkCore;
@@ -48,5 +47,9 @@
                 await this.starRepository.SaveChangesAsync();
             }
         }
+
+        public Task<bool> IsArticleStarredByUserAsync(Guid articleId, string userId)
+            => this.starRepository.AllAsNoTracking()
+                .AnyAsync(x => x.ArticleId == articleId && x.UserId == userId);
     }
 }
