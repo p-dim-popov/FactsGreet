@@ -9,51 +9,19 @@
         public void Test_CreateEdit_Then_ApplyEdits()
         {
             var service = new DiffMatchPatchService(new DiffMatchPatch());
+            const string filler = "word word word word word word word word word word word word word word " +
+                                  "word word word word word word word word word word word word word word " +
+                                  "word word word word word word word word word word word word word word " +
+                                  "word word word word word word word word word word word word word word ";
+
             const string version1 =
-                @"this is some
-long ipsum
-...
-a few lines long
-
-" +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word ";
+                "this is some\r\nlong ipsum\r\n...\r\na few lines long\r\n\r\n" + filler;
             const string version2 =
-                @"this is some
-lorem ipsum
-...
-a
-few
-lines longer
-
-" +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word ";
+                "this is some\r\nlorem ipsum\r\n...\r\na\r\nfew\r\nlines longer\r\n\r\n" + filler;
             const string version3 =
-                @"this
-
-...
-lorem ipsum
-
-" +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word ";
+                @"this\r\n\r\n...\r\nlorem ipsum\r\n\r\n" + filler;
             const string version4 =
-                @"this
-
-....
-
-" +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word " +
-                "word word word word word word word word word word word word word word ";
+                @"this\r\n\r\n....\r\n\r\n" + filler;
 
             var edit1 = service.CreateEdit(version1, version2);
             var edit2 = service.CreateEdit(version2, version3);

@@ -25,10 +25,9 @@
 
         Task<int> GetCountByTitleKeywordsAsync(string keywords);
 
-        Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T, TOrderKey>(
+        Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T>(
             int skip,
-            int take,
-            Expression<Func<Article, TOrderKey>> order)
+            int take)
             where T : IMapFrom<Article>;
 
         Task<T> GetByTitleAsync<T>(string title)

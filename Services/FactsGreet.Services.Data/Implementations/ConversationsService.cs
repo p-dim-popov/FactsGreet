@@ -11,18 +11,15 @@
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class ConversationsService
+    public class ConversationsService : IConversationsService
     {
-        private readonly IDeletableEntityRepository<Message> messageRepository;
         private readonly IDeletableEntityRepository<Conversation> conversationRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> applicationUserRepository;
 
         public ConversationsService(
-            IDeletableEntityRepository<Message> messageRepository,
             IDeletableEntityRepository<Conversation> conversationRepository,
             IDeletableEntityRepository<ApplicationUser> applicationUserRepository)
         {
-            this.messageRepository = messageRepository;
             this.conversationRepository = conversationRepository;
             this.applicationUserRepository = applicationUserRepository;
         }
@@ -40,12 +37,10 @@
 
         public async Task<T> GetAsync<T>(Guid id)
             where T : IMapFrom<Conversation>
-        {
-            return await this.conversationRepository.AllAsNoTracking()
+            => await this.conversationRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .To<T>()
                 .FirstOrDefaultAsync();
-        }
 
         public async Task<Guid> SendMessageAsync(string senderId, Guid conversationId, string content)
         {
@@ -93,26 +88,22 @@
         }
 
         public Task<bool> IsUserParticipantAsync(Guid id, string userId)
-        {
-            return this.conversationRepository.AllAsNoTracking()
+            => this.conversationRepository.AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .SelectMany(x => x.Users)
                 .Select(x => x.Id)
                 .AnyAsync(x => x == userId);
-        }
 
         public async Task<ICollection<string>> GetParticipantsAsync(Guid id)
-        {
-            return await this.conversationRepository
+            => await this.conversationRepository
                 .AllAsNoTracking()
                 .Where(x => x.Id == id)
                 .SelectMany(x => x.Users)
                 .Select(x => x.Id)
                 .ToListAsync();
-        }
 
-        public async Task<ICollection<T>> GetFewOlderThanAsync<T>(Guid? referenceConversationId, string userId,
-            int take)
+        public async Task<ICollection<T>> GetFewOlderThanAsync<T>(
+            Guid? referenceConversationId, string userId, int take)
             where T : IMapFrom<Conversation>
         {
             var query = this.applicationUserRepository
@@ -154,6 +145,7 @@
                 .FirstOrDefaultAsync();
 
         public async Task<ICollection<T>> GetByUsersEmailsAsync<T>(IEnumerable<string> usersEmails)
+            where T : IMapFrom<Conversation>
         {
             usersEmails = usersEmails.Select(x => x.ToUpper()).ToList();
             return await usersEmails.Aggregate(
@@ -162,11 +154,6 @@
                         .Where(x => x.Users
                             .Any(y => y.NormalizedEmail
                                 .StartsWith(cur))))
-                // .Where(x => x.Users
-                //     .Count(y => usersEmails
-                //         .Contains(y.NormalizedEmail)) >= usersEmails.Count())
-
-                // .Where(x => x.Users.Count(y => y.NormalizedEmail.StartsWith()))
 
                 // BUG: For unknown reason, when orderby was initialy used, made results not correct,
                 // when removed and later used again, no bugs caused

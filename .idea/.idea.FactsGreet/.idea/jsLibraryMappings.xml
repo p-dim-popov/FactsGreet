@@ -8,6 +8,6 @@
     <file url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.utility.netcoreapp10.dll" libraries="{codemirror}" />
     <file url="file://$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.visualstudio.dotnetcore.testadapter.dll" libraries="{codemirror}" />
     <file url="file://$PROJECT_DIR$" libraries="{codemirror}" />
-    <file url="file://$PROJECT_DIR$/.idea/.idea.FactsGreet" libraries="{qrcodejs}" />
+    <file url="file://$PROJECT_DIR$/.idea/.idea.FactsGreet" libraries="{difflib, diffview, qrcodejs}" />
   </component>
 </project>

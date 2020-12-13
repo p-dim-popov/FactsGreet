@@ -5,7 +5,7 @@
 
 @foreach (var feedModel in Model)
 {
-    <div class="rounded border-top mb-5">
+    <div class="rounded border-top mb-5 edit-card" id="@feedModel.Id">
         <span>
             <a asp-route="@(Helpers.GetRouteNames<ProfilesController>(nameof(ProfilesController.Index)).FirstOrDefault())" 
                asp-all-route-data="new { email = feedModel.EditorUserName }.ToDictionary()">

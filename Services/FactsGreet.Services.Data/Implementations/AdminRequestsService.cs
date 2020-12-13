@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class AdminRequestsService
+    public class AdminRequestsService : IAdminRequestsService
     {
         private readonly IDeletableEntityRepository<AdminRequest> adminRequestRepository;
         private readonly IRepository<Badge> badgeRepository;
@@ -72,17 +73,17 @@
         }
 
         public async Task<ICollection<T>> GetPaginatedOrderedByCreationDateAsync<T>(int skip, int take)
-        {
-            return await this.adminRequestRepository
+            where T : IMapFrom<AdminRequest>
+            => await this.adminRequestRepository
                 .AllAsNoTracking()
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip(skip)
                 .Take(take)
                 .To<T>()
                 .ToListAsync();
-        }
 
         public Task<T> GetById<T>(Guid id)
+            where T : IMapFrom<AdminRequest>
             => this.adminRequestRepository
                 .AllAsNoTracking()
                 .Where(x => x.Id == id)

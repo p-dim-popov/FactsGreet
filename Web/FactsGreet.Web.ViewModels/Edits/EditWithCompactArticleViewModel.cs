@@ -1,5 +1,6 @@
 ﻿namespace FactsGreet.Web.ViewModels.Edits
 {
+    using System;
     using AutoMapper;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -7,6 +8,8 @@
 
     public class EditWithCompactArticleViewModel : IMapFrom<Edit>
     {
+        public Guid Id { get; set; }
+
         public CompactArticleViewModel Article { get; set; }
 
         public string EditorUserName { get; set; }

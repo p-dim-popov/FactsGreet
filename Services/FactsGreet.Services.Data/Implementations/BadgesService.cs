@@ -3,12 +3,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
-    using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class BadgesService
+    public class BadgesService : IBadgesService
     {
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Badge> badgeRepository;
@@ -20,12 +20,6 @@
             this.userRepository = userRepository;
             this.badgeRepository = badgeRepository;
         }
-
-        public async Task<ICollection<T>> GetAllAsync<T>()
-            => await this.badgeRepository
-                .AllAsNoTracking()
-                .To<T>()
-                .ToListAsync();
 
         public async Task<ICollection<Badge>> GetAllAsync()
             => await this.badgeRepository

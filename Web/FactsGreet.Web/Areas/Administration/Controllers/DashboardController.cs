@@ -15,13 +15,13 @@
         private const int ArticleDeletionRequestsPerPage = 3;
         private const int AdminRequestsPerPage = 3;
 
-        private readonly ArticleDeletionRequestsService articleDeletionRequestsService;
-        private readonly AdminRequestsService adminRequestsService;
+        private readonly IArticleDeletionRequestsService articleDeletionRequestsService;
+        private readonly IAdminRequestsService adminRequestsService;
         private readonly IApplicationUsersService applicationUsersService;
 
         public DashboardController(
-            ArticleDeletionRequestsService articleDeletionRequestsService,
-            AdminRequestsService adminRequestsService,
+            IArticleDeletionRequestsService articleDeletionRequestsService,
+            IAdminRequestsService adminRequestsService,
             IApplicationUsersService applicationUsersService)
         {
             this.articleDeletionRequestsService = articleDeletionRequestsService;

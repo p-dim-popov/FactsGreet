@@ -31,7 +31,7 @@
         
         <a asp-route="@(Helpers.GetRouteNames<ArticlesController>(nameof(ArticlesController.GetByTitle)).FirstOrDefault())" 
            asp-all-route-data="new { title = Model.Title }.ToDictionary()" 
-           class="stretched-link"></a>
+           class="stretched-link" target="_blank" rel="noopener noreferrer"></a>
     </div>
 
     <div class="card-footer w-100 text-muted">

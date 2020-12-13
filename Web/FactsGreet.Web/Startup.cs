@@ -1,6 +1,7 @@
 ﻿namespace FactsGreet.Web
 {
     using System.Reflection;
+
     using Dropbox.Api;
     using FactsGreet.Data;
     using FactsGreet.Data.Common;
@@ -27,6 +28,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Westwind.AspNetCore.Markdown;
+
     using DiffMatchPatch = TrueCommerce.Shared.DiffMatchPatch.DiffMatchPatch;
 
     public class Startup
@@ -83,14 +85,14 @@
             // TODO: add interfaces
             services.AddTransient<IArticlesService, ArticlesService>();
             services.AddTransient<IEditsService, EditsService>();
-            services.AddTransient<ArticleDeletionRequestsService>();
-            services.AddTransient<AdminRequestsService>();
+            services.AddTransient<IArticleDeletionRequestsService, ArticleDeletionRequestsService>();
+            services.AddTransient<IAdminRequestsService, AdminRequestsService>();
             services.AddTransient<IApplicationUsersService, ApplicationUsersService>();
             services.AddTransient<IFilesService, FilesService>();
             services.AddTransient<IStarsService, StarsService>();
-            services.AddTransient<FollowsService>();
-            services.AddTransient<BadgesService>();
-            services.AddTransient<ConversationsService>();
+            services.AddTransient<IFollowsService, FollowsService>();
+            services.AddTransient<IBadgesService, BadgesService>();
+            services.AddTransient<IConversationsService, ConversationsService>();
             services.AddTransient<IMessagesService, MessagesService>();
             services.AddTransient<IDiffMatchPatchService, DiffMatchPatchService>();
             services.AddTransient<IDropboxService, DropboxService>();
@@ -112,7 +114,9 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+            AutoMapperConfig.RegisterMappings(
+                typeof(ErrorViewModel).GetTypeInfo().Assembly,
+                typeof(IArticlesService).GetTypeInfo().Assembly);
 
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())

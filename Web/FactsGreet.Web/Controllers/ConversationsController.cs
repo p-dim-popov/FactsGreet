@@ -18,17 +18,17 @@
         private const int MessagesPerPage = 3;
         private const int ConversationsPerPage = 3;
 
-        private readonly ConversationsService conversationsService;
+        private readonly IConversationsService conversationsService;
         private readonly IMessagesService messagesService;
         private readonly IApplicationUsersService applicationUsersService;
-        private readonly FollowsService followsService;
+        private readonly IFollowsService followsService;
         private readonly IHubContext<ChatHub> chatHubContext;
 
         public ConversationsController(
-            ConversationsService conversationsService,
+            IConversationsService conversationsService,
             IMessagesService messagesService,
             IApplicationUsersService applicationUsersService,
-            FollowsService followsService,
+            IFollowsService followsService,
             IHubContext<ChatHub> chatHubContext)
         {
             this.conversationsService = conversationsService;

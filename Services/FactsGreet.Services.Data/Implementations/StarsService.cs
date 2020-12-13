@@ -1,9 +1,12 @@
 ﻿namespace FactsGreet.Services.Data.Implementations
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
+    using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
     public class StarsService : IStarsService
@@ -51,5 +54,14 @@
         public Task<bool> IsArticleStarredByUserAsync(Guid articleId, string userId)
             => this.starRepository.AllAsNoTracking()
                 .AnyAsync(x => x.ArticleId == articleId && x.UserId == userId);
+
+        public async Task<ICollection<T>> GetAllStarredByUser<T>(string userId)
+            where T : IMapFrom<Article>
+            => await this.starRepository
+                .AllAsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Article)
+                .To<T>()
+                .ToListAsync();
     }
 }

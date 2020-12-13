@@ -1,14 +1,12 @@
 ﻿namespace FactsGreet.Web.Controllers
 {
-    using System;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+
     using FactsGreet.Common;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Data;
-    using FactsGreet.Services.Data.Implementations;
-    using FactsGreet.Web.Areas.Administration.Controllers;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Profiles;
     using Microsoft.AspNetCore.Authorization;
@@ -19,17 +17,17 @@
     public class ProfilesController : BaseController
     {
         private readonly IApplicationUsersService applicationUsersService;
-        private readonly FollowsService followsService;
-        private readonly AdminRequestsService adminRequestsService;
+        private readonly IFollowsService followsService;
+        private readonly IAdminRequestsService adminRequestsService;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly BadgesService badgesService;
+        private readonly IBadgesService badgesService;
 
         public ProfilesController(
             IApplicationUsersService applicationUsersService,
-            FollowsService followsService,
-            AdminRequestsService adminRequestsService,
+            IFollowsService followsService,
+            IAdminRequestsService adminRequestsService,
             UserManager<ApplicationUser> userManager,
-            BadgesService badgesService)
+            IBadgesService badgesService)
         {
             this.applicationUsersService = applicationUsersService;
             this.followsService = followsService;
@@ -38,7 +36,7 @@
             this.badgesService = badgesService;
         }
 
-        [HttpGet("[controller]/View/{email}", Name = "profile_index")]
+        [HttpGet("[controller]/View/{email}", Name = nameof(ProfilesController) + nameof(Index))]
         public async Task<IActionResult> Index(string email)
         {
             var profile = await this.applicationUsersService.GetByEmailAsync<ProfileIndexViewModel>(email);

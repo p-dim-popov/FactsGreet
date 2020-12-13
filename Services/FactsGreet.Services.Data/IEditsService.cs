@@ -17,14 +17,14 @@
             Expression<Func<Edit, bool>> filter = null)
             where T : IMapFrom<Edit>;
 
-        Task<ICollection<T>> GetEditsInfoListNewerThan<T>(
+        Task<ICollection<T>> GetEditsNewerThan<T>(
             int skip,
             int take,
             Guid articleId,
             DateTime creationDate)
             where T : IMapFrom<Edit>;
 
-        Task<ICollection<T>> GetEditsInfoListOlderThan<T>(
+        Task<ICollection<T>> GetEditsOlderThan<T>(
             int skip,
             int take,
             Guid articleId,
@@ -42,6 +42,10 @@
             string[] newCategories,
             string newThumbnailLink,
             string editComment);
+
+        Task<ICollection<T>> GetFewOlderThanAsync<T>(
+            Guid? referenceId, int take, string userId, bool forCurrentUser)
+            where T : IMapFrom<Edit>;
 
         Task<DateTime> GetCreationDateAsync(Guid id);
 

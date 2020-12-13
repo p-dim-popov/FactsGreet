@@ -107,25 +107,16 @@
             => this.PrepareQueryForSearch(keywords)
                 .CountAsync();
 
-        public async Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T, TOrderKey>(
+        public async Task<ICollection<T>> GetPaginatedOrderedByDescAsync<T>(
             int skip,
-            int take,
-            Expression<Func<Article, TOrderKey>> order)
+            int take)
             where T : IMapFrom<Article>
-        {
-            var articles = this.articleRepository.AllAsNoTracking();
-
-            if (order is not null)
-            {
-                articles = articles.OrderByDescending(order);
-            }
-
-            return await articles
+            => await this.articleRepository.AllAsNoTracking()
+                .OrderByDescending(x => x.CreatedOn)
                 .To<T>()
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
-        }
 
         public async Task<T> GetByTitleAsync<T>(string title)
             where T : IMapFrom<Article>

@@ -2,17 +2,15 @@
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
+
     using FactsGreet.Common;
     using FactsGreet.Services.Data;
-    using FactsGreet.Services.Data.Implementations;
     using FactsGreet.Web.Infrastructure;
     using FactsGreet.Web.ViewModels.Articles;
     using FactsGreet.Web.ViewModels.Shared;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
 
     public class ArticlesController : BaseController
     {
@@ -70,9 +68,7 @@
             var pagination = Paginator.GetPagination(page, ArticlesPerPage);
             var articles = await this.articlesService
                 .GetPaginatedByTitleKeywordsAsync<CompactArticleViewModel>(
-                    pagination.Skip,
-                    pagination.Take,
-                    slug);
+                    pagination.Skip, pagination.Take, slug);
 
             var model = new SearchArticlesViewModel
             {
@@ -88,23 +84,19 @@
         }
 
         [HttpGet("[controller]")]
-        [HttpGet("[controller]/[action]", Name = nameof(All))]
-        public async Task<IActionResult> All(int page = 1)
+        [HttpGet("[controller]/[action]", Name = nameof(ArticlesController) + nameof(All))]
+        public async Task<IActionResult> All(int page)
         {
             var pagination = Paginator.GetPagination(page, ArticlesPerPage);
             var articles = await this.articlesService
-                .GetPaginatedOrderedByDescAsync<CompactArticleViewModel, DateTime>(
-                    pagination.Skip,
-                    pagination.Take,
-                    x => x.CreatedOn);
+                .GetPaginatedOrderedByDescAsync<CompactArticleViewModel>(
+                    pagination.Skip, pagination.Take);
 
             return this.View(new AllArticlesViewModel
             {
                 Articles = articles,
                 PaginationViewModel = new PaginationViewModel(
-                    page,
-                    ArticlesPerPage,
-                    await this.articlesService.GetCountAsync()),
+                    page, ArticlesPerPage, await this.articlesService.GetCountAsync()),
             });
         }
 
@@ -209,9 +201,9 @@
         {
             await this.starsService.RemoveStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
-                nameof(this.GetByTitle),
                 new
                 {
+                    action = "GetByTitle",
                     title = await this.articlesService.GetTitleAsync(id),
                 });
         }
@@ -221,9 +213,9 @@
         {
             await this.starsService.CreateStarLinkAsync(this.UserId, id);
             return this.RedirectToRoute(
-                nameof(this.GetByTitle),
                 new
                 {
+                    action = "GetByTitle",
                     title = await this.articlesService.GetTitleAsync(id),
                 });
         }

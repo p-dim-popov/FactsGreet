@@ -24,15 +24,18 @@
         private readonly IEditsService editsService;
         private readonly IArticlesService articlesService;
         private readonly IFilesService filesService;
+        private readonly IApplicationUsersService applicationUsersService;
 
         public EditsController(
             IEditsService editsService,
             IArticlesService articlesService,
-            IFilesService filesService)
+            IFilesService filesService,
+            IApplicationUsersService applicationUsersService)
         {
             this.editsService = editsService;
             this.articlesService = articlesService;
             this.filesService = filesService;
+            this.applicationUsersService = applicationUsersService;
         }
 
         [Authorize]
@@ -134,10 +137,10 @@
             var edits = which switch
             {
                 '>' => await this.editsService
-                    .GetEditsInfoListNewerThan<CompactEditViewModel>(
+                    .GetEditsNewerThan<CompactEditViewModel>(
                         pagination.Skip, pagination.Take, articleId, creationDate),
                 '<' => await this.editsService
-                    .GetEditsInfoListOlderThan<CompactEditViewModel>(
+                    .GetEditsOlderThan<CompactEditViewModel>(
                         pagination.Skip, pagination.Take, articleId, creationDate),
                 _ => null,
             };
@@ -151,14 +154,15 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> GetEditsWithArticleCards(int page, string userId = null)
+        public async Task<IActionResult> GetEditsWithArticleCards(Guid? editReferenceId, string email)
         {
-            var pagination = Paginator.GetPagination(page, EditsPerPage);
+            var userId = email is not null
+                ? await this.applicationUsersService.GetIdByEmailAsync(email)
+                : null;
+
             var edits =
-                await this.editsService.GetPaginatedOrderByDescAsync<EditWithCompactArticleViewModel>(
-                    pagination.Skip,
-                    pagination.Take,
-                    userId);
+                await this.editsService.GetFewOlderThanAsync<EditWithCompactArticleViewModel>(
+                    editReferenceId, EditsPerPage, userId ?? this.UserId, userId is null);
 
             return this.PartialView("_ListCompactEditsPartial", edits);
         }

@@ -1,11 +1,15 @@
 ﻿namespace FactsGreet.Services.Data.Implementations
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
+    using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class FollowsService
+    public class FollowsService : IFollowsService
     {
         private readonly IDeletableEntityRepository<Follow> followRepository;
 
@@ -50,5 +54,13 @@
         public Task<bool> IsUserFollowingUserAsync(string followerId, string followedId)
             => this.followRepository.AllAsNoTracking()
                 .AnyAsync(x => x.FollowerId == followerId && x.FollowedId == followedId);
+
+        public async Task<ICollection<T>> GetFollowedUsers<T>(string userId)
+            where T : IMapFrom<ApplicationUser>
+            => await this.followRepository.AllAsNoTracking()
+                .Where(x => x.FollowerId == userId)
+                .Select(x => x.Followed)
+                .To<T>()
+                .ToListAsync();
     }
 }

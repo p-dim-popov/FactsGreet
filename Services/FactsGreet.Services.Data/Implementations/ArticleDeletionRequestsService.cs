@@ -10,7 +10,7 @@
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
-    public class ArticleDeletionRequestsService
+    public class ArticleDeletionRequestsService : IArticleDeletionRequestsService
     {
         private readonly IRepository<ArticleDeletionRequest> articleDeletionRequestRepository;
 
@@ -20,6 +20,7 @@
         }
 
         public async Task<ICollection<T>> GetPaginatedOrderedByCreationDateAsync<T>(int skip, int take)
+            where T : IMapFrom<ArticleDeletionRequest>
             => await this.articleDeletionRequestRepository
                 .AllAsNoTracking()
                 .OrderByDescending(x => x.CreatedOn)
@@ -34,6 +35,7 @@
                 .CountAsync();
 
         public Task<T> GetById<T>(Guid id)
+            where T : IMapFrom<ArticleDeletionRequest>
             => this.articleDeletionRequestRepository
                 .AllAsNoTracking()
                 .Where(x => x.Id == id)

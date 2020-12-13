@@ -7,6 +7,8 @@
     using System.Threading.Tasks;
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
+    using FactsGreet.Services.Data.TransferObjects.ApplicationUsers;
+    using FactsGreet.Services.Data.TransferObjects.Articles;
     using FactsGreet.Services.Data.TransferObjects.Edits;
     using FactsGreet.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
@@ -18,20 +20,26 @@
         private readonly IDeletableEntityRepository<Category> categoryRepository;
         private readonly IDeletableEntityRepository<Article> articleRepository;
         private readonly IDiffMatchPatchService diffMatchPatchService;
+        private readonly IFollowsService followsService;
+        private readonly IStarsService starsService;
 
         public EditsService(
             IDeletableEntityRepository<Edit> editRepository,
             IDeletableEntityRepository<Category> categoryRepository,
             IDeletableEntityRepository<Article> articleRepository,
-            IDiffMatchPatchService diffMatchPatchService)
+            IDiffMatchPatchService diffMatchPatchService,
+            IFollowsService followsService,
+            IStarsService starsService)
         {
             this.editRepository = editRepository;
             this.categoryRepository = categoryRepository;
             this.articleRepository = articleRepository;
             this.diffMatchPatchService = diffMatchPatchService;
+            this.followsService = followsService;
+            this.starsService = starsService;
         }
 
-        public Task<ICollection<T>> GetEditsInfoListNewerThan<T>(
+        public Task<ICollection<T>> GetEditsNewerThan<T>(
             int skip,
             int take,
             Guid articleId,
@@ -46,7 +54,7 @@
             return edits;
         }
 
-        public Task<ICollection<T>> GetEditsInfoListOlderThan<T>(
+        public Task<ICollection<T>> GetEditsOlderThan<T>(
             int skip,
             int take,
             Guid articleId,
@@ -61,6 +69,48 @@
             return edits;
         }
 
+        public async Task<ICollection<T>> GetFewOlderThanAsync<T>(
+            Guid? referenceId, int take, string userId, bool forCurrentUser)
+        where T : IMapFrom<Edit>
+        {
+            var query = this.editRepository.AllAsNoTracking();
+
+            if (referenceId.HasValue)
+            {
+                var referenceDate = await this.editRepository.AllAsNoTracking()
+                    .Where(x => x.Id == referenceId.Value)
+                    .Select(x => x.CreatedOn)
+                    .FirstOrDefaultAsync();
+
+                query = query.Where(x => x.CreatedOn < referenceDate);
+            }
+
+            if (forCurrentUser)
+            {
+                var follows = (await this.followsService
+                        .GetFollowedUsers<ApplicationUserWithId>(userId))
+                    .Select(x => x.Id)
+                    .ToList();
+
+                var starredArticles = (await this.starsService
+                        .GetAllStarredByUser<ArticleWithId>(userId))
+                    .Select(x => x.Id)
+                    .ToList();
+
+                query = query.Where(x => follows.Contains(x.EditorId) || starredArticles.Contains(x.ArticleId));
+            }
+            else
+            {
+                query = query.Where(x => x.EditorId == userId);
+            }
+
+            return await query
+                .OrderByDescending(x => x.CreatedOn)
+                .Take(take)
+                .To<T>()
+                .ToListAsync();
+        }
+
         public async Task<ICollection<T>> GetPaginatedOrderByDescAsync<T>(
             int skip,
             int take,
@@ -69,11 +119,6 @@
             where T : IMapFrom<Edit>
         {
             var edits = this.editRepository.AllAsNoTracking();
-
-            if (userId is not null)
-            {
-                edits = edits.Where(x => x.EditorId == userId);
-            }
 
             if (filter is not null)
             {
@@ -160,25 +205,13 @@
                 .Select(x => new { x.Article.Content, x.Article.Title })
                 .FirstOrDefaultAsync();
 
-            var againstArticleContent = presentArticle.Content;
-            foreach (var edit in laterEdits.LatestToAgainst)
-            {
-                againstArticleContent = this.diffMatchPatchService.ApplyEdit(againstArticleContent, edit);
-            }
-
-            /*var againstArticle =
+            var againstArticleContent =
                 this.diffMatchPatchService
-                    .ApplyEdits(presentArticle.Content, laterEdits.LatestToAgainst);*/
+                    .ApplyEdits(presentArticle.Content, laterEdits.LatestToAgainst);
 
-            var targetArticleContent = againstArticleContent;
-            foreach (var edit in laterEdits.AgainstToTarget)
-            {
-                targetArticleContent = this.diffMatchPatchService.ApplyEdit(targetArticleContent, edit);
-            }
-
-            /*var targetArticle =
+            var targetArticleContent =
                 this.diffMatchPatchService
-                    .ApplyEdits(againstArticle, laterEdits.AgainstToTarget);*/
+                    .ApplyEdits(againstArticleContent, laterEdits.AgainstToTarget);
 
             return new EditDto
             {

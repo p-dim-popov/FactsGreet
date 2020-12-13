@@ -1,17 +1,18 @@
 ﻿@using System.Security.Claims
 @using FactsGreet.Common
 @using FactsGreet.Data.Models
-@using FactsGreet.Services.Data.Implementations
+@using FactsGreet.Services.Data
 @using FactsGreet.Web.Infrastructure
 @using Microsoft.AspNetCore.Identity
 @model FactsGreet.Web.ViewModels.Profiles.ProfileIndexViewModel
-@inject FollowsService FollowsService
-@inject AdminRequestsService AdminRequestsService
+@inject IFollowsService FollowsService
+@inject IAdminRequestsService AdminRequestsService
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewBag.Title = $"{Model.UserName}'s profile";
+    ViewBag.Title = $"{Model.Email}'s profile";
 }
 
+<input asp-for="Email" disabled hidden>
 <div class="container">
     <div class="row mb-3">
         <div class="col"></div>
@@ -35,7 +36,7 @@
             </script>
         </div>
         <div class="col-auto">
-            <h2 class="my-2">@Model.UserName's profile</h2>
+            <h2 class="my-2">@Model.Email's profile</h2>
         </div>
         @if (this.User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.Id)
         {
@@ -135,13 +136,7 @@
     </div>
 </div>
 
-<script>
-    window.globalConstants = {
-        queryParameters: 'userId=@Model.Id'
-    }
-</script>
-
 @section Scripts
 {
-    <script src="~/js/edits/edits-infinite-scroll.js" asp-append-version="true"></script>
+    <script src="~/js/profiles/view.js" asp-append-version="true"></script>
 }

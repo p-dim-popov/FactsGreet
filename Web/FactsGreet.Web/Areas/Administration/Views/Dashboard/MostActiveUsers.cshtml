@@ -1,9 +1,9 @@
 ﻿@using FactsGreet.Web.Infrastructure
 @using FactsGreet.Web.Controllers
 @using FactsGreet.Common
-@using FactsGreet.Services.Data.Implementations
+@using FactsGreet.Services.Data
 @model ICollection<FactsGreet.Web.ViewModels.Administration.Dashboard.ActiveUserViewModel>
-@inject BadgesService BadgesService
+@inject IBadgesService BadgesService
 @{
     ViewBag.Title = "Most Active Users";
     // ReSharper disable once InconsistentNaming
