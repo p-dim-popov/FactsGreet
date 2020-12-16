@@ -44,16 +44,29 @@
         {
             var user = await this.userRepository
                 .All()
+                .Include(x => x.Badges)
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
             var badge = await this.badgeRepository.All()
                 .FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
 
-            if (user is not null && badge is not null)
+            if (user is not null && badge is not null && user.Badges.All(x => x.Name != badge.Name))
             {
                 user.Badges.Add(badge);
                 await this.userRepository.SaveChangesAsync();
             }
         }
+
+        public Task<int> GetCountAsync()
+            => this.badgeRepository
+                .AllAsNoTracking()
+                .CountAsync();
+
+        public Task<int> GetUserBadgesCountByUserIdAsync(string userId)
+            => this.userRepository
+                .AllAsNoTracking()
+                .Where(x => x.Id == userId)
+                .SelectMany(x => x.Badges)
+                .CountAsync();
     }
 }

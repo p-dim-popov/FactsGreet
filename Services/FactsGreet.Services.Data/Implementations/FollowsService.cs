@@ -18,7 +18,7 @@
             this.followRepository = followRepository;
         }
 
-        public async Task Follow(string followerId, string followedId)
+        public async Task FollowAsync(string followerId, string followedId)
         {
             var follow = await this.followRepository.AllWithDeleted()
                 .FirstOrDefaultAsync(x => x.FollowerId == followerId && x.FollowedId == followedId);
@@ -39,14 +39,14 @@
             await this.followRepository.SaveChangesAsync();
         }
 
-        public async Task Unfollow(string followerId, string followedId)
+        public async Task UnfollowAsync(string followerId, string followedId)
         {
-            var star = await this.followRepository.All()
+            var follow = await this.followRepository.All()
                 .FirstOrDefaultAsync(x => x.FollowerId == followerId && x.FollowedId == followedId);
 
-            if (star is not null)
+            if (follow is not null)
             {
-                this.followRepository.Delete(star);
+                this.followRepository.Delete(follow);
                 await this.followRepository.SaveChangesAsync();
             }
         }
@@ -55,7 +55,7 @@
             => this.followRepository.AllAsNoTracking()
                 .AnyAsync(x => x.FollowerId == followerId && x.FollowedId == followedId);
 
-        public async Task<ICollection<T>> GetFollowedUsers<T>(string userId)
+        public async Task<ICollection<T>> GetFollowedUsersAsync<T>(string userId)
             where T : IMapFrom<ApplicationUser>
             => await this.followRepository.AllAsNoTracking()
                 .Where(x => x.FollowerId == userId)

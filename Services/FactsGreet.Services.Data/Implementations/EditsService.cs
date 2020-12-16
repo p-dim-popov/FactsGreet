@@ -88,7 +88,7 @@
             if (forCurrentUser)
             {
                 var follows = (await this.followsService
-                        .GetFollowedUsers<ApplicationUserWithId>(userId))
+                        .GetFollowedUsersAsync<ApplicationUserWithId>(userId))
                     .Select(x => x.Id)
                     .ToList();
 

@@ -12,5 +12,9 @@
         Task RemoveBadgeFromUserAsync(string userId, string badgeName);
 
         Task AddBadgeToUserAsync(string userId, string name);
+
+        Task<int> GetCountAsync();
+
+        Task<int> GetUserBadgesCountByUserIdAsync(string userId);
     }
 }

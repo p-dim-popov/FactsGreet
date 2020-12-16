@@ -4,7 +4,7 @@
     {
         public const string SystemName = "FactsGreet";
 
-        public const string RegularRoleName = "Regular";
+        public const string RegularRoleName = "User";
 
         public const string AdministratorRoleName = "Administrator";
 

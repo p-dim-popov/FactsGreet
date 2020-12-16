@@ -46,7 +46,7 @@
 
         public async Task<IActionResult> Follow(string userId)
         {
-            await this.followsService.Follow(this.UserId, userId);
+            await this.followsService.FollowAsync(this.UserId, userId);
             return this.RedirectToRoute(
                 Helpers.GetRouteNames(this.GetType(), nameof(this.Index)).FirstOrDefault(),
                 new { email = await this.applicationUsersService.GetEmailAsync(userId) });
@@ -54,7 +54,7 @@
 
         public async Task<IActionResult> Unfollow(string userId)
         {
-            await this.followsService.Unfollow(this.UserId, userId);
+            await this.followsService.UnfollowAsync(this.UserId, userId);
             return this.RedirectToRoute(
                 Helpers.GetRouteNames(this.GetType(), nameof(this.Index)).FirstOrDefault(),
                 new { email = await this.applicationUsersService.GetEmailAsync(userId) });

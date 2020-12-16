@@ -8,13 +8,13 @@
 
     public interface IFollowsService
     {
-        Task Follow(string followerId, string followedId);
+        Task FollowAsync(string followerId, string followedId);
 
-        Task Unfollow(string followerId, string followedId);
+        Task UnfollowAsync(string followerId, string followedId);
 
         Task<bool> IsUserFollowingUserAsync(string followerId, string followedId);
 
-        Task<ICollection<T>> GetFollowedUsers<T>(string userId)
+        Task<ICollection<T>> GetFollowedUsersAsync<T>(string userId)
             where T : IMapFrom<ApplicationUser>;
     }
 }

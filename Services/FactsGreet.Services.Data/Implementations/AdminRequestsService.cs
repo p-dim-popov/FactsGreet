@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
     using FactsGreet.Data.Common.Repositories;
     using FactsGreet.Data.Models;
     using FactsGreet.Services.Mapping;
@@ -13,14 +12,14 @@
     public class AdminRequestsService : IAdminRequestsService
     {
         private readonly IDeletableEntityRepository<AdminRequest> adminRequestRepository;
-        private readonly IRepository<Badge> badgeRepository;
+        private readonly IBadgesService badgesService;
 
         public AdminRequestsService(
             IDeletableEntityRepository<AdminRequest> adminRequestRepository,
-            IRepository<Badge> badgeRepository)
+            IBadgesService badgesService)
         {
             this.adminRequestRepository = adminRequestRepository;
-            this.badgeRepository = badgeRepository;
+            this.badgesService = badgesService;
         }
 
         public Task<int> GetCountAsync()
@@ -29,24 +28,16 @@
                 .CountAsync();
 
         public async Task<bool> CanUserBecomeAdminAsync(string userId)
-        {
-            var badgesCount = await this.GetCountAsync();
-
-            var userBadges = await this.badgeRepository.AllAsNoTracking()
-                .SelectMany(x => x.UsersWithBadges)
-                .Where(x => x.Id == userId)
-                .SelectMany(x => x.Badges)
-                .CountAsync();
-            return userBadges > (badgesCount / 2);
-        }
+            => await this.badgesService
+                .GetUserBadgesCountByUserIdAsync(userId) > await this.badgesService.GetCountAsync() / 2;
 
         public async Task CreateAsync(string userId, string motivationalLetter)
         {
             if (await this.adminRequestRepository
-                .AllAsNoTracking()
-                .AnyAsync(x => x.Request.SenderId == userId))
+                .All()
+                .FirstOrDefaultAsync(x => x.Request.SenderId == userId) is { } request)
             {
-                return;
+                this.adminRequestRepository.HardDelete(request);
             }
 
             await this.adminRequestRepository.AddAsync(new AdminRequest
