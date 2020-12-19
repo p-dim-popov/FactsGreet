@@ -35,7 +35,45 @@ As a guest user you can read all articles and view the whole history of an artic
 	- [QRCode.js](https://github.com/davidshimjs/qrcodejs)
 * xUnit, Moq
 
+### Screenshots
 
+---
+
+#### /Home/Index
+![/Home/Index](./Screenshots/Home.Index.png)
+
+#### /Articles/All
+![/Home/Index](./Screenshots/Articles.All.png)
+
+#### /Home/Feed
+![/Home/Index](./Screenshots/Home.Feed.png)
+
+#### /Articles/Create
+![/Home/Index](./Screenshots/Articles.Create.png)
+
+#### /Files/All
+![/Home/Index](./Screenshots/Files.All.png)
+
+#### /Files/Upload
+![/Home/Index](./Screenshots/Home.Index.png)
+
+#### /Conversations/Messages
+![/Home/Index](./Screenshots/Conversations.Index.png)
+
+#### /Home/Index
+![/Home/Index](./Screenshots/Conversations.Messages.png)
+
+#### /Home/Index
+![/Home/Index](./Screenshots/Home.Index.png)
+
+#### /Administration/Dashboard/Index
+![/Home/Index](./Screenshots/Administration.Dashboard.Index.png)
+
+#### /Administration/Dashboard/MostActiveUsers (Part 1)
+![/Home/Index](./Screenshots/Administration.Dashboard.MostActiveUsers-1.png)
+
+#### /Administration/Dashboard/MostActiveUsers (Part 2)
+![/Home/Index](./Screenshots/Administration.Dashboard.MostActiveUsers-2.png)
 
 ---
 
