@@ -43,37 +43,34 @@ As a guest user you can read all articles and view the whole history of an artic
 ![/Home/Index](./Screenshots/Home.Index.png)
 
 #### /Articles/All
-![/Home/Index](./Screenshots/Articles.All.png)
+![/Articles/All](./Screenshots/Articles.All.png)
 
 #### /Home/Feed
-![/Home/Index](./Screenshots/Home.Feed.png)
+![/Home/Feed](./Screenshots/Home.Feed.png)
 
 #### /Articles/Create
-![/Home/Index](./Screenshots/Articles.Create.png)
+![/Articles/Create](./Screenshots/Articles.Create.png)
 
 #### /Files/All
-![/Home/Index](./Screenshots/Files.All.png)
+![/Files/All](./Screenshots/Files.All.png)
 
 #### /Files/Upload
-![/Home/Index](./Screenshots/Home.Index.png)
+![/Files/Upload](./Screenshots/Home.Index.png)
+
+#### /Conversations/Index
+![/Conversations/Index](./Screenshots/Conversations.Index.png)
 
 #### /Conversations/Messages
-![/Home/Index](./Screenshots/Conversations.Index.png)
-
-#### /Home/Index
-![/Home/Index](./Screenshots/Conversations.Messages.png)
-
-#### /Home/Index
-![/Home/Index](./Screenshots/Home.Index.png)
+![/Conversations/Messages](./Screenshots/Conversations.Messages.png)
 
 #### /Administration/Dashboard/Index
-![/Home/Index](./Screenshots/Administration.Dashboard.Index.png)
+![/Administration/Dashboard/Index](./Screenshots/Administration.Dashboard.Index.png)
 
 #### /Administration/Dashboard/MostActiveUsers (Part 1)
-![/Home/Index](./Screenshots/Administration.Dashboard.MostActiveUsers-1.png)
+![/Administration/Dashboard/MostActiveUsers (Part 1)](./Screenshots/Administration.Dashboard.MostActiveUsers-1.png)
 
 #### /Administration/Dashboard/MostActiveUsers (Part 2)
-![/Home/Index](./Screenshots/Administration.Dashboard.MostActiveUsers-2.png)
+![/Administration/Dashboard/MostActiveUsers (Part 2)](./Screenshots/Administration.Dashboard.MostActiveUsers-2.png)
 
 ---
 
